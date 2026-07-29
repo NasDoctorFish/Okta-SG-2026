@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Large source/reference files not meant to be version-controlled
+2. 영상 및 음향 자료/
+공식행사 BGM/
+작년 ppt sample.pptx
+2026 차무스 운영 플랜-20260720T115003Z-1-002.zip
+
+# Backups generated while editing the event deck
+Okta 싱가폴 통무스 2026.backup-*.html
