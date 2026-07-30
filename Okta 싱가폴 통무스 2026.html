@@ -84,7 +84,7 @@
   .track { display: flex; width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1); }
   @media (prefers-reduced-motion: reduce) { .track { transition: none; } }
   .slide { flex: 0 0 100%; height: 100%; overflow-y: auto; display: flex; justify-content: center; }
-  .ticket { position: relative; width: min(980px, 94vw); margin: clamp(1rem, 2.6vh, 2.2rem) 0; background: var(--bg-elevated); border-radius: 18px; box-shadow: var(--shadow); display: flex; min-height: calc(100% - 2.2rem); overflow: hidden; }
+  .ticket { position: relative; width: min(1680px, 94vw); margin: clamp(1rem, 2.6vh, 2.2rem) 0; background: var(--bg-elevated); border-radius: 18px; box-shadow: var(--shadow); display: flex; min-height: calc(100% - 2.2rem); overflow: hidden; }
 
   .stub { flex: none; width: 100px; padding: 1.4rem 0.8rem; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; background: linear-gradient(180deg, var(--accent-navy), var(--accent-navy-deep)); color: #eef1f6; position: relative; }
   .stub::after {
@@ -101,17 +101,21 @@
   .cabin h2 { font-size: clamp(1.9rem, 3.6vw, 2.7rem); font-weight: 700; margin-bottom: 0.5rem; position: relative; }
   .cabin h2::after { content: ""; display: block; width: 36px; height: 3px; margin-top: 0.6rem; margin-bottom: 0.6rem; background: var(--accent-gold); }
   .lede { color: var(--ink-muted); font-size: 1.15rem; line-height: 1.7; max-width: 68ch; }
-  .placeholder { color: var(--accent-navy); font-style: normal; }
-  .placeholder::before { content: "◻ "; }
-  .tbd { color: var(--accent-red); font-size: 0.92rem; }
-  .tbd::before { content: "△ 미확정 · "; font-weight: 600; }
+
+  /* ---------- Big statement (title-only slides, MC narrates the rest) ---------- */
+  .big-statement { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60%; text-align: center; }
+  .huge { font-family: var(--font-display); font-weight: 800; font-size: clamp(3.2rem, 9vw, 5.5rem); color: var(--ink); text-wrap: balance; }
 
   /* ---------- Seating (slide 1) ---------- */
-  .seating .ticket { flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2.2rem 1.5rem; gap: 1.3rem; }
+  .seating .ticket { flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2.2rem 1.5rem; gap: 1.3rem; position: relative; overflow: hidden; background: radial-gradient(ellipse at 50% 12%, #16233f 0%, #0b1220 48%, #050912 100%); }
   .seating .stub { display: none; }
-  .seat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.9rem; width: min(640px, 90vw); }
-  @media (max-width: 520px) { .seat-grid { grid-template-columns: repeat(2, 1fr); } }
-  .seat-box { aspect-ratio: 1; border-radius: 14px; border: 2px dashed var(--line); background: color-mix(in srgb, var(--accent-navy) 7%, var(--bg-elevated)); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 700; color: var(--accent-gold); }
+  .seating h2 { color: #eef1f6; }
+  .seating-fx-canvas, .seating-plane-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+  .seating-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 1.3rem; }
+  .stage-label { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.2em; color: rgba(238, 243, 251, 0.75); border: 1px solid rgba(238, 243, 251, 0.35); border-radius: 20px; padding: 0.4rem 1.6rem; }
+  .seat-rows { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; width: min(560px, 90vw); }
+  .seat-row { display: flex; justify-content: center; gap: 1.1rem; width: 100%; }
+  .seat-box { flex: none; width: clamp(64px, 14vw, 92px); aspect-ratio: 1; border-radius: 50%; border: 2px dashed rgba(238, 243, 251, 0.4); background: rgba(238, 243, 251, 0.08); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: clamp(1.4rem, 3.4vw, 2rem); font-weight: 700; color: var(--accent-gold); }
   .seating .lede { max-width: 44ch; }
 
   /* ---------- Overview (Day1/2/3 summary) ---------- */
@@ -132,16 +136,16 @@
   .timeline .desc small { display: block; color: var(--ink-muted); font-size: 0.9rem; margin-top: 0.15rem; }
 
   /* ---------- Team placeholder slides ---------- */
-  .team-slide { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
-  .team-badge { width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--accent-gold); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 2.6rem; font-weight: 700; color: var(--accent-gold); background: color-mix(in srgb, var(--accent-gold) 8%, var(--bg-elevated)); }
 
   /* ---------- Speakers ---------- */
-  .speaker-grid { margin-top: 0.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.9rem; }
-  .speaker-card { border: 1px solid var(--line); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .speaker-grid { margin-top: 0.6rem; display: flex; min-height: 56vh; }
+  .speaker-card { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.7rem; padding: 1.5rem 1.2rem; border-right: 1px solid var(--line); }
+  .speaker-card:last-child { border-right: none; }
+  .speaker-card .avatar { width: 96px; height: 96px; font-size: 2rem; }
+  .speaker-card .name { font-weight: 700; font-size: 1.35rem; }
   .avatar { width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--accent-gold); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.92rem; flex: none; overflow: hidden; }
   .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-  .speaker-card .name { font-weight: 700; font-size: 1.2rem; }
-  .speaker-card .role, .speaker-card .topic { font-size: 0.98rem; color: var(--ink-muted); }
+  .speaker-card .role, .speaker-card .topic { font-size: 1.05rem; color: var(--ink-muted); }
   .speaker-card .topic { color: var(--ink); }
 
   /* ---------- MC intro card (speaker / judge, read before they come up) ---------- */
@@ -150,7 +154,6 @@
   .mc-photo-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   .mc-card .name { font-size: 1.4rem; font-weight: 700; }
   .mc-card .role { color: var(--ink-muted); font-size: 1rem; margin-top: 0.2rem; }
-  .mc-script { margin-top: 1.1rem; border-left: 3px solid var(--accent-gold); padding: 0.2rem 0 0.2rem 1rem; font-size: 1.05rem; line-height: 1.7; color: var(--ink); }
 
   /* ---------- Speaker detail (career list) ---------- */
   .speaker-detail-head { display: flex; gap: 1.3rem; align-items: center; flex-wrap: wrap; }
@@ -174,22 +177,31 @@
 
   .photo-grid-lg { margin-top: 1.2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   @media (max-width: 620px) { .photo-grid-lg { grid-template-columns: 1fr; } }
-  .photo-slot-lg { aspect-ratio: 4 / 3; border: 1.5px dashed var(--line); border-radius: 12px; background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem; color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.92rem; }
-  .photo-slot-lg .cam { position: relative; width: 40px; height: 28px; border: 2px solid var(--ink-muted); border-radius: 5px; }
-  .photo-slot-lg .cam::before { content: ""; position: absolute; top: -9px; left: 9px; width: 14px; height: 9px; background: var(--bg-elevated); border: 2px solid var(--ink-muted); border-bottom: none; border-radius: 3px 3px 0 0; }
-  .photo-slot-lg .cam::after { content: ""; position: absolute; inset: 5px 12px; border: 2px solid var(--ink-muted); border-radius: 50%; }
+  .photo-slot-lg { aspect-ratio: 4 / 3; border: 1.5px dashed var(--line); border-radius: 12px; background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem; color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.92rem; overflow: hidden; position: relative; }
+  .photo-slot-lg.has-img { border-style: solid; padding: 0; }
+  .photo-slot-lg.has-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-slot-lg.has-img span { position: absolute; left: 0.6rem; bottom: 0.5rem; padding: 0.15rem 0.55rem; border-radius: 6px; background: rgba(0, 0, 0, 0.55); color: #eef1f6; font-size: 0.76rem; }
 
   /* ---------- Shark Tank locations ---------- */
-  .loc-grid { margin-top: 0.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.85rem; }
+  .loc-grid { margin-top: 0.5rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  @media (max-width: 560px) { .loc-grid { grid-template-columns: 1fr; } }
   .loc-card { border: 1px solid var(--line); border-radius: 10px; padding: 0.9rem; background: color-mix(in srgb, var(--accent-navy) 5%, var(--bg-elevated)); }
-  .loc-card .loc-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.4rem; }
+  .loc-card .loc-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.15rem; }
+  .loc-card .loc-biz { font-size: 0.9rem; color: var(--accent-gold); font-family: var(--font-mono); margin-bottom: 0.5rem; }
+  .loc-dl { margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem 1rem; font-size: 0.84rem; }
+  @media (max-width: 420px) { .loc-dl { grid-template-columns: 1fr; } }
+  .loc-dl dt { color: var(--ink-muted); }
+  .loc-dl dd { margin: 0.15rem 0 0; }
+  .loc-field { min-width: 0; }
   .tags { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.3rem; }
   .tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.03em; padding: 0.15rem 0.45rem; border-radius: 20px; border: 1px solid var(--line); color: var(--ink-muted); }
 
   /* ---------- Route / movement map ---------- */
-  .route-map { margin-top: 0.9rem; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
-  .route-stop { border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem 1rem; font-family: var(--font-mono); font-size: 0.92rem; background: var(--bg-elevated); }
-  .route-arrow { color: var(--accent-gold); font-size: 1.3rem; }
+  .route-map { margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; min-height: 55%; }
+  .route-stop { border: 2px solid var(--accent-navy); border-radius: 18px; padding: 2rem 1.8rem; font-family: var(--font-mono); font-size: 1.3rem; font-weight: 700; background: var(--bg-elevated); text-align: center; color: var(--ink); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 0.6rem; min-width: 170px; }
+  .route-stop .ricon { font-size: 2.4rem; }
+  .route-arrow { color: var(--accent-gold); font-size: 2.4rem; font-weight: 700; }
+  @media (max-width: 700px) { .route-map { gap: 0.8rem; } .route-stop { padding: 1.2rem 1rem; font-size: 1.05rem; min-width: 120px; } .route-arrow { font-size: 1.6rem; } }
 
   .plain-list { margin: 0; padding-left: 1.1rem; font-size: 1.08rem; line-height: 1.7; }
   .plain-list.ordered { padding-left: 1.3rem; }
@@ -204,10 +216,16 @@
 
   /* ---------- Break slide ---------- */
   .break .ticket { align-items: center; justify-content: center; text-align: center; }
-  .break .cabin { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
-  .break .duration { font-family: var(--font-mono); font-size: clamp(2.4rem, 7vw, 3.6rem); font-weight: 700; color: var(--accent-navy); }
-  .break .next-up { font-size: 1.02rem; color: var(--ink-muted); }
+  .break .cabin { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 60%; }
+  .break .duration { font-family: var(--font-mono); font-size: clamp(2.8rem, 8vw, 4.2rem); font-weight: 700; color: var(--accent-navy); letter-spacing: 0.02em; }
+  .break .next-up { margin-top: 0.4rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 1.08rem; color: var(--ink-muted); }
   .break .next-up b { color: var(--ink); }
+  .break-dots { display: flex; gap: 0.5rem; }
+  .break-dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-gold); animation: break-bounce 1.2s ease-in-out infinite; }
+  .break-dots span:nth-child(2) { animation-delay: 0.15s; }
+  .break-dots span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes break-bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.5; } 40% { transform: translateY(-10px); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .break-dots span { animation: none; opacity: 0.8; } }
 
   /* coffee break cup animation */
   .coffee-cup { width: 72px; height: 60px; position: relative; margin: 0.4rem 0; }
@@ -221,42 +239,62 @@
   @media (prefers-reduced-motion: reduce) { .coffee-cup .steam { animation: none; opacity: 0.4; } }
 
   /* ---------- Ladder draw widget ---------- */
-  .ladder-wrap { margin-top: 0.8rem; display: flex; flex-direction: column; gap: 0.8rem; align-items: center; }
-  .ladder-svg-box { width: 100%; max-width: 620px; overflow-x: auto; }
-  .ladder-svg-box svg { width: 100%; height: auto; display: block; }
-  .ladder-col-label { font-family: var(--font-mono); font-size: 11px; fill: var(--ink-muted); }
-  .ladder-line { stroke: var(--line); stroke-width: 2; fill: none; }
-  .ladder-path { stroke: var(--accent-gold); stroke-width: 3; fill: none; stroke-linecap: round; }
-  .ladder-bottom-label { font-family: var(--font-mono); font-size: 16px; font-weight: 700; fill: var(--accent-gold); text-anchor: middle; }
+  .ladder-wrap { margin-top: 0.8rem; display: flex; flex-direction: column; gap: 0.8rem; align-items: center; width: 100%; }
+  .ladder-track-box { max-width: 100%; overflow-x: auto; }
+  .ladder-row { position: relative; height: 38px; }
+  .ladder-chip { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; font-family: var(--font-mono); }
+  .ladder-chip.name { padding: 0.35rem 0.6rem; border-radius: 20px; border: 1.5px solid var(--line); background: none; color: var(--ink); font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease; }
+  .ladder-chip.name:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+  .ladder-chip.name.used { opacity: 0.55; }
+  .ladder-chip.name:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
+  .ladder-chip.result { padding: 0.3rem 0.55rem; border-radius: 10px; background: color-mix(in srgb, var(--accent-navy) 8%, transparent); color: var(--ink-muted); font-size: 0.85rem; font-weight: 700; text-align: center; cursor: default; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease; }
+  .ladder-chip.result.hit { color: var(--hit-color, var(--accent-gold)); background: color-mix(in srgb, var(--hit-color, var(--accent-gold)) 16%, transparent); box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hit-color, var(--accent-gold)) 50%, transparent); transform: translateX(-50%) scale(1.1); }
   .ladder-actions { display: flex; gap: 0.7rem; }
   .ladder-actions button { font-family: var(--font-mono); font-size: 0.92rem; padding: 0.55rem 1.2rem; border-radius: 24px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #241a04; cursor: pointer; font-weight: 600; }
   .ladder-actions button.secondary { background: none; color: var(--ink); border-color: var(--line); }
+  .ladder-actions button:disabled { opacity: 0.5; cursor: default; }
   .ladder-actions button:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
-  .ladder-result { width: 100%; max-width: 620px; }
-  .ladder-result table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-  .ladder-result th, .ladder-result td { text-align: center; padding: 0.4rem 0.3rem; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
-  .ladder-result th { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-muted); text-transform: uppercase; }
-  .ladder-result td.hl { color: var(--accent-gold); font-weight: 700; }
+  .ladder-toast { min-height: 1.2rem; margin: 0; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--accent-gold); opacity: 0; transform: translateY(-4px); transition: opacity 0.25s ease, transform 0.25s ease; }
+  .ladder-toast.show { opacity: 1; transform: translateY(0); }
 
-  /* ---------- Spin wheel widget ---------- */
-  .wheel-wrap { margin-top: 0.8rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  /* ---------- Spin wheel widget (left: cumulative order list, right: wheel + latest result) ---------- */
+  .wheel-wrap { margin-top: 0.8rem; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0; transition: gap 0.8s ease; }
+  .wheel-wrap.revealed { gap: 2.6rem; }
+  .wheel-col { display: flex; flex-direction: column; align-items: center; gap: 1rem; flex: none; }
   .wheel-stage { position: relative; width: clamp(200px, 40vw, 260px); height: clamp(200px, 40vw, 260px); }
-  .wheel-disc { width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--accent-navy-deep); background: conic-gradient(from 0deg, var(--accent-navy) 0deg 36deg, var(--accent-navy-deep) 36deg 72deg, var(--accent-navy) 72deg 108deg, var(--accent-navy-deep) 108deg 144deg, var(--accent-navy) 144deg 180deg, var(--accent-navy-deep) 180deg 216deg, var(--accent-navy) 216deg 252deg, var(--accent-navy-deep) 252deg 288deg, var(--accent-navy) 288deg 324deg, var(--accent-navy-deep) 324deg 360deg); box-shadow: var(--shadow); transition: transform 3.2s cubic-bezier(0.12, 0.72, 0.15, 1); }
+  .wheel-disc { width: 100%; height: 100%; border-radius: 50%; box-shadow: var(--shadow); transition: transform 3.2s cubic-bezier(0.12, 0.72, 0.15, 1); }
+  .wheel-disc canvas { display: block; width: 100%; height: 100%; border-radius: 50%; }
   @media (prefers-reduced-motion: reduce) { .wheel-disc { transition: none; } }
-  .wheel-pointer { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-style: solid; border-width: 18px 10px 0 10px; border-color: var(--accent-gold) transparent transparent transparent; }
+  .wheel-pointer { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-style: solid; border-width: 18px 10px 0 10px; border-color: var(--accent-gold) transparent transparent transparent; z-index: 1; }
   .wheel-actions { display: flex; gap: 0.7rem; }
   .wheel-actions button { font-family: var(--font-mono); font-size: 0.92rem; padding: 0.55rem 1.2rem; border-radius: 24px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #241a04; cursor: pointer; font-weight: 600; }
-  .wheel-result { width: 100%; max-width: 420px; margin: 0; padding-left: 1.4rem; font-size: 1.02rem; line-height: 1.8; font-variant-numeric: tabular-nums; }
+  .wheel-actions button.secondary { background: none; color: var(--ink); border-color: var(--line); }
+  .wheel-actions button:disabled { opacity: 0.5; cursor: default; }
+  /* latest single-draw result box (below the wheel, replaced each draw) */
+  .wheel-latest { min-width: 220px; border: 2px solid var(--accent-gold); border-radius: 16px; padding: 0.9rem 1.6rem; text-align: center; background: color-mix(in srgb, var(--accent-gold) 8%, var(--bg-elevated)); opacity: 0; transform: translateY(6px) scale(0.96); transition: opacity 0.3s ease, transform 0.3s ease; }
+  .wheel-latest.show { opacity: 1; transform: translateY(0) scale(1); }
+  .wheel-latest .wl-rank { font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.05em; color: var(--ink-muted); }
+  .wheel-latest .wl-team { margin-top: 0.25rem; font-family: var(--font-display); font-weight: 800; font-size: 2.4rem; color: var(--accent-gold); }
+  /* cumulative order list, left of the wheel */
+  .wheel-order-box { width: 0; flex: none; overflow: hidden; opacity: 0; transition: width 0.8s ease, opacity 0.5s ease 0.3s; }
+  .wheel-order-box.show { width: clamp(220px, 26vw, 320px); opacity: 1; }
+  .wheel-order-inner { width: clamp(220px, 26vw, 320px); }
+  .wheel-order-row { display: grid; grid-template-columns: 2.2rem 1fr; align-items: center; gap: 0.7rem; padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
+  .wheel-order-row:last-child { border-bottom: none; }
+  .wheel-order-row .rank { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-muted); }
+  .wheel-order-row .team { font-size: 1.15rem; font-weight: 700; color: var(--ink); }
 
   /* ---------- Global Mixer orbit animation ---------- */
-  .mixer-wrap { margin-top: 0.6rem; display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
-  .mixer-stage { position: relative; width: clamp(220px, 42vw, 300px); height: clamp(220px, 42vw, 300px); }
+  .mixer-wrap { margin-top: 0.4rem; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0; transition: gap 0.8s ease; }
+  .mixer-wrap.revealed { gap: 2.6rem; }
+  .mixer-left { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; flex: none; }
+  .mixer-stage { position: relative; width: clamp(260px, 32vw, 340px); height: clamp(260px, 32vw, 340px); flex: none; }
   .mixer-orbit { position: absolute; inset: 0; }
-  .mixer-orbit.spin { animation: mixer-spin 2.4s cubic-bezier(0.2, 0.75, 0.25, 1) forwards; }
+  .mixer-orbit.spin { animation: mixer-spin 3.6s cubic-bezier(0.3, 0.1, 0.2, 1) forwards; }
   @keyframes mixer-spin { from { transform: rotate(0deg); } to { transform: rotate(var(--final-angle, 1080deg)); } }
   .mixer-chip-pos { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform: rotate(var(--pos-angle, 0deg)); }
-  .mixer-chip { position: absolute; width: 56px; height: 56px; margin: -28px 0 0 -28px; top: calc(-1 * var(--r, 110px)); border-radius: 50%; background: var(--accent-gold); color: #241a04; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem; transform: rotate(calc(-1 * var(--pos-angle, 0deg))); }
-  .mixer-chip-pos.spin .mixer-chip { animation: mixer-counter-spin 2.4s cubic-bezier(0.2, 0.75, 0.25, 1) forwards; }
+  .mixer-chip { position: absolute; width: 56px; height: 56px; margin: -28px 0 0 -28px; top: calc(-1 * var(--r, 120px)); border-radius: 50%; background: var(--accent-gold); color: #241a04; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 1.15rem; transform: rotate(calc(-1 * var(--pos-angle, 0deg))); }
+  .mixer-chip-pos.spin .mixer-chip { animation: mixer-counter-spin 3.6s cubic-bezier(0.3, 0.1, 0.2, 1) forwards; }
   @keyframes mixer-counter-spin {
     from { transform: rotate(calc(-1 * var(--pos-angle, 0deg))); }
     to { transform: rotate(calc(-1 * var(--pos-angle, 0deg))) rotate(calc(-1 * var(--final-angle, 1080deg))); }
@@ -265,16 +303,30 @@
     .mixer-orbit.spin, .mixer-chip-pos.spin .mixer-chip { animation: none; }
   }
   .mixer-actions button { font-family: var(--font-mono); font-size: 0.92rem; padding: 0.55rem 1.2rem; border-radius: 24px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #241a04; cursor: pointer; font-weight: 600; }
-  .mixer-groups { width: 100%; margin-top: 0.3rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; opacity: 0; transform: translateY(8px); transition: opacity 0.5s ease, transform 0.5s ease; }
-  .mixer-groups.show { opacity: 1; transform: none; }
-  @media (max-width: 620px) { .mixer-groups { grid-template-columns: repeat(2, 1fr); } }
-  .mixer-group-card { border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem 0.8rem; font-size: 0.86rem; }
-  .mixer-group-card .gnum { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 700; margin-bottom: 0.3rem; }
+  .mixer-groups { width: 0; flex: none; overflow: hidden; opacity: 0; transition: width 0.8s ease, opacity 0.5s ease 0.3s; }
+  .mixer-groups.show { width: clamp(360px, 46vw, 620px); opacity: 1; }
+  .mixer-groups-inner { width: clamp(360px, 46vw, 620px); display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
+  .mixer-group-card { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; font-size: 0.95rem; line-height: 1.5; }
+  .mixer-group-card .gnum { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.4rem; }
 
   /* ---------- Bingo grid ---------- */
+  .bingo-wrap { position: relative; }
   .bingo-grid { margin-top: 0.7rem; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
   @media (max-width: 700px) { .bingo-grid { grid-template-columns: repeat(2, 1fr); } }
-  .bingo-cell { border: 1px solid var(--line); border-radius: 8px; padding: 0.5rem; font-size: 0.76rem; line-height: 1.3; min-height: 62px; display: flex; align-items: center; justify-content: center; text-align: center; background: color-mix(in srgb, var(--accent-navy) 4%, var(--bg-elevated)); }
+  .bingo-cell { border: 1px solid var(--line); border-radius: 8px; padding: 0.5rem; font-size: 0.76rem; line-height: 1.3; min-height: 62px; display: flex; align-items: center; justify-content: center; text-align: center; background: color-mix(in srgb, var(--accent-navy) 4%, var(--bg-elevated)); cursor: pointer; user-select: none; transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease; }
+  .bingo-cell:hover { border-color: var(--accent-gold); }
+  .bingo-cell:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
+  .bingo-cell.marked { background: var(--accent-gold); color: #241a04; font-weight: 700; border-color: var(--accent-gold); }
+  .bingo-cell.bingo-line { animation: bingo-pulse 0.6s ease 2; }
+  @keyframes bingo-pulse { 0%, 100% { transform: scale(1); box-shadow: none; } 50% { transform: scale(1.06); box-shadow: 0 0 0 3px var(--accent-red); } }
+  .bingo-toast { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; }
+  .bingo-toast.show { animation: bingo-pop 1.8s ease forwards; }
+  .bingo-toast span { font-family: var(--font-display); font-weight: 900; font-size: clamp(3rem, 10vw, 6rem); color: var(--accent-red); text-shadow: 0 4px 24px rgba(0, 0, 0, 0.28); letter-spacing: 0.04em; }
+  @keyframes bingo-pop { 0% { transform: scale(0.5); opacity: 0; } 15% { transform: scale(1.1); opacity: 1; } 25% { transform: scale(1); } 80% { opacity: 1; } 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .bingo-cell.bingo-line { animation: none; }
+    .bingo-toast.show { animation: none; opacity: 1; }
+  }
 
   /* ---------- Networking field menu ---------- */
   .field-grid { margin-top: 0.6rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
@@ -289,16 +341,13 @@
   .sponsor-card .sname { font-weight: 700; font-size: 1.2rem; }
   .sponsor-card .sitem { color: var(--ink-muted); margin-top: 0.2rem; }
 
-  /* ---------- Notion link / QR ---------- */
-  .qr-card { margin-top: 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
-  .qr-box { background: #fff; border-radius: 14px; padding: 0.9rem; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
-  .qr-box img { display: block; width: clamp(150px, 26vw, 200px); height: clamp(150px, 26vw, 200px); }
-  .qr-link { font-family: var(--font-mono); font-size: 0.92rem; color: var(--accent-navy); word-break: break-all; text-align: center; text-decoration: none; border-bottom: 1px dashed var(--accent-navy); }
-  .qr-link:hover { color: var(--accent-gold); border-color: var(--accent-gold); }
-
   /* ---------- Appendix (photo/video recap) ---------- */
   .appendix .ticket { flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2.2rem 1.5rem; gap: 0.9rem; }
   .appendix .stub { display: none; }
+
+  /* ---------- Hero image slide ---------- */
+  .hero .ticket { padding: 0; align-items: stretch; justify-content: center; width: auto; height: calc(100% - 2.2rem); max-width: min(1680px, 94vw); aspect-ratio: 2752 / 1536; }
+  .hero .stub { display: none; }
   .video-box { aspect-ratio: 16/9; max-width: 560px; border-radius: 12px; border: 1px dashed var(--line); background: color-mix(in srgb, var(--accent-navy) 8%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.7rem; color: var(--ink-muted); margin-top: 0.5rem; }
   .play { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--accent-gold); display: flex; align-items: center; justify-content: center; }
   .play::after { content: ""; border-style: solid; border-width: 9px 0 9px 15px; border-color: transparent transparent transparent var(--accent-gold); margin-left: 4px; }
@@ -312,9 +361,6 @@
   .dots { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: center; max-width: 60vw; }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--line); border: none; cursor: pointer; padding: 0; transition: background 0.2s, transform 0.2s; }
   .dot.active { background: var(--accent-gold); transform: scale(1.4); }
-
-  .sfx-toast { position: fixed; bottom: 4.4rem; left: 50%; transform: translateX(-50%) translateY(6px); background: var(--accent-navy-deep); color: #eef1f6; font-family: var(--font-mono); font-size: 0.8rem; padding: 0.4rem 0.9rem; border-radius: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 20; }
-  .sfx-toast.show { opacity: 0.95; transform: translateX(-50%) translateY(0); }
 
   @media (max-width: 640px) {
     .stub { width: 70px; padding: 1rem 0.4rem; }
@@ -340,19 +386,24 @@
   <button class="navbtn" id="nextBtn" aria-label="다음 슬라이드">→</button>
 </div>
 
-<div class="sfx-toast" id="sfxToast"></div>
-
 <script>
 /* ===================== 데이터 정의 (2026 아세안 차세대 글로벌 창업무역스쿨, 싱가포르 8/13~8/15 + 8/16 개별귀국) ===================== */
 /* 참고: 기존 폴더/파일은 참고용이며, 확정 스케줄 이미지 기준으로 재구성함. TBC 표시는 확정 전 항목. */
 
 const TEAMS = Array.from({ length: 10 }, (_, i) => i + 1);
 
+// 좌석 배치: 무대에서 가까운 줄부터 순서대로 (원형 테이블), 2-3-2-3
+const SEATING_ROWS = [2, 3, 2, 3];
+
 const LOCATIONS = [
-  { no: '①', name: 'Tanjong Pagar', tags: ['F&B', '오피스 상권'] },
-  { no: '②', name: 'KOTRA (주싱가포르 한국무역관)', tags: ['무역', '기관 방문'] },
-  { no: '③', name: 'Office District', tags: ['오피스', 'B2B'] },
-  { no: '④', name: 'Maxwell Hawker Centre', tags: ['F&B', '호커센터'] },
+  { no: '①', name: 'Maxwell Hawker Centre', biz: 'Ren Min Beer', category: 'Hawker Centre · F&B', address: '1 Kadayanallur St, #01-33 Maxwell Food Centre, Singapore 069184', size: '10m²', rent: 'S$3,500/월 (추정)', tags: ['F&B', '호커센터'],
+    photo: 'assets/shark_tank/maxwell_hawker_RenMinBeer_landscape.png', photo2: 'assets/shark_tank/maxwell_hawker_RenMinBeer.png', photo2Label: '현장 사진 2' },
+  { no: '②', name: 'Tanjong Pagar Road', biz: '오빠짜장', category: 'Commercial · Restaurant', address: '77A Tg Pagar Rd, Singapore 088498', size: '970 sqft', rent: 'S$22,000/월', tags: ['F&B', '오피스 상권'],
+    photo: 'assets/shark_tank/oppa_llm_landscape.jpg', map: 'assets/shark_tank/oppa_sg_map.png' },
+  { no: '③', name: 'Plaza Singapura', biz: 'PEDRO', category: 'Shopping Mall', address: '68 Orchard Rd, #01-03 Plaza Singapura, Singapore 238839', size: '834 sqft', rent: 'S$35,000/월', tags: ['Retail', '쇼핑몰'],
+    photo: 'assets/shark_tank/plaze_sinpora_landscape.png', map: 'assets/shark_tank/plaza_singapura_map.png' },
+  { no: '④', name: 'KOTRA (Suntec Tower One)', biz: 'KOTRA 싱가포르무역관', category: 'Business District', address: '#13-02 Suntec Tower One, 7 Temasek Blvd, Singapore 038987', size: '2,000 sqft', rent: 'S$50,000/월', tags: ['무역', '기관 방문'],
+    photo: 'assets/shark_tank/kotra_building.jpg', map: 'assets/shark_tank/kotra_map.png' },
 ];
 
 const SPEAKERS = [
@@ -392,9 +443,9 @@ const SPEAKER_DETAILS = [
 
 // 심사위원 정보 미확정 (TBC) — 인원수만 3명으로 가정, 확정 후 교체
 const JUDGES = [
-  { name: '심사위원 1 (미정)', org: 'TBC', note: '프로필 확정 예정' },
-  { name: '심사위원 2 (미정)', org: 'TBC', note: '프로필 확정 예정' },
-  { name: '심사위원 3 (미정)', org: 'TBC', note: '프로필 확정 예정' },
+  { name: '심사위원 1 (미정)', org: 'TBC' },
+  { name: '심사위원 2 (미정)', org: 'TBC' },
+  { name: '심사위원 3 (미정)', org: 'TBC' },
 ];
 
 // 통상위원회 15개 소분류를 6개 믹서 그룹으로 재편성한 초안 (인원수 데이터 없어 주제 유사성 기준으로 제안 — 확정 필요)
@@ -431,13 +482,14 @@ const SPONSORS = [
   { name: '후원자 정보 확정 예정', item: '에코백(토트백) 100개' },
 ];
 
-const QR_NOTION_B64 = 'iVBORw0KGgoAAAANSUhEUgAAAWgAAAFoCAIAAAD1h/aCAAAIdklEQVR4nO3d0W20NRBAUYKogyfKoHzK4IlGlgosdJFHtpNznvl3N5twZekbjb8+n88vAMWvpz8A8B7hADLhADLhADLhADLhADLhADLhADLhADLhADLhADLhADLhADLhADLhALLf6j/4/Y8/Jz7Hdv/8/deW19n1864+T339Xa+zS/08099Dddvv95T6fTpxAJlwAJlwAJlwAJlwAJlwAJlwAFme41jZ9Vy92vWc/Lbn+afmHaa/h13qnEg1PZfx+v8vThxAJhxAJhxAJhxAJhxAJhxAJhxAtm2OY+W2597T+xFu278wPe8w/fPetufi1HxKNf05nTiATDiATDiATDiATDiATDiATDiAbHyO4xW77gdZeeX5/KnvYfp9q1Pv+wonDiATDiATDiATDiATDiATDiATDiAzx/EfpucLbpuDqPMm0/e8mJu4kxMHkAkHkAkHkAkHkAkHkAkHkAkHkI3PcXzX5/DT95KsXn96DmLXfMcr96Hc9vd52+dZceIAMuEAMuEAMuEAMuEAMuEAMuEAsm1zHKeez097Zf/F9OeZnsv4rt9nfd9XOHEAmXAAmXAAmXAAmXAAmXAAmXAAWZ7jeGVfwC6vzwvsMj2vUf/76TmIUz/vK5w4gEw4gEw4gEw4gEw4gEw4gEw4gCzPcZza11Dtukfjtp/3tu9z9Xl+2l6Pldt+X7s4cQCZcACZcACZcACZcACZcACZcADZsXtVXrm34pV9CrvmLFZum2eZ3pMy7ZV7ZFacOIBMOIBMOIBMOIBMOIBMOIBMOIDs6/P5bHmh2+Yvdrltv8Mr+0Ru28+yMv33eerenOnXd+IAMuEAMuEAMuEAMuEAMuEAMuEAsm1zHCu7nntPv29125zC9N6Q6bmAU+/7+n0u03M9K04cQCYcQCYcQCYcQCYcQCYcQCYcQJbnOG7bIzC9B+TUvobqu+6JODUH8dPmOyonDiATDiATDiATDiATDiATDiATDiA7Nsfxyp6FlVf2UNz2OtVtczGn7gm67edy4gAy4QAy4QAy4QAy4QAy4QAy4QCy6+5VWZnea/DK8/nb9mXU1znltr0Y0+9bP0/lxAFkwgFkwgFkwgFkwgFkwgFkwgFkP24fx+v7I277uV65n+WU1/eJrDhxAJlwAJlwAJlwAJlwAJlwAJlwANlv029w296BU/sUqvo5p+cFpn9fp/aAvPJ3uHJq74kTB5AJB5AJB5AJB5AJB5AJB5AJB5Bt28excuo5fPX6HMFt3/Nt8zK33YMz/b4ru75PJw4gEw4gEw4gEw4gEw4gEw4gEw4gG9/HsXLb3ER16n2n72HZtQfklX0o09/n9N/zqb9DJw4gEw4gEw4gEw4gEw4gEw4gEw4gy3Mc08+9d73O6r+fvg/l1HP7XXME1fTr33Z/zal7dlZO/f/oxAFkwgFkwgFkwgFkwgFkwgFkwgFk+V6VlVP3iewy/by9um3+pTp1T8ptv8ddTu3dWHHiADLhADLhADLhADLhADLhADLhALLxOY7pvQm3zYPc5tQ9Na/PodzmtvuGnDiATDiATDiATDiATDiATDiATDiALN+r8sq8xql7N6pX9lDs+v5v28fx0z7/Lk4cQCYcQCYcQCYcQCYcQCYcQCYcQHZsH8f0voBTn2f6XpJdbttzcds9L9Ovf2ouaRcnDiATDiATDiATDiATDiATDiATDiDL+zhWTj1nfuW597Tb5iym7wFZuW2eYvrz7OJeFWCccACZcACZcACZcACZcACZcABZ3sfxyn6B6f0at92jsfLKPpRdXtnD8vrvxYkDyIQDyIQDyIQDyIQDyIQDyIQDyLbdq7Iy/Tz/lefnK7ftEzl1L8xt96fctn/ktjkaJw4gEw4gEw4gEw4gEw4gEw4gEw4gy/eq7Hrevus59itzGbe57XPedh/KbX/nt+2FceIAMuEAMuEAMuEAMuEAMuEAMuEAsjzHscuu+YtX9iNMv85t+yym7zdZOXW/zyv3yOzixAFkwgFkwgFkwgFkwgFkwgFkwgFkx+Y4Vurz513P7U/dx7Gy6/NXp+77qK9/2+us3Lb3xD4O4BjhADLhADLhADLhADLhADLhALKvz+eT/sH0noVTz8lP7XGYdmrPyG1OzX3U169O/X6dOIBMOIBMOIBMOIBMOIBMOIBMOIBsfI5j+nVOeWUfxMqpeYRdc0C33Z+yy/T3UN93xYkDyIQDyIQDyIQDyIQDyIQDyIQDyMbvVZl+/jxt+vn/bfd0TM/RTM9f3DYvU902r7HixAFkwgFkwgFkwgFkwgFkwgFkwgFkeR/H6049Jz81z/LKvEw1PQ/yyp6UU3twnDiATDiATDiATDiATDiATDiATDiALO/jeOX5/+q59K7n7bvmI26b71i5bZ/IbZ+nvv7re0acOIBMOIBMOIBMOIBMOIBMOIBMOIAs7+PY9Vx6l11zELc9/z+1P+K2PSC3zS9M//2/sk/EiQPIhAPIhAPIhAPIhAPIhAPIhAPI8j6O6tT+iKo+P/+ucwrT98LcNi/zyufc9b72cQDHCAeQCQeQCQeQCQeQCQeQCQeQjc9xvO62ezFWTs2PvH5Pym17SXb9XU1z4gAy4QAy4QAy4QAy4QAy4QAy4QAycxz/0+v3qlTT8wLT8xQr0/Mju+ZiTs1rrDhxAJlwAJlwAJlwAJlwAJlwAJlwANnX5/NJ/+C258yv73E4Nb+wy/S+iZVTf4en9nTseh33qgDHCAeQCQeQCQeQCQeQCQeQCQeQbdvH8crcwfTcx6m5jOm5gJXpe1hWn+fU72t6DmXl1OdcceIAMuEAMuEAMuEAMuEAMuEAMuEAsryPA8CJA8iEA8iEA8iEA8iEA8iEA8iEA8iEA8iEA8iEA8iEA8iEA8iEA8iEA8iEA8j+BWjj2Hfdf2iAAAAAAElFTkSuQmCC';
-
-// 사운드 이펙트 3종 — 실제 파일은 추후 교체 예정 (현재는 자리표시 경로)
+// 사운드 이펙트 — 숫자 키를 누르면 어느 페이지에서든 재생 (soundeffects/ 폴더)
 const SFX_FILES = [
-  { key: '1', label: '효과음 1 (입장)', src: 'assets/sfx-1.mp3' },
-  { key: '2', label: '효과음 2 (박수)', src: 'assets/sfx-2.mp3' },
-  { key: '3', label: '효과음 3 (BGM)', src: 'assets/sfx-3.mp3' },
+  { key: '1', label: '1 · 띠링', src: 'soundeffects/띠링.mp3' },
+  { key: '2', label: '2 · 띠잉', src: 'soundeffects/띠잉.mp3' },
+  { key: '3', label: '3 · 따라따라따라다', src: 'soundeffects/따라따라따라다 (2).mp3' },
+  { key: '4', label: '4 · Winning Moment', src: 'soundeffects/Brand X Music - WINNING MOMENT [Bu_KNdPWNhI].mp3' },
+  { key: '5', label: '5 · Spirit Of Adventure', src: 'soundeffects/Spirit Of Adventure [tFZ8XJSnG1Y].mp3' },
+  { key: '6', label: '6 · Flying Merry Go Round (유키 구라모토)', src: 'soundeffects/유키 구라모토   Flying Merry Go Round.mp3' },
 ];
 
 /* ===================== 슬라이드 렌더러 ===================== */
@@ -461,24 +513,17 @@ function locationGrid() {
   return `<div class="loc-grid">${LOCATIONS.map(l => `
     <div class="loc-card">
       <div class="loc-name">${l.no} ${l.name}</div>
-      <p class="tbd">세부 정보(임대료·면적·고객층 등) 확정 예정</p>
+      <div class="loc-biz">${l.biz}</div>
+      <dl class="loc-dl">
+        <div class="loc-field"><dt>구분</dt><dd>${l.category}</dd></div>
+        <div class="loc-field"><dt>주소</dt><dd>${l.address}</dd></div>
+        <div class="loc-field"><dt>면적</dt><dd>${l.size}</dd></div>
+        <div class="loc-field"><dt>임대료</dt><dd>${l.rent}</dd></div>
+      </dl>
       <div class="tags">${l.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
     </div>`).join('')}</div>`;
 }
 
-function mcCard(name, role, topic, photo, script) {
-  return `
-    <div class="mc-card">
-      <div class="mc-photo-slot">${photo ? `<img src="${photo}" alt="${name}">` : `<span>사진 삽입 예정</span>`}</div>
-      <div>
-        <div class="name">${name}</div>
-        <div class="role">${role}</div>
-        ${topic ? `<div class="role" style="color:var(--ink);">${topic}</div>` : ''}
-      </div>
-    </div>
-    <div class="mc-script">${script}</div>
-  `;
-}
 
 function speakerSlide(i) {
   const s = SPEAKERS[i];
@@ -495,7 +540,6 @@ function speakerSlide(i) {
       </div>
     </div>
     <div class="career-list">${d.career.map(([yr, desc]) => `<div class="row"><div class="yr">${yr}</div><div class="desc">${desc}</div></div>`).join('')}</div>
-    <div class="insert-box"><span>이 영역에 <b>${s.name}</b> 강사님의 발표자료(PPT)를 삽입하세요</span></div>
   `;
 }
 
@@ -503,9 +547,9 @@ function breakSlide(duration, nextLabel, nextDesc, withCoffee) {
   return `
     <div class="eyebrow">Break</div>
     <h2>잠시 쉬어갑니다</h2>
-    ${withCoffee ? `<div class="coffee-cup"><span class="steam s1"></span><span class="steam s2"></span><span class="steam s3"></span><div class="cup"></div><div class="handle"></div></div>` : ''}
+    ${withCoffee ? `<div class="coffee-cup"><span class="steam s1"></span><span class="steam s2"></span><span class="steam s3"></span><div class="cup"></div><div class="handle"></div></div>` : `<div class="break-dots"><span></span><span></span><span></span></div>`}
     <div class="duration">${duration}</div>
-    <div class="next-up">다음 순서 · <b>${nextLabel}</b><br>${nextDesc}</div>
+    ${nextLabel ? `<div class="next-up">다음 순서 · <b>${nextLabel}</b><br>${nextDesc}</div>` : ''}
   `;
 }
 
@@ -520,11 +564,7 @@ function dayDivider(num, dateStr, items) {
 function teamSlide(n) {
   return `
     <div class="eyebrow">Team Introduction</div>
-    <h2>${n}조 자기소개</h2>
-    <div class="team-slide">
-      <div class="team-badge">${n}</div>
-      <p class="placeholder">조원 명단 및 소개 입력 예정</p>
-    </div>
+    <div class="big-statement"><div class="huge">${n}조 자기소개</div></div>
   `;
 }
 
@@ -534,7 +574,6 @@ function judgeCard(j) {
     <div>
       <div class="name">${j.name}</div>
       <div class="role">${j.org}</div>
-      <p class="tbd">${j.note}</p>
     </div>
   `;
 }
@@ -546,18 +585,27 @@ const SLIDES = [
   { tag: 'seating', body: `
     <div class="eyebrow">Seating</div>
     <h2>조별 좌석 배치도</h2>
-    <div class="seat-grid">${TEAMS.map(n => `<div class="seat-box">${n}</div>`).join('')}</div>
-    <p class="lede">호텔 내부 레이아웃 확정 후 실제 배치도로 교체 예정</p>
+    <div class="stage-label">무대</div>
+    <div class="seat-rows">${(() => {
+      let n = 0;
+      return SEATING_ROWS.map((count) => `<div class="seat-row">${Array.from({ length: count }, () => `<div class="seat-box">${TEAMS[n++]}</div>`).join('')}</div>`).join('');
+    })()}</div>
+    <div class="stage-label">입구</div>
   `},
 
-  // 1 3-day overview (for MC) ----------------------------------------------
+  // 1 hero image ------------------------------------------------------------
+  { tag: 'hero', title: 'World OKTA Singapore', body: `
+    <img src="assets/hero_singapore.png" alt="World OKTA Singapore — 차세대 통합무역 스쿨" style="width:100%;height:100%;object-fit:contain;display:block;background:#0b1220;" />
+  `},
+
+  // 2 3-day overview ---------------------------------------------------------
   { stub: 'OVERVIEW', body: `
-    <div class="eyebrow">MC 브리핑용 · 3-Day Overview</div>
-    <h2>전체 일정 한눈에 보기</h2>
+    <div class="eyebrow">3-Day Overview</div>
+    <h2>일정</h2>
     <div class="overview-grid">
       <div><h3>DAY 1 · 8/13(목)</h3>${timeline([
         ['13:00', '참가자 접수'], ['15:00', 'OKTA 아이덴티티 · 임원소개'], ['16:00', '조장 임명 · 조별 자기소개'],
-        ['17:00', '조별 프로그램 설명 · 사다리'], ['18:00', '입교식'], ['21:00', '사다리 결과 발표'],
+        ['17:00', '조별 프로그램 설명'], ['18:00', '입교식'], ['21:00', '장소 추첨 결과 발표'],
       ])}</div>
       <div><h3>DAY 2 · 8/14(금)</h3>${timeline([
         ['09:00', 'OKTA Global Mixer'], ['10:00', 'Shark Tank 현장 방문'], ['13:00', '특강 1·2·3'],
@@ -574,20 +622,9 @@ const SLIDES = [
   // ============ DAY 1 (8/13 목) ============
   { tag: 'divider', stub: 'DAY 1', body: dayDivider(1, '2026년 8월 13일 (목)', [
     ['13:00', '참가자 접수'], ['15:00', 'OKTA 아이덴티티 · 임원/서포터즈 소개'], ['16:00', '조장 임명, 조이름, 조별 자기소개'],
-    ['17:00', '조별 프로그램 설명 – 사다리 · 만찬장 이동'], ['18:00', '입교식'], ['19:00', '석식 (통합무역스쿨, 경제인대회)'],
-    ['21:00', '사다리 결과 발표 · 숙소 이동'],
+    ['17:00', '조별 프로그램 설명 · 만찬장 이동'], ['18:00', '입교식'], ['19:00', '석식 (통합무역스쿨, 경제인대회)'],
+    ['21:00', '장소 추첨 결과 발표 · 숙소 이동'],
   ])},
-
-  { stub: 'DAY 1', body: `
-    <div class="eyebrow">Registration · 13:00–15:00</div>
-    <h2>참가자 접수 안내</h2>
-    <p class="lede">현장 등록 데스크에서 아래 절차로 접수를 진행합니다.</p>
-    <ol class="plain-list ordered" style="font-size: 1.25rem;">
-      <li>접수 데스크에서 명찰(이름·조·밍글번호) 및 구디백 수령</li>
-      <li>단체복 환복 (15:00까지 완료)</li>
-      <li>조 위치 좌석배치도 확인 후 착석</li>
-    </ol>
-  `},
 
   { stub: 'DAY 1', body: `
     <div class="eyebrow">OKTA Identity · 15:00–16:00</div>
@@ -598,55 +635,51 @@ const SLIDES = [
 
   { stub: 'DAY 1', body: `
     <div class="eyebrow">OKTA Identity · 15:00–16:00</div>
-    <h2>임원 &amp; 서포터즈 소개</h2>
-    <p class="lede">행사를 이끄는 임원진과 현장을 지원하는 서포터즈를 소개합니다.</p>
-    <p class="placeholder">임원/서포터즈 명단 및 소개 슬라이드 입력 예정</p>
+    <h2>임원 소개</h2>
+    <p class="lede">행사를 이끄는 임원진을 소개합니다.</p>
   `},
 
   { stub: 'DAY 1', body: `
+    <div class="eyebrow">OKTA Identity · 15:00–16:00</div>
+    <h2>서포터즈 소개</h2>
+    <p class="lede">현장을 지원하는 서포터즈를 소개합니다.</p>
+  `},
+
+  { stub: 'DAY 1', title: '조장 임명', body: `
     <div class="eyebrow">Opening · 16:00–17:00</div>
-    <h2>조장 임명 안내</h2>
-    <p class="lede">조별 자기소개에 앞서, 각 조는 조장 1인을 임명합니다.</p>
-    <ul class="plain-list">
-      <li>각 조는 자체 논의를 통해 조장 1인을 선정</li>
-      <li>조장은 이후 프로그램(Shark Tank·Global Connection Challenge) 진행 시 조 대표 역할 수행</li>
-      <li>조장 임명 후 조원 전체 자기소개 진행</li>
-    </ul>
+    <div class="big-statement"><div class="huge">조장 임명</div></div>
   `},
 
   // 10개 조별 자기소개 (개별 슬라이드) -------------------------------------
-  ...TEAMS.map(n => ({ stub: 'TEAMS', body: teamSlide(n) })),
+  ...TEAMS.map(n => ({ stub: 'TEAMS', title: `${n}조 자기소개`, body: teamSlide(n) })),
 
   { stub: 'DAY 1', body: `
     <div class="eyebrow">Opening · 17:00–18:00</div>
-    <h2>조별 프로그램 설명 — 사다리</h2>
-    <p class="lede">각 조는 내일(8/14) Singapore Shark Tank Challenge 현장조사 로케이션을 사다리 게임으로 배정받습니다. 실제 추첨은 오늘 밤 숙소 이동 직전에 진행됩니다.</p>
-    <ul class="plain-list">
-      <li>4개 로케이션: Tanjong Pagar · KOTRA · Office District · Maxwell Hawker Centre (TBC)</li>
-      <li>추첨 결과는 21:00경 사회자 진행으로 공개</li>
-      <li>만찬장 이동 후 입교식 진행</li>
-    </ul>
+    <h2>샤크탱크 챌린지 로케이션 소개</h2>
+    <div class="tags">${LOCATIONS.map(l => `<span class="tag">${l.no} ${l.name}</span>`).join('')}</div>
   `},
 
   { stub: 'DAY 1', body: `
     <div class="eyebrow">입교식 · 18:00–19:00 / 석식 · 19:00–21:00</div>
     <h2>입교식 &amp; 석식</h2>
     <p class="lede">입교식(국민의례 등)과 석식(통합무역스쿨, 경제인대회)은 별도 운영팀에서 진행합니다.</p>
-    <p class="placeholder">세부 진행은 담당팀 자료 참조</p>
   `},
 
   { stub: 'DAY 1', body: `
-    <div class="eyebrow">사다리 게임 · 약 21:00 (숙소 이동 전)</div>
-    <h2>내일의 로케이션은?</h2>
-    <p class="lede">사회자가 진행합니다 · 완전 무작위 추첨 · 위 10개 조가 아래 4개 로케이션 중 하나로 배정됩니다.</p>
+    <div class="eyebrow">장소 추첨 · 약 21:00 (숙소 이동 전)</div>
+    <h2>샤크탱크 챌린지 장소 추첨</h2>
     <div class="tags">${LOCATIONS.map(l => `<span class="tag">${l.no} ${l.name}</span>`).join('')}</div>
     <div class="ladder-wrap" data-ladder>
-      <div class="ladder-svg-box"><svg data-ladder-svg viewBox="0 0 500 320" preserveAspectRatio="xMidYMid meet"></svg></div>
+      <div class="ladder-track-box">
+        <div class="ladder-row" data-ladder-names></div>
+        <canvas data-ladder-canvas></canvas>
+        <div class="ladder-row" data-ladder-results></div>
+      </div>
       <div class="ladder-actions">
-        <button type="button" data-ladder-go>뽑기 시작</button>
+        <button type="button" data-ladder-go>전체 결과 보기</button>
         <button type="button" class="secondary" data-ladder-reset>다시 뽑기 (R)</button>
       </div>
-      <div class="ladder-result" data-ladder-result></div>
+      <p class="ladder-toast" data-ladder-toast></p>
     </div>
   `},
 
@@ -662,37 +695,36 @@ const SLIDES = [
     <h2>OKTA Global Mixer</h2>
     <p class="lede">통상위원회 분류 기준으로 재편성한 6개 그룹으로 자유롭게 섞여 네트워킹합니다.</p>
     <div class="mixer-wrap" data-mixer>
-      <div class="mixer-stage">
-        <div class="mixer-orbit" data-mixer-orbit>
-          ${MIXER_GROUPS.map((g, i) => `<div class="mixer-chip-pos" data-mixer-chip style="--r:110px;--pos-angle:${(360 / MIXER_GROUPS.length) * i}deg;"><div class="mixer-chip">${g.no}</div></div>`).join('')}
+      <div class="mixer-left">
+        <div class="mixer-stage">
+          <div class="mixer-orbit" data-mixer-orbit>
+            ${MIXER_GROUPS.map((g, i) => `<div class="mixer-chip-pos" data-mixer-chip style="--r:120px;--pos-angle:${(360 / MIXER_GROUPS.length) * i}deg;"><div class="mixer-chip">${g.no}</div></div>`).join('')}
+          </div>
+        </div>
+        <div class="mixer-actions"><button type="button" data-mixer-go>그룹 편성 시작</button></div>
+      </div>
+      <div class="mixer-groups" data-mixer-groups>
+        <div class="mixer-groups-inner">
+          ${MIXER_GROUPS.map(g => `<div class="mixer-group-card"><div class="gnum">그룹 ${g.no} · ${g.title}</div>${g.cats.join(' · ')}</div>`).join('')}
         </div>
       </div>
-      <div class="mixer-actions"><button type="button" data-mixer-go>그룹 편성 시작</button></div>
-      <div class="mixer-groups" data-mixer-groups>
-        ${MIXER_GROUPS.map(g => `<div class="mixer-group-card"><div class="gnum">그룹 ${g.no} · ${g.title}</div>${g.cats.join(' · ')}</div>`).join('')}
-      </div>
     </div>
-    <p class="tbd">인원수 기준 균형 배분은 실제 참가자 데이터 확정 후 조정 필요</p>
   `},
 
   { stub: 'SHARK', body: `
     <div class="eyebrow">Field Visit · 10:00–12:00</div>
     <h2>Singapore Shark Tank Challenge — 이동 안내</h2>
-    <p class="lede">Mixer 종료 후, 전날 밤 사다리 추첨 결과에 따라 각 조가 배정된 로케이션으로 이동합니다.</p>
     <div class="route-map">
-      <div class="route-stop">호텔 로비 집결</div><span class="route-arrow">→</span>
-      <div class="route-stop">조별 이동 (Grab / 도보)</div><span class="route-arrow">→</span>
-      <div class="route-stop">배정 로케이션 도착</div><span class="route-arrow">→</span>
-      <div class="route-stop">현장조사 (약 2시간)</div>
+      <div class="route-stop"><div class="ricon">🏨</div>호텔 로비</div><span class="route-arrow">→</span>
+      <div class="route-stop"><div class="ricon">🚕</div>이동</div><span class="route-arrow">→</span>
+      <div class="route-stop"><div class="ricon">🔍</div>현장조사<br>(1시간)</div><span class="route-arrow">→</span>
+      <div class="route-stop"><div class="ricon">⏰</div>12:00까지<br>복귀</div>
     </div>
-    <ul class="plain-list">
-      <li>준비물: 입지별 시나리오 안내문(4종), 조편성표, 카메라·스마트폰(사진 5장 이상), 우산·생수, Grab 앱/교통비</li>
-    </ul>
   `},
 
   { stub: 'SHARK', body: `
     <div class="eyebrow">Field Visit · 10:00–12:00</div>
-    <h2>4개 로케이션 한눈에 보기</h2>
+    <h2>Singapore 샤크탱크 로케이션</h2>
     <p class="lede">현장조사 항목: 주요 고객층 · 경쟁업체 · 유동인구 · 주변 환경 · 성공·실패 요인</p>
     ${locationGrid()}
   `},
@@ -700,11 +732,17 @@ const SLIDES = [
   ...LOCATIONS.map(l => ({ stub: 'SHARK', body: `
     <div class="eyebrow">Field Visit · 10:00–12:00</div>
     <h2>${l.no} ${l.name}</h2>
-    <p class="tbd">세부 정보(임대료·면적·고객층 등) 확정 예정</p>
+    <div class="loc-biz" style="font-size:1.1rem;">${l.biz}</div>
+    <dl class="loc-dl" style="font-size:1rem;margin-top:0.6rem;">
+      <div class="loc-field"><dt>구분</dt><dd>${l.category}</dd></div>
+      <div class="loc-field"><dt>주소</dt><dd>${l.address}</dd></div>
+      <div class="loc-field"><dt>면적</dt><dd>${l.size}</dd></div>
+      <div class="loc-field"><dt>임대료</dt><dd>${l.rent}</dd></div>
+    </dl>
     <div class="tags">${l.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
     <div class="photo-grid-lg">
-      <div class="photo-slot-lg"><div class="cam"></div><span>현장 사진 1</span></div>
-      <div class="photo-slot-lg"><div class="cam"></div><span>현장 사진 2</span></div>
+      <div class="photo-slot-lg has-img"><img src="${l.photo}" alt="${l.name} 현장 사진"><span>현장 사진</span></div>
+      <div class="photo-slot-lg has-img"><img src="${l.map || l.photo2}" alt="${l.name} ${l.map ? '지도 위치' : l.photo2Label}"><span>${l.map ? '지도 위치' : l.photo2Label}</span></div>
     </div>
   ` })),
 
@@ -716,17 +754,14 @@ const SLIDES = [
 
   { tag: 'break', stub: 'BREAK', body: breakSlide('중식 12:00–13:00', '특강 1', '이준원 (SGX 증권거래소 한국 총괄) — 싱가포르 자본시장 소개 / SGX IPO의 이해') },
 
-  { stub: 'TALK 1', body: mcCard('이준원 상무', 'SGX 증권거래소 한국 총괄', '싱가포르 자본시장 소개 / SGX IPO의 이해', 'assets/이준원%20SGX%20상무님.jpeg', '"싱가포르 자본시장과 SGX 상장에 대해 들려주실 이준원 상무님을 모시겠습니다."') },
   { stub: 'TALK 1', body: speakerSlide(0) },
 
   { tag: 'break', stub: 'BREAK', body: breakSlide('5분', '특강 2', '한재경 (OBBA Group 대표) — 직원에서 연매출 200억 대표가 되기까지') },
 
-  { stub: 'TALK 2', body: mcCard('한재경 대표', 'OBBA Group 대표', '직원에서 연매출 200억 대표가 되기까지', 'assets/한재경_OBBA_대표님.png', '"싱가포르 현지 창업 성공기를 나눠주실 한재경 대표님을 모시겠습니다."') },
   { stub: 'TALK 2', body: speakerSlide(1) },
 
   { tag: 'break', stub: 'BREAK', body: breakSlide('커피 브레이크 · 15:00–15:10', '특강 3', '장승환 (지마켓 대표이사) — 시장 변화에 대응하는 스타트업 성공 전략', true) },
 
-  { stub: 'TALK 3', body: mcCard('장승환 대표', '지마켓 대표이사', '시장 변화에 대응하는 스타트업 성공 전략', 'assets/장승환_지마켓_대표님.jpeg', '"글로벌 이커머스 현장의 생생한 전략을 들려주실 장승환 대표님을 모시겠습니다."') },
   { stub: 'TALK 3', body: speakerSlide(2) },
 
   // ============ DAY 3 (8/15 토) ============
@@ -743,14 +778,12 @@ const SLIDES = [
       <li>노트북, 발표자료 USB·클라우드 백업</li>
       <li>마이크 테스트</li>
     </ul>
-    <p class="tbd">발표자료 사전 취합 마감 시간 안내 필요</p>
   `},
 
   { stub: 'DAY 3', body: `
     <div class="eyebrow">Judges</div>
     <h2>심사위원 소개</h2>
     <div class="speaker-grid">${JUDGES.map(j => `<div class="speaker-card"><div class="avatar">?</div><div class="name">${j.name}</div><div class="role">${j.org}</div></div>`).join('')}</div>
-    <p class="tbd">심사위원 프로필 확정 예정</p>
   `},
 
   ...JUDGES.map((j) => ({ stub: 'JUDGE', body: `
@@ -762,14 +795,25 @@ const SLIDES = [
   { tag: 'wheel', stub: 'DAY 3', body: `
     <div class="eyebrow">Shark Tank Challenge · 09:00–10:00</div>
     <h2>발표 순서 추첨</h2>
-    <p class="lede">휠을 돌려 10개 조의 발표 순서를 무작위로 정합니다.</p>
+    <p class="lede">휠을 돌려 한 조씩 발표 순서를 무작위로 정합니다.</p>
     <div class="wheel-wrap" data-wheel>
-      <div class="wheel-stage">
-        <div class="wheel-pointer"></div>
-        <div class="wheel-disc" data-wheel-disc></div>
+      <div class="wheel-order-box" data-wheel-order-box>
+        <div class="wheel-order-inner" data-wheel-order></div>
       </div>
-      <div class="wheel-actions"><button type="button" data-wheel-go>순서 뽑기</button></div>
-      <ol class="wheel-result" data-wheel-result></ol>
+      <div class="wheel-col">
+        <div class="wheel-stage">
+          <div class="wheel-pointer"></div>
+          <div class="wheel-disc" data-wheel-disc><canvas data-wheel-canvas></canvas></div>
+        </div>
+        <div class="wheel-actions">
+          <button type="button" data-wheel-go>다음 순서 뽑기</button>
+          <button type="button" class="secondary" data-wheel-reset>초기화</button>
+        </div>
+        <div class="wheel-latest" data-wheel-latest>
+          <div class="wl-rank" data-wheel-latest-rank></div>
+          <div class="wl-team" data-wheel-latest-team></div>
+        </div>
+      </div>
     </div>
   `},
 
@@ -778,7 +822,6 @@ const SLIDES = [
     <h2>팀별 발표</h2>
     <p class="lede">마이크(유·무선), 빔프로젝터·스크린, 타이머, 심사표, 심사위원(투자자 역) 좌석이 준비됩니다.</p>
     <div class="insert-box"><span>이 영역에 <b>조별 발표자료 10팀분</b>을 발표 순서대로 삽입하세요</span></div>
-    <p class="tbd">팀당 발표 + Q&amp;A 시간 배분 확인 필요</p>
   `},
 
   { tag: 'break', stub: 'BREAK', body: breakSlide('중식 12:00–13:00', 'OKTA Global Connection Challenge', '번호별로 순차 이동하여 중식 진행 · 13:00 시작') },
@@ -786,7 +829,6 @@ const SLIDES = [
   { stub: 'GCC', body: `
     <div class="eyebrow">Global Connection Challenge · 13:00–13:10</div>
     <h2>OKTA Global Connection Challenge</h2>
-    <p class="lede">사회자 설명 10분 후 순서대로 진행합니다.</p>
     <ol class="plain-list ordered">
       <li>13:10–13:40 · 원하는 분야 네트워킹</li>
       <li>13:40–14:10 · 원하는 사람에게 찾아가기</li>
@@ -811,8 +853,11 @@ const SLIDES = [
   { stub: 'GCC', body: `
     <div class="eyebrow">빙고 게임 · 14:20–15:00</div>
     <h2>OKTA 빙고</h2>
-    <p class="lede">같은 조 조원은 인정되지 않습니다 · 이름이 불리면 자리에서 일어나 주세요.</p>
-    <div class="bingo-grid">${BINGO_GRID.flat().map(c => `<div class="bingo-cell">${c}</div>`).join('')}</div>
+    <p class="lede">같은 조 조원은 인정되지 않습니다 · 이름이 불리면 자리에서 일어나 주세요. 칸을 클릭해서 표시하세요.</p>
+    <div class="bingo-wrap" data-bingo>
+      <div class="bingo-grid">${BINGO_GRID.flat().map((c) => `<div class="bingo-cell" data-bingo-cell>${c}</div>`).join('')}</div>
+      <div class="bingo-toast" data-bingo-toast><span>BINGO!</span></div>
+    </div>
   `},
 
   { tag: 'break', stub: 'BREAK', body: breakSlide('커피 브레이크 · 15:00–15:10', '행사 전체 순위 발표', '', true) },
@@ -821,21 +866,13 @@ const SLIDES = [
     <div class="eyebrow">Awards · 15:10–16:00</div>
     <h2>행사 전체 순위 발표</h2>
     <p class="lede">Shark Tank Challenge · Global Connection Challenge를 종합한 행사 전체 순위를 발표합니다. 시상 상금·상품, 순위 발표 PPT, 마이크가 준비됩니다.</p>
-    <p class="placeholder">시상 상금·상품 내역 입력 예정</p>
   `},
 
   { stub: 'DAY 3', body: `
     <div class="eyebrow">Closing Ceremony · 16:00–17:00</div>
     <h2>수료식</h2>
     <p class="lede">수료증, 뱃지, OKTA 깃발, 마이크·음향 장비가 준비되며 식순에 따라 진행됩니다.</p>
-    <p class="placeholder">세부 식순 입력 예정</p>
-    <p class="tbd">진행 여부 최종 재확인 필요</p>
   `},
-
-  { tag: 'break', stub: 'BREAK', body: `
-    <div class="eyebrow">Free Time · 17:00–18:00</div>
-    <div class="duration">개인정비 · 18:00까지 파티장 이동</div>
-  ` },
 
   { stub: 'SPONSOR', body: `
     <div class="eyebrow">감사의 마음을 전합니다</div>
@@ -848,30 +885,26 @@ const SLIDES = [
     `).join('')}
   `},
 
+  { tag: 'break', stub: 'BREAK', body: `
+    <div class="eyebrow">Free Time · 17:00–18:00</div>
+    <h2>잠시 쉬어갑니다</h2>
+    <div class="break-dots"><span></span><span></span><span></span></div>
+    <div class="duration">개인정비 · 18:00까지 파티장 이동</div>
+  ` },
+
   { stub: 'DAY 3', body: `
     <div class="eyebrow">Networking Party · 19:00–22:00</div>
     <h2>차세대 파티</h2>
-    <p class="lede">참가비·찬조금 접수대, 식당 결제 정산 자료, 음향·음악 장비가 준비됩니다.</p>
-    <p class="tbd">진행 시간 및 프로그램 사전 확인 필요</p>
   `},
 
   // info / notion link ------------------------------------------------------
-  { stub: 'INFO', body: `
-    <div class="eyebrow">전체 행사 안내 페이지</div>
-    <h2>Notion에서 자세히 보기</h2>
-    <p class="lede">일정, 팀 배정, 발표자료 등 최신 정보는 아래 Notion 페이지에서 확인하실 수 있습니다. QR 코드를 스캔하시면 바로 접속됩니다.</p>
-    <div class="qr-card">
-      <div class="qr-box"><img src="data:image/png;base64,` + QR_NOTION_B64 + `" alt="World OKTA 2026 Notion 페이지 QR 코드" /></div>
-      <a class="qr-link" href="https://thankful-tugboat-273.notion.site/World-OKTA-2026-37c39ac4b869803bb4eee16720cc7590" target="_blank" rel="noopener">thankful-tugboat-273.notion.site/World-OKTA-2026</a>
-    </div>
-  `},
-
-  // appendix (photo/video recap) --------------------------------------------
+  // appendix (photo/video recap + closing) -----------------------------------
   { tag: 'appendix', body: `
     <div class="eyebrow">행사 사진 · 영상 모음</div>
     <h2>함께한 순간들</h2>
     <div class="video-box"><div class="play"></div><div>3일간 하이라이트 영상 · 사진 슬라이드쇼 삽입 영역</div></div>
-    <p class="placeholder">행사 종료 후 사진/영상 추가 예정</p>
+    <div class="huge" style="margin-top:1.3rem;">감사합니다</div>
+    <p class="lede">다음에 또 봐요!</p>
   `},
 ];
 
@@ -880,8 +913,8 @@ const SLIDES = [
 const track = document.getElementById('track');
 SLIDES.forEach((s, i) => {
   const section = document.createElement('section');
-  section.className = 'slide' + (s.tag === 'seating' ? ' seating' : s.tag === 'divider' ? ' divider' : s.tag === 'break' ? ' break' : s.tag === 'appendix' ? ' appendix' : '');
-  if (s.tag === 'seating' || s.tag === 'appendix') {
+  section.className = 'slide' + (s.tag === 'seating' ? ' seating' : s.tag === 'hero' ? ' hero' : s.tag === 'divider' ? ' divider' : s.tag === 'break' ? ' break' : s.tag === 'appendix' ? ' appendix' : '');
+  if (s.tag === 'seating' || s.tag === 'hero' || s.tag === 'appendix') {
     section.innerHTML = `<div class="ticket">${s.body}</div>`;
   } else {
     section.innerHTML = `
@@ -914,7 +947,9 @@ function escapeHtml(str) {
 }
 counter.innerHTML = Array.from(slides).map((section, i) => {
   let title = `슬라이드 ${i + 1}`;
-  if (section.classList.contains('divider')) {
+  if (SLIDES[i].title) {
+    title = SLIDES[i].title;
+  } else if (section.classList.contains('divider')) {
     const daynum = section.querySelector('.daynum');
     const datestr = section.querySelector('.datestr');
     title = [daynum, datestr].filter(Boolean).map((el) => el.textContent.trim()).join(' · ');
@@ -948,12 +983,14 @@ nextBtn.addEventListener('click', () => go(idx + 1));
 /* ---------------- keyboard shortcuts ---------------- */
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function showSfxToast(label) {
-  const toast = document.getElementById('sfxToast');
-  toast.textContent = label;
-  toast.classList.add('show');
-  clearTimeout(showSfxToast._t);
-  showSfxToast._t = setTimeout(() => toast.classList.remove('show'), 1400);
+let currentSfxAudio = null;
+
+function stopSfx() {
+  if (currentSfxAudio) {
+    currentSfxAudio.pause();
+    currentSfxAudio.currentTime = 0;
+    currentSfxAudio = null;
+  }
 }
 
 document.addEventListener('keydown', (e) => {
@@ -964,142 +1001,286 @@ document.addEventListener('keydown', (e) => {
   if (e.key === ' ') { e.preventDefault(); go(idx + 1); }
   if (e.key === 'f' || e.key === 'F') toggleFullscreen();
   if (e.key === 'r' || e.key === 'R') resetActiveLadder();
+  if (e.key === 's' || e.key === 'S') stopSfx();
   const sfx = SFX_FILES.find((s) => s.key === e.key);
   if (sfx) {
-    showSfxToast(sfx.label);
-    const audio = new Audio(sfx.src);
-    audio.play().catch(() => {});
+    if (currentSfxAudio) { currentSfxAudio.pause(); currentSfxAudio.currentTime = 0; }
+    currentSfxAudio = new Audio(encodeURI(sfx.src));
+    currentSfxAudio.play().catch(() => {});
   }
 });
 go(0);
 
+function currentFullscreenElement() {
+  return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
+}
 function toggleFullscreen() {
-  if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
-  else document.exitFullscreen?.();
+  if (!currentFullscreenElement()) {
+    const el = document.documentElement;
+    const request = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+    request?.call(el).catch?.(() => {});
+  } else {
+    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+    exit?.call(document).catch?.(() => {});
+  }
 }
 fsBtn.addEventListener('click', toggleFullscreen);
-document.addEventListener('fullscreenchange', () => {
-  fsBtn.textContent = document.fullscreenElement ? '⤢' : '⛶';
+['fullscreenchange', 'webkitfullscreenchange', 'MSFullscreenChange'].forEach((evt) => {
+  document.addEventListener(evt, () => {
+    fsBtn.textContent = currentFullscreenElement() ? '⤢' : '⛶';
+  });
 });
 
-/* ===================== 사다리(Ladder) 위젯 ===================== */
+/* ===================== 사다리(Ladder) 위젯 — Canvas 기반, 조별 클릭 확인 지원 ===================== */
+
+const LADDER_MARGIN = 30;
+const LADDER_LANE_GAP = 58;
+const LADDER_CANVAS_H = 220;
+const LADDER_STEPS = 12;
+const LADDER_PALETTE_VARS = ['--accent-gold', '--accent-navy', '--accent-red', '--accent-green'];
 
 let activeLadder = null;
 
-function buildLadderData() {
-  const cols = TEAMS.length;
-  const rows = 14;
-  const rungs = [];
-  for (let r = 0; r < rows; r++) {
-    const row = new Array(cols - 1).fill(false);
-    let i = 0;
-    while (i < cols - 1) {
-      if (Math.random() < 0.35) { row[i] = true; i += 2; }
-      else i += 1;
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+function ladderLaneX(i) {
+  return LADDER_MARGIN + i * LADDER_LANE_GAP;
+}
+function ladderStepY(r) {
+  return (r + 1) * (LADDER_CANVAS_H / (LADDER_STEPS + 1));
+}
+function ladderCanvasWidth(n) {
+  return LADDER_MARGIN * 2 + Math.max(0, n - 1) * LADDER_LANE_GAP;
+}
+function ladderPolylineLength(points) {
+  let len = 0;
+  for (let i = 1; i < points.length; i++) len += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
+  return len;
+}
+function ladderClampDuration(len) {
+  return Math.max(650, Math.min(2600, (len / 260) * 1000));
+}
+function ladderPointAtDistance(points, d) {
+  let acc = 0;
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1], b = points[i];
+    const segLen = Math.hypot(b.x - a.x, b.y - a.y);
+    if (acc + segLen >= d || i === points.length - 1) {
+      const t = segLen === 0 ? 1 : Math.max(0, Math.min(1, (d - acc) / segLen));
+      return { cutIndex: i, point: { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t } };
     }
-    rungs.push(row);
+    acc += segLen;
   }
-  // 완전 무작위 배정 (로케이션별 인원 균형 고려하지 않음)
-  const bottomLocIdx = Array.from({ length: cols }, () => Math.floor(Math.random() * LOCATIONS.length));
-  return { cols, rows, rungs, bottomLocIdx };
+  return { cutIndex: points.length - 1, point: points[points.length - 1] };
 }
 
-function traceLadder(data, startCol) {
-  let c = startCol;
-  const points = [];
-  const colX = (col) => 40 + col * ((500 - 80) / (data.cols - 1));
-  const rowH = 240 / data.rows;
-  points.push([colX(c), 0]);
-  for (let r = 0; r < data.rows; r++) {
-    const row = data.rungs[r];
-    const y0 = r * rowH, y1 = (r + 1) * rowH;
-    let nc = c;
-    if (c > 0 && row[c - 1]) nc = c - 1;
-    else if (c < data.cols - 1 && row[c]) nc = c + 1;
-    if (nc !== c) {
-      points.push([colX(c), y0]);
-      points.push([colX(nc), y1]);
-    } else {
-      points.push([colX(c), y1]);
+function buildLadderData() {
+  const n = TEAMS.length;
+  const rungs = [];
+  for (let r = 0; r < LADDER_STEPS; r++) {
+    const used = new Array(n).fill(false);
+    const set = new Set();
+    for (let g = 0; g < n - 1; g++) {
+      if (!used[g] && !used[g + 1] && Math.random() < 0.32) {
+        set.add(g); used[g] = true; used[g + 1] = true;
+      }
     }
-    c = nc;
+    rungs.push(set);
   }
-  points.push([colX(c), 280]);
-  return { path: points, finalCol: c };
+  // 완전 무작위 배정 (로케이션별 인원 균형 고려하지 않음)
+  const bottomLocIdx = Array.from({ length: n }, () => Math.floor(Math.random() * LOCATIONS.length));
+  return { rungs, bottomLocIdx };
+}
+
+function buildLadderPath(data, startCol) {
+  const n = TEAMS.length;
+  let col = startCol;
+  const pts = [{ x: ladderLaneX(col), y: 0 }];
+  for (let r = 0; r < LADDER_STEPS; r++) {
+    const y = ladderStepY(r);
+    pts.push({ x: ladderLaneX(col), y });
+    if (data.rungs[r].has(col - 1)) { col -= 1; pts.push({ x: ladderLaneX(col), y }); }
+    else if (data.rungs[r].has(col)) { col += 1; pts.push({ x: ladderLaneX(col), y }); }
+  }
+  pts.push({ x: ladderLaneX(col), y: LADDER_CANVAS_H });
+  return { points: pts, endCol: col };
 }
 
 function renderLadder(container) {
   const data = buildLadderData();
-  const svg = container.querySelector('[data-ladder-svg]');
-  const resultBox = container.querySelector('[data-ladder-result]');
-  resultBox.innerHTML = '';
-  const colX = (col) => 40 + col * ((500 - 80) / (data.cols - 1));
-  const rowH = 240 / data.rows;
-
-  let svgContent = '';
-  // 세로선
-  for (let c = 0; c < data.cols; c++) {
-    svgContent += `<line class="ladder-line" x1="${colX(c)}" y1="0" x2="${colX(c)}" y2="240"/>`;
-    svgContent += `<text class="ladder-col-label" x="${colX(c)}" y="-6" text-anchor="middle" transform="translate(0,14)">${TEAMS[c]}조</text>`;
-  }
-  // 가로 rung
-  for (let r = 0; r < data.rows; r++) {
-    const y = (r + 0.5) * rowH;
-    data.rungs[r].forEach((on, i) => {
-      if (on) svgContent += `<line class="ladder-line" x1="${colX(i)}" y1="${y}" x2="${colX(i + 1)}" y2="${y}"/>`;
-    });
-  }
-  // 하단 라벨 자리 (결과 공개 전에는 물음표)
-  for (let c = 0; c < data.cols; c++) {
-    svgContent += `<text class="ladder-bottom-label" data-bottom="${c}" x="${colX(c)}" y="270">?</text>`;
-  }
-  // 팀별 경로 (결과 공개 시 표시)
-  const paths = TEAMS.map((_, startCol) => traceLadder(data, startCol));
-  paths.forEach((p, i) => {
-    const d = p.path.map((pt, j) => `${j === 0 ? 'M' : 'L'}${pt[0].toFixed(1)},${pt[1].toFixed(1)}`).join(' ');
-    const len = p.path.reduce((acc, pt, j) => j === 0 ? 0 : acc + Math.hypot(pt[0] - p.path[j - 1][0], pt[1] - p.path[j - 1][1]), 0);
-    svgContent += `<path class="ladder-path" data-team-path="${i}" d="${d}" style="stroke-dasharray:${len};stroke-dashoffset:${len};opacity:0;"/>`;
-  });
-
-  svg.innerHTML = svgContent;
-
-  activeLadder = { container, data, paths, revealed: false };
-
+  const n = TEAMS.length;
+  const canvas = container.querySelector('[data-ladder-canvas]');
+  const namesRow = container.querySelector('[data-ladder-names]');
+  const resultsRow = container.querySelector('[data-ladder-results]');
+  const toast = container.querySelector('[data-ladder-toast]');
   const goBtn = container.querySelector('[data-ladder-go]');
   const resetBtn = container.querySelector('[data-ladder-reset]');
-  goBtn.onclick = () => revealLadder(container);
-  resetBtn.onclick = () => renderLadder(container);
-}
+  const ctx = canvas.getContext('2d');
 
-function revealLadder(container) {
-  if (!activeLadder || activeLadder.revealed) return;
-  activeLadder.revealed = true;
-  const svg = container.querySelector('[data-ladder-svg]');
-  activeLadder.paths.forEach((p, i) => {
-    const pathEl = svg.querySelector(`[data-team-path="${i}"]`);
-    if (reduceMotion) {
-      pathEl.style.opacity = '1';
-      pathEl.style.strokeDashoffset = '0';
-    } else {
-      pathEl.style.transition = `stroke-dashoffset 1.1s ease ${i * 0.08}s, opacity 0.1s ease ${i * 0.08}s`;
-      requestAnimationFrame(() => {
-        pathEl.style.opacity = '1';
-        pathEl.style.strokeDashoffset = '0';
+  const w = ladderCanvasWidth(n);
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr;
+  canvas.height = LADDER_CANVAS_H * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = LADDER_CANVAS_H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  container.querySelector('.ladder-track-box').style.width = w + 'px';
+
+  function drawBase() {
+    ctx.clearRect(0, 0, w, LADDER_CANVAS_H);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = cssVar('--line');
+    ctx.lineWidth = 2;
+    for (let i = 0; i < n; i++) {
+      const x = ladderLaneX(i);
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, LADDER_CANVAS_H); ctx.stroke();
+    }
+    for (let r = 0; r < LADDER_STEPS; r++) {
+      const y = ladderStepY(r);
+      data.rungs[r].forEach((g) => {
+        ctx.beginPath(); ctx.moveTo(ladderLaneX(g), y); ctx.lineTo(ladderLaneX(g + 1), y); ctx.stroke();
       });
     }
+  }
+  function drawFullTrace(points, color) {
+    ctx.save();
+    ctx.strokeStyle = color; ctx.lineWidth = 3.5; ctx.shadowColor = color; ctx.shadowBlur = 5;
+    ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+    ctx.stroke(); ctx.restore();
+  }
+  function drawPartialTrace(points, d, color) {
+    const cut = ladderPointAtDistance(points, d);
+    ctx.save();
+    ctx.strokeStyle = color; ctx.lineWidth = 3.5; ctx.shadowColor = color; ctx.shadowBlur = 6;
+    ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < cut.cutIndex; i++) ctx.lineTo(points[i].x, points[i].y);
+    ctx.lineTo(cut.point.x, cut.point.y);
+    ctx.stroke();
+    ctx.beginPath(); ctx.fillStyle = color; ctx.arc(cut.point.x, cut.point.y, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  const paths = TEAMS.map((_, i) => {
+    const p = buildLadderPath(data, i);
+    return { points: p.points, endCol: p.endCol, totalLen: ladderPolylineLength(p.points) };
   });
-  // 하단 라벨을 로케이션 기호(①②③④)로 교체 — 전체 이름은 위 범례와 결과 테이블에서 확인
-  activeLadder.data.bottomLocIdx.forEach((locIdx, col) => {
-    const el = svg.querySelector(`[data-bottom="${col}"]`);
-    if (el) el.textContent = LOCATIONS[locIdx].no;
+
+  let completed = [];
+  let active = [];
+  let rafId = null;
+  let busy = false;
+  let pendingToast = null;
+  let toastTimer = null;
+
+  function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+  }
+  function updateButtons() {
+    goBtn.disabled = busy;
+  }
+  function onComplete(t) {
+    const loc = LOCATIONS[data.bottomLocIdx[t.endCol]];
+    const chip = resultsRow.querySelector(`[data-col="${t.endCol}"]`);
+    if (chip) {
+      chip.textContent = loc.no;
+      chip.title = loc.name;
+      chip.style.setProperty('--hit-color', t.color);
+      chip.classList.add('hit');
+    }
+    const nameChip = namesRow.querySelector(`[data-col="${t.lane}"]`);
+    if (nameChip) nameChip.classList.add('used');
+    if (!pendingToast && !t.silent) showToast(`${TEAMS[t.lane]}조 → ${loc.no} ${loc.name}`);
+  }
+  function render(now) {
+    drawBase();
+    completed.forEach((t) => drawFullTrace(t.points, t.color));
+    let going = false;
+    for (let j = active.length - 1; j >= 0; j--) {
+      const t = active[j];
+      const elapsed = Math.max(0, now - t.start);
+      const p = Math.min(1, elapsed / t.duration);
+      if (p >= 0) drawPartialTrace(t.points, p * t.totalLen, t.color);
+      if (p >= 1) { completed.push(t); onComplete(t); active.splice(j, 1); }
+      else going = true;
+    }
+    if (going) {
+      rafId = requestAnimationFrame(render);
+    } else {
+      rafId = null; busy = false; updateButtons();
+      if (pendingToast) { showToast(pendingToast); pendingToast = null; }
+    }
+  }
+
+  function startSingle(laneIndex) {
+    if (busy) return;
+    completed = completed.filter((t) => t.lane !== laneIndex);
+    const p = paths[laneIndex];
+    const trace = { points: p.points, totalLen: p.totalLen, endCol: p.endCol, lane: laneIndex, color: cssVar('--accent-gold'), start: performance.now(), duration: reduceMotion ? 1 : ladderClampDuration(p.totalLen) };
+    if (reduceMotion) {
+      completed.push(trace); onComplete(trace);
+      drawBase(); completed.forEach((t) => drawFullTrace(t.points, t.color));
+      return;
+    }
+    busy = true; updateButtons(); active.push(trace);
+    if (!rafId) rafId = requestAnimationFrame(render);
+  }
+
+  function revealAll() {
+    if (busy) return;
+    completed = []; active = [];
+    namesRow.querySelectorAll('.used').forEach((el) => el.classList.remove('used'));
+    resultsRow.querySelectorAll('.hit').forEach((el) => el.classList.remove('hit'));
+    const palette = LADDER_PALETTE_VARS.map(cssVar);
+    if (reduceMotion) {
+      TEAMS.forEach((_, i) => {
+        const p = paths[i];
+        const t = { points: p.points, totalLen: p.totalLen, endCol: p.endCol, lane: i, color: palette[i % palette.length], silent: true };
+        completed.push(t); onComplete(t);
+      });
+      drawBase(); completed.forEach((t) => drawFullTrace(t.points, t.color));
+      showToast('전체 결과가 공개되었습니다');
+      return;
+    }
+    busy = true; updateButtons();
+    pendingToast = '전체 결과가 공개되었습니다';
+    const now = performance.now();
+    TEAMS.forEach((_, i) => {
+      const p = paths[i];
+      active.push({ points: p.points, totalLen: p.totalLen, endCol: p.endCol, lane: i, color: palette[i % palette.length], start: now + i * 90, duration: ladderClampDuration(p.totalLen), silent: true });
+    });
+    if (!rafId) rafId = requestAnimationFrame(render);
+  }
+
+  namesRow.innerHTML = '';
+  resultsRow.innerHTML = '';
+  TEAMS.forEach((teamNo, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'ladder-chip name'; btn.style.left = ladderLaneX(i) + 'px';
+    btn.dataset.col = String(i); btn.textContent = `${teamNo}조`;
+    btn.title = `클릭해서 ${teamNo}조의 경로만 확인`;
+    btn.addEventListener('click', () => startSingle(i));
+    namesRow.appendChild(btn);
+
+    const res = document.createElement('div');
+    res.className = 'ladder-chip result'; res.style.left = ladderLaneX(i) + 'px';
+    res.dataset.col = String(i); res.textContent = '?';
+    resultsRow.appendChild(res);
   });
-  // 결과 테이블
-  const resultBox = container.querySelector('[data-ladder-result]');
-  const rows = activeLadder.paths.map((p, i) => `<tr><td class="hl">${TEAMS[i]}조</td><td>${LOCATIONS[activeLadder.data.bottomLocIdx[p.finalCol]].no} ${LOCATIONS[activeLadder.data.bottomLocIdx[p.finalCol]].name}</td></tr>`).join('');
-  const delay = reduceMotion ? 0 : (activeLadder.paths.length * 80 + 1100);
-  setTimeout(() => {
-    resultBox.innerHTML = `<table><thead><tr><th>조</th><th>배정 로케이션</th></tr></thead><tbody>${rows}</tbody></table>`;
-  }, delay);
+
+  drawBase();
+  toast.classList.remove('show');
+  updateButtons();
+
+  goBtn.onclick = revealAll;
+  resetBtn.onclick = () => renderLadder(container);
+
+  activeLadder = { container };
 }
 
 function resetActiveLadder() {
@@ -1108,34 +1289,171 @@ function resetActiveLadder() {
 
 document.querySelectorAll('[data-ladder]').forEach((el) => renderLadder(el));
 
-/* ===================== 스핀 휠 위젯 (발표 순서 추첨) ===================== */
+/* ===================== 스핀 휠 위젯 (발표 순서 — 한 조씩 추첨) ===================== */
 
 document.querySelectorAll('[data-wheel]').forEach((wrap) => {
   const disc = wrap.querySelector('[data-wheel-disc]');
+  const canvas = wrap.querySelector('[data-wheel-canvas]');
   const goBtn = wrap.querySelector('[data-wheel-go]');
-  const resultEl = wrap.querySelector('[data-wheel-result]');
+  const resetBtn = wrap.querySelector('[data-wheel-reset]');
+  const orderBox = wrap.querySelector('[data-wheel-order-box]');
+  const orderInner = wrap.querySelector('[data-wheel-order]');
+  const latestBox = wrap.querySelector('[data-wheel-latest]');
+  const latestRank = wrap.querySelector('[data-wheel-latest-rank]');
+  const latestTeam = wrap.querySelector('[data-wheel-latest-team]');
+  const ctx = canvas.getContext('2d');
+  let pool = [];
+  let order = [];
   let spinning = false;
-  let currentAngle = 0;
+
+  function drawWheel() {
+    const size = 260;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const R = size / 2;
+    ctx.clearRect(0, 0, size, size);
+    const n = pool.length;
+    if (n === 0) return;
+    const seg = (Math.PI * 2) / n;
+    const navy = cssVar('--accent-navy');
+    const navyDeep = cssVar('--accent-navy-deep');
+    for (let i = 0; i < n; i++) {
+      const a0 = -Math.PI / 2 + i * seg;
+      const a1 = a0 + seg;
+      ctx.beginPath(); ctx.moveTo(R, R); ctx.arc(R, R, R - 3, a0, a1); ctx.closePath();
+      ctx.fillStyle = i % 2 === 0 ? navy : navyDeep;
+      ctx.fill();
+      const mid = a0 + seg / 2;
+      const lx = R + Math.cos(mid) * (R * 0.62);
+      const ly = R + Math.sin(mid) * (R * 0.62);
+      ctx.fillStyle = '#eef1f6';
+      ctx.font = `700 ${Math.max(14, Math.min(22, 90 / n))}px ${cssVar('--font-mono')}`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(`${pool[i]}조`, lx, ly);
+    }
+    ctx.beginPath(); ctx.arc(R, R, R - 1.5, 0, Math.PI * 2);
+    ctx.strokeStyle = navyDeep; ctx.lineWidth = 3; ctx.stroke();
+  }
+
+  function updateButtons() {
+    goBtn.disabled = spinning || pool.length === 0;
+    goBtn.textContent = pool.length === 0 ? '추첨 완료' : '다음 순서 뽑기';
+  }
+
+  function snapToZero() {
+    disc.style.transition = 'none';
+    disc.style.transform = 'rotate(0deg)';
+    void disc.offsetWidth;
+    disc.style.transition = '';
+  }
+
+  function init() {
+    pool = [...TEAMS];
+    order = [];
+    spinning = false;
+    wrap.classList.remove('revealed');
+    orderBox.classList.remove('show');
+    orderInner.innerHTML = '';
+    latestBox.classList.remove('show');
+    latestRank.textContent = '';
+    latestTeam.textContent = '';
+    snapToZero();
+    drawWheel();
+    updateButtons();
+  }
+
+  function finishDraw(winnerIdx) {
+    const team = pool[winnerIdx];
+    pool.splice(winnerIdx, 1);
+    order.push(team);
+    orderInner.innerHTML = order.map((n, i) => `<div class="wheel-order-row"><span class="rank">${i + 1}</span><span class="team">${n}조</span></div>`).join('');
+    latestRank.textContent = `${order.length}번째 발표팀`;
+    latestTeam.textContent = `${team}조`;
+    latestBox.classList.remove('show'); void latestBox.offsetWidth; latestBox.classList.add('show');
+    if (order.length === 1) {
+      wrap.classList.add('revealed');
+      orderBox.classList.add('show');
+    }
+    snapToZero();
+    drawWheel();
+    spinning = false;
+    updateButtons();
+  }
+
   goBtn.addEventListener('click', () => {
-    if (spinning) return;
-    spinning = true;
-    resultEl.innerHTML = '';
-    const order = [...TEAMS];
-    for (let i = order.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [order[i], order[j]] = [order[j], order[i]];
-    }
-    currentAngle += 1080 + Math.floor(Math.random() * 360);
+    if (spinning || pool.length === 0) return;
+    spinning = true; updateButtons();
+    const n = pool.length;
+    const winnerIdx = Math.floor(Math.random() * n);
+    const seg = 360 / n;
+    const segCenterDeg = -90 + winnerIdx * seg + seg / 2;
+    const delta = ((-90 - segCenterDeg) % 360 + 360) % 360;
+    const spins = 3 + Math.floor(Math.random() * 2);
+    const target = spins * 360 + delta;
     if (reduceMotion) {
-      showWheelResult();
+      finishDraw(winnerIdx);
     } else {
-      disc.style.transform = `rotate(${currentAngle}deg)`;
-      disc.addEventListener('transitionend', showWheelResult, { once: true });
+      disc.style.transform = `rotate(${target}deg)`;
+      disc.addEventListener('transitionend', function handler() {
+        disc.removeEventListener('transitionend', handler);
+        finishDraw(winnerIdx);
+      }, { once: true });
     }
-    function showWheelResult() {
-      resultEl.innerHTML = order.map((n) => `<li>${n}조</li>`).join('');
-      spinning = false;
-    }
+  });
+
+  resetBtn.addEventListener('click', init);
+
+  init();
+});
+
+/* ===================== 빙고 게임 (클릭 체크 + 한 줄 완성 시 BINGO!) ===================== */
+
+document.querySelectorAll('[data-bingo]').forEach((wrap) => {
+  const cells = Array.from(wrap.querySelectorAll('[data-bingo-cell]'));
+  const toast = wrap.querySelector('[data-bingo-toast]');
+  const lines = [];
+  for (let r = 0; r < 5; r++) lines.push(Array.from({ length: 5 }, (_, c) => r * 5 + c));
+  for (let c = 0; c < 5; c++) lines.push(Array.from({ length: 5 }, (_, r) => r * 5 + c));
+  lines.push([0, 6, 12, 18, 24]);
+  lines.push([4, 8, 12, 16, 20]);
+  const completedLines = new Set();
+  let toastTimer = null;
+
+  function showBingo() {
+    toast.classList.remove('show');
+    void toast.offsetWidth;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+
+  function checkLines() {
+    lines.forEach((line, li) => {
+      const lineCells = line.map((i) => cells[i]);
+      const complete = lineCells.every((c) => c.classList.contains('marked'));
+      if (complete && !completedLines.has(li)) {
+        completedLines.add(li);
+        lineCells.forEach((c) => c.classList.add('bingo-line'));
+        showBingo();
+      } else if (!complete && completedLines.has(li)) {
+        completedLines.delete(li);
+        lineCells.forEach((c) => c.classList.remove('bingo-line'));
+      }
+    });
+  }
+
+  cells.forEach((cell) => {
+    cell.setAttribute('tabindex', '0');
+    cell.setAttribute('role', 'button');
+    const toggle = () => { cell.classList.toggle('marked'); checkLines(); };
+    cell.addEventListener('click', toggle);
+    cell.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
   });
 });
 
@@ -1147,6 +1465,8 @@ document.querySelectorAll('[data-mixer]').forEach((wrap) => {
   const goBtn = wrap.querySelector('[data-mixer-go]');
   const groupsBox = wrap.querySelector('[data-mixer-groups]');
   goBtn.addEventListener('click', () => {
+    wrap.classList.remove('revealed');
+    groupsBox.classList.remove('show');
     const finalAngle = 720 + Math.floor(Math.random() * 360);
     orbit.style.setProperty('--final-angle', finalAngle + 'deg');
     orbit.classList.remove('spin'); void orbit.offsetWidth; orbit.classList.add('spin');
@@ -1154,8 +1474,11 @@ document.querySelectorAll('[data-mixer]').forEach((wrap) => {
       chip.style.setProperty('--final-angle', finalAngle + 'deg');
       chip.classList.remove('spin'); void chip.offsetWidth; chip.classList.add('spin');
     });
-    const delay = reduceMotion ? 0 : 2400;
-    setTimeout(() => groupsBox.classList.add('show'), delay);
+    const delay = reduceMotion ? 0 : 3600;
+    setTimeout(() => {
+      wrap.classList.add('revealed');
+      groupsBox.classList.add('show');
+    }, delay);
   });
 });
 
