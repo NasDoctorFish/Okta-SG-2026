@@ -111,6 +111,7 @@
   .seating .stub { display: none; }
   .seating h2 { color: #eef1f6; }
   .seating-fx-canvas, .seating-plane-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+  .seating-plane-canvas { z-index: 2; }
   .seating-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 1.3rem; }
   .stage-label { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.2em; color: rgba(238, 243, 251, 0.75); border: 1px solid rgba(238, 243, 251, 0.35); border-radius: 20px; padding: 0.4rem 1.6rem; }
   .seat-rows { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; width: min(560px, 90vw); }
@@ -583,14 +584,18 @@ function judgeCard(j) {
 const SLIDES = [
   // 0 seating -------------------------------------------------------------
   { tag: 'seating', body: `
-    <div class="eyebrow">Seating</div>
-    <h2>조별 좌석 배치도</h2>
-    <div class="stage-label">무대</div>
-    <div class="seat-rows">${(() => {
-      let n = 0;
-      return SEATING_ROWS.map((count) => `<div class="seat-row">${Array.from({ length: count }, () => `<div class="seat-box">${TEAMS[n++]}</div>`).join('')}</div>`).join('');
-    })()}</div>
-    <div class="stage-label">입구</div>
+    <canvas class="seating-fx-canvas" data-seating-fx></canvas>
+    <canvas class="seating-plane-canvas" data-seating-plane></canvas>
+    <div class="seating-content">
+      <div class="eyebrow">Seating</div>
+      <h2>조별 좌석 배치도</h2>
+      <div class="stage-label">무대</div>
+      <div class="seat-rows">${(() => {
+        let n = 0;
+        return SEATING_ROWS.map((count) => `<div class="seat-row">${Array.from({ length: count }, () => `<div class="seat-box">${TEAMS[n++]}</div>`).join('')}</div>`).join('');
+      })()}</div>
+      <div class="stage-label">입구</div>
+    </div>
   `},
 
   // 1 hero image ------------------------------------------------------------
@@ -982,6 +987,7 @@ nextBtn.addEventListener('click', () => go(idx + 1));
 
 /* ---------------- keyboard shortcuts ---------------- */
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let triggerSeatingFlight = () => {};
 
 let currentSfxAudio = null;
 
@@ -1002,6 +1008,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'f' || e.key === 'F') toggleFullscreen();
   if (e.key === 'r' || e.key === 'R') resetActiveLadder();
   if (e.key === 's' || e.key === 'S') stopSfx();
+  if (e.key === 'p' || e.key === 'P') triggerSeatingFlight();
   const sfx = SFX_FILES.find((s) => s.key === e.key);
   if (sfx) {
     if (currentSfxAudio) { currentSfxAudio.pause(); currentSfxAudio.currentTime = 0; }
@@ -1480,6 +1487,324 @@ document.querySelectorAll('[data-mixer]').forEach((wrap) => {
       groupsBox.classList.add('show');
     }, delay);
   });
+});
+
+/* ===================== 좌석 배치도 배경 불꽃놀이 + 배너 비행기 ===================== */
+
+document.querySelectorAll('[data-seating-fx]').forEach((fx) => {
+  const stage = fx.closest('.ticket');
+  const plane = stage.querySelector('[data-seating-plane]');
+  const fctx = fx.getContext('2d');
+  const pctx = plane.getContext('2d');
+
+  const oktaLogoImg = new Image();
+  oktaLogoImg.src = 'logo/symbol_CI_250613_trimmed.png';
+  const koreaFlagImg = new Image();
+  koreaFlagImg.src = 'assets/태극기.png';
+  const planeSprite = new Image();
+  planeSprite.src = 'assets/plane_sprite.png';
+
+  const PLANE_FRAME_COUNT = 25;
+  const PLANE_FRAME_MS = 120;
+  const PLANE_SRC_W = 338, PLANE_SRC_H = 150;
+  const PLANE_DISPLAY_W = 158, PLANE_DISPLAY_H = 70;
+  const PLANE_TAIL_OFFSET = 66;
+  const WELCOME_TEXT = '싱가포르에 오신 것을 환영합니다';
+  const bannerOrder = ['flag', 'logo', 'welcome'];
+  const palette = ['#ef233c', '#ffb703', '#0891b2'];
+  const bldgColor1 = '#16233f', bldgColor2 = '#2c3d68', windowGold = '#ffb703', shadowSoft = 'rgba(22,35,63,.14)';
+  const bannerFontStack = cssVar('--font-body') || 'sans-serif';
+
+  let W = 0, H = 0, DPR = 1;
+  let particles = [];
+  let rockets = [];
+  let nextSpawn = { L: 0, R: 0 };
+  let flight = null;
+  let flightCount = 0;
+  let nextFlightAt = 0;
+  let lastT = 0;
+  let rafId = null;
+  let running = false;
+
+  function resize() {
+    const rect = stage.getBoundingClientRect();
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = rect.width; H = rect.height;
+    [fx, plane].forEach((c) => {
+      c.width = Math.round(W * DPR);
+      c.height = Math.round(H * DPR);
+      c.getContext('2d').setTransform(DPR, 0, 0, DPR, 0, 0);
+    });
+  }
+
+  function zoneX(side) {
+    const third = W / 3;
+    const margin = third * 0.16;
+    return side === 'L'
+      ? margin + Math.random() * (third - margin * 2)
+      : (2 * third) + margin + Math.random() * (third - margin * 2);
+  }
+
+  function spawnRocket(side) {
+    rockets.push({
+      x: zoneX(side), y: H * 0.86, targetY: H * 0.16 + Math.random() * H * 0.30,
+      vy: -(4.2 + Math.random() * 1.6), color: palette[Math.floor(Math.random() * 3)], side,
+    });
+  }
+
+  function explode(x, y, color, count) {
+    for (let i = 0; i < count; i++) {
+      const a = (Math.PI * 2) * (i / count) + Math.random() * 0.2;
+      const speed = 1.4 + Math.random() * 3.2;
+      particles.push({
+        x, y, vx: Math.cos(a) * speed, vy: Math.sin(a) * speed,
+        life: 0, maxLife: 46 + Math.random() * 30, color, size: 1.4 + Math.random() * 1.6,
+      });
+    }
+  }
+
+  function levelConfig() {
+    return reduceMotion ? { rocketMs: [2600, 4200], count: 16 } : { rocketMs: [950, 1700], count: 34 };
+  }
+
+  function scheduleNext(side, t) {
+    const cfg = levelConfig();
+    const span = cfg.rocketMs[1] - cfg.rocketMs[0];
+    nextSpawn[side] = t + cfg.rocketMs[0] + Math.random() * span;
+  }
+
+  function scheduleNextFlight(t) {
+    nextFlightAt = t + 35000 + Math.random() * 13000;
+  }
+
+  function startFlight(t) {
+    const dir = flightCount % 2 === 0 ? 1 : -1;
+    const startX = dir === 1 ? -220 : W + 220;
+    const endX = dir === 1 ? W + 220 : -220;
+    const startY = H * 0.10 + Math.random() * H * 0.10;
+    const endY = H * 0.35 + Math.random() * H * 0.10;
+    const dx = endX - startX, dy = endY - startY;
+    flight = {
+      dir, type: bannerOrder[flightCount % bannerOrder.length],
+      startX, startY, endX, endY, dx, dy,
+      tilt: Math.atan2(Math.abs(dy), Math.abs(dx)),
+      x: startX, y: startY, elapsed: 0, duration: 5000 + Math.random() * 1000, alpha: 0,
+    };
+    flightCount++;
+  }
+
+  function drawStar(ctx, cx, cy, r, rot) {
+    ctx.beginPath();
+    for (let i = 0; i < 10; i++) {
+      const rad = i % 2 === 0 ? r : r * 0.42;
+      const a = rot + i * Math.PI / 5;
+      const px = cx + Math.cos(a) * rad, py = cy + Math.sin(a) * rad;
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawFlagBanner(ctx, x, y, w, h) {
+    const halfW = w / 2;
+    ctx.save();
+    ctx.beginPath(); ctx.rect(x, y, halfW, h); ctx.clip();
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(x, y, halfW, h);
+    ctx.fillStyle = '#ef3340'; ctx.fillRect(x, y, halfW, h / 2);
+    const ccx = x + halfW * 0.26, ccy = y + h * 0.26, cr = h * 0.17;
+    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(ccx, ccy, cr, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#ef3340'; ctx.beginPath(); ctx.arc(ccx + cr * 0.45, ccy, cr * 0.86, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    const starPos = [[0.46, 0.10], [0.62, 0.17], [0.60, 0.34], [0.42, 0.35], [0.37, 0.18]];
+    starPos.forEach(([sx, sy]) => drawStar(ctx, x + halfW * sx, y + h * sy, h * 0.05, -Math.PI / 2));
+    ctx.restore();
+
+    ctx.save();
+    ctx.beginPath(); ctx.rect(x + halfW, y, halfW, h); ctx.clip();
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(x + halfW, y, halfW, h);
+    if (koreaFlagImg.complete && koreaFlagImg.naturalWidth) {
+      const kScale = Math.min(halfW / koreaFlagImg.naturalWidth, h / koreaFlagImg.naturalHeight);
+      const kw = koreaFlagImg.naturalWidth * kScale, kh = koreaFlagImg.naturalHeight * kScale;
+      ctx.drawImage(koreaFlagImg, x + halfW + (halfW - kw) / 2, y + (h - kh) / 2, kw, kh);
+    }
+    ctx.restore();
+
+    ctx.strokeStyle = shadowSoft; ctx.lineWidth = 1;
+    ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+    ctx.beginPath(); ctx.moveTo(x + halfW, y); ctx.lineTo(x + halfW, y + h); ctx.stroke();
+  }
+
+  function drawLogoBanner(ctx, x, y, w, h) {
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = shadowSoft; ctx.lineWidth = 1;
+    ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+    if (oktaLogoImg.complete && oktaLogoImg.naturalWidth) {
+      const pad = 10;
+      const scale = Math.min((w - pad * 2) / oktaLogoImg.naturalWidth, (h - pad * 2) / oktaLogoImg.naturalHeight);
+      const iw = oktaLogoImg.naturalWidth * scale, ih = oktaLogoImg.naturalHeight * scale;
+      ctx.drawImage(oktaLogoImg, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+    }
+  }
+
+  function drawWelcomeBanner(ctx, x, y, w, h, text) {
+    const g = ctx.createLinearGradient(x, y, x + w, y);
+    g.addColorStop(0, bldgColor1); g.addColorStop(1, bldgColor2);
+    ctx.fillStyle = g; ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = windowGold; ctx.lineWidth = 2;
+    ctx.strokeRect(x + 1, y + 1, w - 2, h - 2);
+    ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    let size = 32;
+    do {
+      ctx.font = `700 ${size}px ${bannerFontStack}`;
+      size -= 1;
+    } while (ctx.measureText(text).width > w - 22 && size > 9);
+    ctx.fillText(text, x + w / 2, y + h / 2);
+  }
+
+  function drawPlane(ctx, cx, cy, dir, tilt, alpha, t) {
+    if (!planeSprite.complete || !planeSprite.naturalWidth) return;
+    const frameIdx = Math.floor((t / PLANE_FRAME_MS) % PLANE_FRAME_COUNT);
+    const sx = frameIdx * PLANE_SRC_W;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(cx, cy);
+    ctx.rotate(dir * tilt);
+    ctx.scale(-dir, 1);
+    ctx.drawImage(
+      planeSprite, sx, 0, PLANE_SRC_W, PLANE_SRC_H,
+      -PLANE_DISPLAY_W / 2, -PLANE_DISPLAY_H / 2, PLANE_DISPLAY_W, PLANE_DISPLAY_H,
+    );
+    ctx.restore();
+  }
+
+  function renderFlight(f, t) {
+    const len = Math.sqrt(f.dx * f.dx + f.dy * f.dy) || 1;
+    const ux = f.dx / len, uy = f.dy / len;
+    const perpX = -uy, perpY = ux;
+    const bob = Math.sin(t * 0.006) * 4;
+    const tailX = f.x - ux * PLANE_TAIL_OFFSET + perpX * bob;
+    const tailY = f.y - uy * PLANE_TAIL_OFFSET + perpY * bob;
+    const leadX = tailX - ux * 24, leadY = tailY - uy * 24;
+    const w = f.type === 'welcome' ? 232 : 168, h = 52;
+    const bx = f.dir === 1 ? (leadX - w) : leadX, by = leadY - h / 2;
+
+    pctx.globalAlpha = f.alpha;
+    pctx.strokeStyle = 'rgba(22,35,63,0.55)'; pctx.lineWidth = 1.4;
+    pctx.beginPath(); pctx.moveTo(tailX, tailY);
+    pctx.quadraticCurveTo((tailX + leadX) / 2, (tailY + leadY) / 2 + 8, leadX, leadY);
+    pctx.stroke();
+
+    if (f.type === 'flag') drawFlagBanner(pctx, bx, by, w, h);
+    else if (f.type === 'logo') drawLogoBanner(pctx, bx, by, w, h);
+    else drawWelcomeBanner(pctx, bx, by, w, h, WELCOME_TEXT);
+
+    drawPlane(pctx, f.x, f.y, f.dir, f.tilt, f.alpha, t);
+    pctx.globalAlpha = 1;
+  }
+
+  function drawZoneClipped(side, painter) {
+    const third = W / 3;
+    fctx.save();
+    fctx.beginPath();
+    if (side === 'L') fctx.rect(0, 0, third, H); else fctx.rect(2 * third, 0, third, H);
+    fctx.clip();
+    painter();
+    fctx.restore();
+  }
+
+  function tick(t) {
+    if (!lastT) lastT = t;
+    const dt = Math.min(t - lastT, 48);
+    lastT = t;
+
+    if (t > nextSpawn.L) { spawnRocket('L'); scheduleNext('L', t); }
+    if (t > nextSpawn.R) { spawnRocket('R'); scheduleNext('R', t); }
+
+    if (!flight && t > nextFlightAt) startFlight(t);
+    if (flight) {
+      flight.elapsed += dt;
+      const progress = Math.min(1, flight.elapsed / flight.duration);
+      flight.x = flight.startX + flight.dx * progress;
+      flight.y = flight.startY + flight.dy * progress;
+      flight.alpha = progress < 0.12 ? progress / 0.12 : (progress > 0.88 ? (1 - progress) / 0.12 : 1);
+      if (progress >= 1) { flight = null; scheduleNextFlight(t); }
+    }
+
+    pctx.clearRect(0, 0, W, H);
+    if (flight) renderFlight(flight, t);
+
+    fctx.clearRect(0, 0, W, H);
+    ['L', 'R'].forEach((side) => {
+      drawZoneClipped(side, () => {
+        const third = W / 3;
+        for (let i = rockets.length - 1; i >= 0; i--) {
+          const r = rockets[i];
+          if (r.side !== side) continue;
+          r.y += r.vy;
+          fctx.shadowColor = r.color; fctx.shadowBlur = 10;
+          fctx.fillStyle = r.color; fctx.globalAlpha = 0.9;
+          fctx.beginPath(); fctx.arc(r.x, r.y, 2.1, 0, Math.PI * 2); fctx.fill();
+          fctx.shadowBlur = 0;
+          fctx.strokeStyle = r.color; fctx.globalAlpha = 0.35; fctx.lineWidth = 1.4;
+          fctx.beginPath(); fctx.moveTo(r.x, r.y); fctx.lineTo(r.x, r.y - r.vy * 3.2); fctx.stroke();
+          fctx.globalAlpha = 1;
+          if (r.y <= r.targetY) {
+            const cfg = levelConfig();
+            explode(r.x, r.y, r.color, cfg.count);
+            rockets.splice(i, 1);
+          }
+        }
+        for (let j = particles.length - 1; j >= 0; j--) {
+          const p = particles[j];
+          const inSide = side === 'L' ? p.x < third : p.x >= 2 * third;
+          if (!inSide) continue;
+          p.life++;
+          p.vy += 0.045; p.vx *= 0.985;
+          p.x += p.vx; p.y += p.vy;
+          const progress = p.life / p.maxLife;
+          if (progress >= 1) { particles.splice(j, 1); continue; }
+          fctx.globalAlpha = Math.max(0, 1 - progress);
+          fctx.shadowColor = p.color; fctx.shadowBlur = 6;
+          fctx.fillStyle = p.color;
+          fctx.beginPath(); fctx.arc(p.x, p.y, p.size * (1 - progress * 0.4), 0, Math.PI * 2); fctx.fill();
+        }
+        fctx.shadowBlur = 0; fctx.globalAlpha = 1;
+      });
+    });
+
+    if (running) rafId = requestAnimationFrame(tick);
+  }
+
+  function start() {
+    if (running) return;
+    running = true;
+    lastT = 0;
+    particles = []; rockets = []; flight = null; flightCount = 0;
+    resize();
+    scheduleNext('L', performance.now());
+    scheduleNext('R', performance.now() + 200);
+    scheduleNextFlight(performance.now());
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function stop() {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+
+  triggerSeatingFlight = () => {
+    if (!running) return;
+    flight = null;
+    startFlight(performance.now());
+  };
+
+  window.addEventListener('resize', () => { if (running) resize(); });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => (entry.isIntersecting ? start() : stop()));
+  }, { root: document.querySelector('.deck'), threshold: 0.2 });
+  observer.observe(stage);
 });
 
 </script>
