@@ -316,15 +316,18 @@
   .mixer-group-card .gtitle { font-weight: 700; margin-bottom: 0.35rem; }
 
   /* ---------- Global Mixer 좌석 배치도 (통상 번호별 테이블) ---------- */
-  .mixer-seat-wrap { margin-top: 0.3rem; display: flex; flex-direction: column; align-items: center; gap: 0.45rem; }
+  /* 왼쪽 = 통상 번호 범례(2열 세로), 오른쪽 = 좌석 배치도 */
+  .mixer-seat-layout { margin-top: 0.4rem; display: flex; align-items: center; justify-content: center; gap: clamp(1.5rem, 4vw, 3.5rem); flex-wrap: wrap; }
+  .mixer-seat-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; flex: none; }
   .mixer-seat-label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em; color: var(--ink-muted); border: 1px solid var(--line); border-radius: 20px; padding: 0.22rem 1.3rem; }
-  .mixer-seat-rows { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; width: min(680px, 92%); }
+  .mixer-seat-rows { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; width: min(560px, 100%); }
   .mixer-seat-row { display: flex; justify-content: center; gap: 0.9rem; width: 100%; }
   .mixer-table { flex: none; width: clamp(64px, 9vh, 104px); aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--accent-navy); background: color-mix(in srgb, var(--accent-navy) 7%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.05rem; }
   .mixer-table .tno { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.03em; color: var(--ink-muted); }
   .mixer-table .tcats { font-family: var(--font-mono); font-weight: 700; font-size: clamp(0.9rem, 2vh, 1.3rem); line-height: 1.1; color: var(--accent-gold); }
-  .mixer-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.2rem 0.8rem; max-width: 96%; font-size: 0.75rem; color: var(--ink-muted); }
-  .mixer-legend span b { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 700; margin-right: 0.2rem; }
+  .mixer-legend { flex: none; display: grid; grid-auto-flow: column; grid-template-rows: repeat(8, auto); gap: 0.4rem 1.8rem; font-size: clamp(0.95rem, 1.5vh, 1.2rem); color: var(--ink); }
+  .mixer-legend span { display: flex; gap: 0.5rem; white-space: nowrap; }
+  .mixer-legend span b { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 700; min-width: 1.5em; text-align: right; }
 
   /* ---------- Bingo grid ---------- */
   .bingo-wrap { position: relative; }
@@ -367,7 +370,8 @@
   .hero .stub { display: none; }
 
   /* ---------- 일정표 원본 이미지 슬라이드 ---------- */
-  .schedule .ticket { padding: 0; align-items: stretch; justify-content: center; width: auto; height: calc(100% - 2.2rem); max-width: min(1680px, 94vw); aspect-ratio: 1543 / 1237; background: #fff; }
+  /* 일정표는 원본 그대로 보여야 하므로 모서리를 둥글리지 않는다 */
+  .schedule .ticket { padding: 0; align-items: stretch; justify-content: center; width: auto; height: calc(100% - 2.2rem); max-width: min(1680px, 94vw); aspect-ratio: 1543 / 1237; background: #fff; border-radius: 0; }
   .schedule .stub { display: none; }
   .video-box { aspect-ratio: 16/9; max-width: 560px; border-radius: 12px; border: 1px dashed var(--line); background: color-mix(in srgb, var(--accent-navy) 8%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.7rem; color: var(--ink-muted); margin-top: 0.5rem; }
   .play { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--accent-gold); display: flex; align-items: center; justify-content: center; }
@@ -614,11 +618,13 @@ function mixerSeatMap() {
     return `<div class="mixer-table"><div class="tno">${t}번 테이블</div><div class="tcats">${nos.join('·')}</div></div>`;
   }).join('')}</div>`).join('');
   return `
-    <div class="mixer-seat-wrap">
-      <div class="mixer-seat-label">무대</div>
-      <div class="mixer-seat-rows">${rows}</div>
-      <div class="mixer-seat-label">입구</div>
+    <div class="mixer-seat-layout">
       <div class="mixer-legend">${TRADE_CATS.map((c, i) => `<span><b>${i + 1}</b>${c}</span>`).join('')}</div>
+      <div class="mixer-seat-wrap">
+        <div class="mixer-seat-label">무대</div>
+        <div class="mixer-seat-rows">${rows}</div>
+        <div class="mixer-seat-label">입구</div>
+      </div>
     </div>
   `;
 }
