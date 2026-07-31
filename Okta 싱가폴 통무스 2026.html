@@ -247,10 +247,12 @@
   .ladder-track-box { max-width: 100%; overflow-x: auto; }
   .ladder-row { position: relative; height: 38px; }
   .ladder-chip { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; font-family: var(--font-mono); }
-  .ladder-chip.name { padding: 0.35rem 0.6rem; border-radius: 20px; border: 1.5px solid var(--line); background: none; color: var(--ink); font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease; }
+  /* 조 이름표는 드래그 전용 — 끌어서 순서를 재배열한다 */
+  .ladder-chip.name { padding: 0.35rem 0.6rem; border-radius: 20px; border: 1.5px solid var(--line); background: var(--bg-elevated); color: var(--ink); font-size: 0.8rem; font-weight: 700; cursor: grab; touch-action: none; user-select: none; transition: left 0.18s ease, border-color 0.15s ease, color 0.15s ease; }
   .ladder-chip.name:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
-  .ladder-chip.name.used { opacity: 0.55; }
+  .ladder-chip.name.dragging { transition: none; cursor: grabbing; z-index: 5; border-color: var(--accent-gold); color: var(--accent-gold); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28); }
   .ladder-chip.name:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .ladder-chip.name { transition: none; } }
   .ladder-chip.result { padding: 0.3rem 0.55rem; border-radius: 10px; background: color-mix(in srgb, var(--accent-navy) 8%, transparent); color: var(--ink-muted); font-size: 0.85rem; font-weight: 700; text-align: center; cursor: default; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease; }
   .ladder-chip.result.hit { color: var(--hit-color, var(--accent-gold)); background: color-mix(in srgb, var(--hit-color, var(--accent-gold)) 16%, transparent); box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hit-color, var(--accent-gold)) 50%, transparent); transform: translateX(-50%) scale(1.1); }
   .ladder-actions { display: flex; gap: 0.7rem; }
@@ -720,6 +722,7 @@ const SLIDES = [
   { stub: 'DAY 1', body: `
     <div class="eyebrow">장소 추첨 · 17:00–17:30</div>
     <h2>샤크탱크 챌린지 장소 추첨</h2>
+    <p class="lede" style="font-size:1rem;">조 이름표를 끌어 순서를 바꾼 뒤 전체 결과를 확인하세요.</p>
     <div class="tags">${LOCATIONS.map(l => `<span class="tag">${l.no} ${l.name}</span>`).join('')}</div>
     <div class="ladder-wrap" data-ladder>
       <div class="ladder-track-box">
@@ -1072,6 +1075,7 @@ const LADDER_STEPS = 12;
 const LADDER_PALETTE_VARS = ['--accent-gold', '--accent-navy', '--accent-red', '--accent-green'];
 
 let activeLadder = null;
+let activeLadderDrag = null;
 
 function cssVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -1107,8 +1111,7 @@ function ladderPointAtDistance(points, d) {
   return { cutIndex: points.length - 1, point: points[points.length - 1] };
 }
 
-function buildLadderData() {
-  const n = TEAMS.length;
+function buildLadderRungs(n) {
   const rungs = [];
   for (let r = 0; r < LADDER_STEPS; r++) {
     const used = new Array(n).fill(false);
@@ -1120,9 +1123,17 @@ function buildLadderData() {
     }
     rungs.push(set);
   }
-  // 완전 무작위 배정 (로케이션별 인원 균형 고려하지 않음)
-  const bottomLocIdx = Array.from({ length: n }, () => Math.floor(Math.random() * LOCATIONS.length));
-  return { rungs, bottomLocIdx };
+  return rungs;
+}
+
+// 아래 결과칸은 미리 공개되므로 로케이션이 한쪽으로 몰리지 않게 균등 분배(10칸 → 3·3·2·2) 후 순서만 섞는다
+function buildBalancedLocIdx(n) {
+  const idx = Array.from({ length: n }, (_, i) => i % LOCATIONS.length);
+  for (let i = idx.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [idx[i], idx[j]] = [idx[j], idx[i]];
+  }
+  return idx;
 }
 
 function buildLadderPath(data, startCol) {
@@ -1139,9 +1150,16 @@ function buildLadderPath(data, startCol) {
   return { points: pts, endCol: col };
 }
 
-function renderLadder(container) {
-  const data = buildLadderData();
+// keepBoard=true 이면 가로선만 새로 만들고 로케이션 순서·조 순서는 유지한다 (다시 뽑기 / R)
+function renderLadder(container, keepBoard) {
   const n = TEAMS.length;
+  const prev = container._ladderState;
+  const data = {
+    rungs: buildLadderRungs(n),
+    bottomLocIdx: (keepBoard && prev && prev.bottomLocIdx) || buildBalancedLocIdx(n),
+    teamOrder: (keepBoard && prev && prev.teamOrder) || [...TEAMS],
+  };
+  container._ladderState = data;
   const canvas = container.querySelector('[data-ladder-canvas]');
   const namesRow = container.querySelector('[data-ladder-names]');
   const resultsRow = container.querySelector('[data-ladder-results]');
@@ -1217,17 +1235,12 @@ function renderLadder(container) {
     goBtn.disabled = busy;
   }
   function onComplete(t) {
-    const loc = LOCATIONS[data.bottomLocIdx[t.endCol]];
+    // 결과칸의 번호는 처음부터 보이므로 여기서는 강조만 입힌다
     const chip = resultsRow.querySelector(`[data-col="${t.endCol}"]`);
     if (chip) {
-      chip.textContent = loc.no;
-      chip.title = loc.name;
       chip.style.setProperty('--hit-color', t.color);
       chip.classList.add('hit');
     }
-    const nameChip = namesRow.querySelector(`[data-col="${t.lane}"]`);
-    if (nameChip) nameChip.classList.add('used');
-    if (!pendingToast && !t.silent) showToast(`${TEAMS[t.lane]}조 → ${loc.no} ${loc.name}`);
   }
   function render(now) {
     drawBase();
@@ -1249,25 +1262,19 @@ function renderLadder(container) {
     }
   }
 
-  function startSingle(laneIndex) {
-    if (busy) return;
-    completed = completed.filter((t) => t.lane !== laneIndex);
-    const p = paths[laneIndex];
-    const trace = { points: p.points, totalLen: p.totalLen, endCol: p.endCol, lane: laneIndex, color: cssVar('--accent-gold'), start: performance.now(), duration: reduceMotion ? 1 : ladderClampDuration(p.totalLen) };
-    if (reduceMotion) {
-      completed.push(trace); onComplete(trace);
-      drawBase(); completed.forEach((t) => drawFullTrace(t.points, t.color));
-      return;
-    }
-    busy = true; updateButtons(); active.push(trace);
-    if (!rafId) rafId = requestAnimationFrame(render);
+  // 공개된 경로·강조를 지우고 추첨 전 상태로 되돌린다 (순서를 바꾸면 기존 결과가 무효이므로)
+  function clearReveal() {
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    completed = []; active = []; busy = false; pendingToast = null;
+    resultsRow.querySelectorAll('.hit').forEach((el) => el.classList.remove('hit'));
+    toast.classList.remove('show');
+    drawBase();
+    updateButtons();
   }
 
   function revealAll() {
     if (busy) return;
-    completed = []; active = [];
-    namesRow.querySelectorAll('.used').forEach((el) => el.classList.remove('used'));
-    resultsRow.querySelectorAll('.hit').forEach((el) => el.classList.remove('hit'));
+    clearReveal();
     const palette = LADDER_PALETTE_VARS.map(cssVar);
     if (reduceMotion) {
       TEAMS.forEach((_, i) => {
@@ -1291,18 +1298,71 @@ function renderLadder(container) {
 
   namesRow.innerHTML = '';
   resultsRow.innerHTML = '';
-  TEAMS.forEach((teamNo, i) => {
+  const btnByTeam = new Map();
+  data.teamOrder.forEach((teamNo, lane) => {
     const btn = document.createElement('button');
-    btn.type = 'button'; btn.className = 'ladder-chip name'; btn.style.left = ladderLaneX(i) + 'px';
-    btn.dataset.col = String(i); btn.textContent = `${teamNo}조`;
-    btn.title = `클릭해서 ${teamNo}조의 경로만 확인`;
-    btn.addEventListener('click', () => startSingle(i));
+    btn.type = 'button'; btn.className = 'ladder-chip name'; btn.style.left = ladderLaneX(lane) + 'px';
+    btn.dataset.team = String(teamNo); btn.textContent = `${teamNo}조`;
+    btn.title = `끌어서 ${teamNo}조의 순서를 바꿉니다`;
+    btnByTeam.set(teamNo, btn);
     namesRow.appendChild(btn);
-
+  });
+  TEAMS.forEach((_, i) => {
+    const loc = LOCATIONS[data.bottomLocIdx[i]];
     const res = document.createElement('div');
     res.className = 'ladder-chip result'; res.style.left = ladderLaneX(i) + 'px';
-    res.dataset.col = String(i); res.textContent = '?';
+    res.dataset.col = String(i); res.textContent = loc.no; res.title = loc.name;
     resultsRow.appendChild(res);
+  });
+
+  /* ---- 조 이름표 드래그 재배열 (끼워넣기 방식) ---- */
+  let drag = null;
+
+  function layoutNames(order, exceptTeam) {
+    order.forEach((teamNo, lane) => {
+      if (teamNo === exceptTeam) return;
+      btnByTeam.get(teamNo).style.left = ladderLaneX(lane) + 'px';
+    });
+  }
+
+  function endDrag(commit) {
+    if (!drag) return;
+    const btn = btnByTeam.get(drag.teamNo);
+    btn.classList.remove('dragging');
+    if (commit && drag.preview.some((t, i) => t !== data.teamOrder[i])) {
+      data.teamOrder = drag.preview;
+      clearReveal();
+    }
+    drag = null;
+    activeLadderDrag = null;
+    layoutNames(data.teamOrder, null);
+  }
+
+  btnByTeam.forEach((btn, teamNo) => {
+    btn.addEventListener('pointerdown', (e) => {
+      if (busy || drag) return;
+      e.preventDefault();
+      const box = namesRow.getBoundingClientRect();
+      const lane = data.teamOrder.indexOf(teamNo);
+      drag = { teamNo, box, grabDx: e.clientX - box.left - ladderLaneX(lane), preview: [...data.teamOrder] };
+      activeLadderDrag = () => endDrag(false);
+      btn.classList.add('dragging');
+      try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    btn.addEventListener('pointermove', (e) => {
+      if (!drag || drag.teamNo !== teamNo) return;
+      const x = e.clientX - drag.box.left - drag.grabDx;
+      btn.style.left = x + 'px';
+      const target = Math.max(0, Math.min(n - 1, Math.round((x - LADDER_MARGIN) / LADDER_LANE_GAP)));
+      const cur = drag.preview.indexOf(teamNo);
+      if (cur !== target) {
+        drag.preview.splice(cur, 1);
+        drag.preview.splice(target, 0, teamNo);
+        layoutNames(drag.preview, teamNo);
+      }
+    });
+    btn.addEventListener('pointerup', () => endDrag(true));
+    btn.addEventListener('pointercancel', () => endDrag(false));
   });
 
   drawBase();
@@ -1310,16 +1370,20 @@ function renderLadder(container) {
   updateButtons();
 
   goBtn.onclick = revealAll;
-  resetBtn.onclick = () => renderLadder(container);
+  resetBtn.onclick = () => renderLadder(container, true);
 
   activeLadder = { container };
 }
 
 function resetActiveLadder() {
-  if (activeLadder) renderLadder(activeLadder.container);
+  if (activeLadder) renderLadder(activeLadder.container, true);
 }
 
 document.querySelectorAll('[data-ladder]').forEach((el) => renderLadder(el));
+// 드래그 중 Esc → 원위치 복귀
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && activeLadderDrag) activeLadderDrag();
+});
 
 /* ===================== 스핀 휠 위젯 (발표 순서 — 한 조씩 추첨) ===================== */
 
