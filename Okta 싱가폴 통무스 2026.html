@@ -178,10 +178,13 @@
 
   .photo-grid-lg { margin-top: 1.2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   @media (max-width: 620px) { .photo-grid-lg { grid-template-columns: 1fr; } }
-  .photo-slot-lg { aspect-ratio: 4 / 3; border: 1.5px dashed var(--line); border-radius: 12px; background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem; color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.92rem; overflow: hidden; position: relative; }
+  /* 카드 밖으로 넘치지 않도록 높이를 제한 — 남는 폭은 흐린 배경이 채운다 */
+  .photo-slot-lg { aspect-ratio: 4 / 3; max-height: 40vh; border: 1.5px dashed var(--line); border-radius: 12px; background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem; color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.92rem; overflow: hidden; position: relative; }
   .photo-slot-lg.has-img { border-style: solid; padding: 0; }
-  .photo-slot-lg.has-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .photo-slot-lg.has-img span { position: absolute; left: 0.6rem; bottom: 0.5rem; padding: 0.15rem 0.55rem; border-radius: 6px; background: rgba(0, 0, 0, 0.55); color: #eef1f6; font-size: 0.76rem; }
+  /* 세로 사진도 잘리지 않게 전체를 보여주고, 남는 여백은 같은 사진을 흐리게 깔아 채운다 */
+  .photo-slot-lg.has-img img { width: 100%; height: 100%; object-fit: contain; display: block; position: relative; z-index: 1; }
+  .photo-slot-lg.has-img img.photo-bg { position: absolute; inset: 0; z-index: 0; object-fit: cover; transform: scale(1.15); filter: blur(18px) brightness(0.72); }
+  .photo-slot-lg.has-img span { position: absolute; z-index: 2; left: 0.6rem; bottom: 0.5rem; padding: 0.15rem 0.55rem; border-radius: 6px; background: rgba(0, 0, 0, 0.55); color: #eef1f6; font-size: 0.76rem; }
 
   /* ---------- Shark Tank locations ---------- */
   .loc-grid { margin-top: 0.5rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
@@ -294,7 +297,8 @@
   .mixer-orbit.spin { animation: mixer-spin 3.6s cubic-bezier(0.3, 0.1, 0.2, 1) forwards; }
   @keyframes mixer-spin { from { transform: rotate(0deg); } to { transform: rotate(var(--final-angle, 1080deg)); } }
   .mixer-chip-pos { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform: rotate(var(--pos-angle, 0deg)); }
-  .mixer-chip { position: absolute; width: 56px; height: 56px; margin: -28px 0 0 -28px; top: calc(-1 * var(--r, 120px)); border-radius: 50%; background: var(--accent-gold); color: #241a04; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 1.15rem; transform: rotate(calc(-1 * var(--pos-angle, 0deg))); }
+  /* 통상 번호가 최대 3개(예: 11·12·13)까지 들어가므로 칩을 그에 맞춰 키워 둔다 */
+  .mixer-chip { position: absolute; width: 76px; height: 76px; margin: -38px 0 0 -38px; top: calc(-1 * var(--r, 120px)); border-radius: 50%; background: var(--accent-gold); color: #241a04; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 0.76rem; letter-spacing: -0.02em; white-space: nowrap; transform: rotate(calc(-1 * var(--pos-angle, 0deg))); }
   .mixer-chip-pos.spin .mixer-chip { animation: mixer-counter-spin 3.6s cubic-bezier(0.3, 0.1, 0.2, 1) forwards; }
   @keyframes mixer-counter-spin {
     from { transform: rotate(calc(-1 * var(--pos-angle, 0deg))); }
@@ -308,7 +312,19 @@
   .mixer-groups.show { width: clamp(360px, 46vw, 620px); opacity: 1; }
   .mixer-groups-inner { width: clamp(360px, 46vw, 620px); display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
   .mixer-group-card { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; font-size: 0.95rem; line-height: 1.5; }
-  .mixer-group-card .gnum { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.4rem; }
+  .mixer-group-card .gnum { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 700; font-size: 1.05rem; }
+  .mixer-group-card .gtitle { font-weight: 700; margin-bottom: 0.35rem; }
+
+  /* ---------- Global Mixer 좌석 배치도 (통상 번호별 테이블) ---------- */
+  .mixer-seat-wrap { margin-top: 0.3rem; display: flex; flex-direction: column; align-items: center; gap: 0.45rem; }
+  .mixer-seat-label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em; color: var(--ink-muted); border: 1px solid var(--line); border-radius: 20px; padding: 0.22rem 1.3rem; }
+  .mixer-seat-rows { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; width: min(680px, 92%); }
+  .mixer-seat-row { display: flex; justify-content: center; gap: 0.9rem; width: 100%; }
+  .mixer-table { flex: none; width: clamp(64px, 9vh, 104px); aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--accent-navy); background: color-mix(in srgb, var(--accent-navy) 7%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.05rem; }
+  .mixer-table .tno { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.03em; color: var(--ink-muted); }
+  .mixer-table .tcats { font-family: var(--font-mono); font-weight: 700; font-size: clamp(0.9rem, 2vh, 1.3rem); line-height: 1.1; color: var(--accent-gold); }
+  .mixer-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.2rem 0.8rem; max-width: 96%; font-size: 0.75rem; color: var(--ink-muted); }
+  .mixer-legend span b { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 700; margin-right: 0.2rem; }
 
   /* ---------- Bingo grid ---------- */
   .bingo-wrap { position: relative; }
@@ -349,6 +365,10 @@
   /* ---------- Hero image slide ---------- */
   .hero .ticket { padding: 0; align-items: stretch; justify-content: center; width: auto; height: calc(100% - 2.2rem); max-width: min(1680px, 94vw); aspect-ratio: 2752 / 1536; }
   .hero .stub { display: none; }
+
+  /* ---------- 일정표 원본 이미지 슬라이드 ---------- */
+  .schedule .ticket { padding: 0; align-items: stretch; justify-content: center; width: auto; height: calc(100% - 2.2rem); max-width: min(1680px, 94vw); aspect-ratio: 1543 / 1237; background: #fff; }
+  .schedule .stub { display: none; }
   .video-box { aspect-ratio: 16/9; max-width: 560px; border-radius: 12px; border: 1px dashed var(--line); background: color-mix(in srgb, var(--accent-navy) 8%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.7rem; color: var(--ink-muted); margin-top: 0.5rem; }
   .play { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--accent-gold); display: flex; align-items: center; justify-content: center; }
   .play::after { content: ""; border-style: solid; border-width: 9px 0 9px 15px; border-color: transparent transparent transparent var(--accent-gold); margin-left: 4px; }
@@ -397,20 +417,20 @@ const TEAMS = Array.from({ length: 10 }, (_, i) => i + 1);
 const SEATING_ROWS = [2, 3, 2, 3];
 
 const LOCATIONS = [
-  { no: '①', name: 'Maxwell Hawker Centre', biz: 'Ren Min Beer', category: 'Hawker Centre · F&B', address: '1 Kadayanallur St, #01-33 Maxwell Food Centre, Singapore 069184', size: '10m²', rent: 'S$3,500/월 (추정)', tags: ['F&B', '호커센터'],
+  { no: '①', name: 'Maxwell Hawker Centre', biz: 'Ren Min Beer', category: 'Hawker Centre · F&B', address: '1 Kadayanallur St, #01-33 Maxwell Food Centre, Singapore 069184', size: '108 sqft', rent: 'S$3,500/월', tags: ['F&B', '호커센터'],
     photo: 'assets/shark_tank/maxwell_hawker_RenMinBeer_landscape.png', photo2: 'assets/shark_tank/maxwell_hawker_RenMinBeer.png', photo2Label: '현장 사진 2' },
   { no: '②', name: 'Tanjong Pagar Road', biz: '오빠짜장', category: 'Commercial · Restaurant', address: '77A Tg Pagar Rd, Singapore 088498', size: '970 sqft', rent: 'S$22,000/월', tags: ['F&B', '오피스 상권'],
     photo: 'assets/shark_tank/oppa_llm_landscape.jpg', map: 'assets/shark_tank/oppa_sg_map.png' },
   { no: '③', name: 'Plaza Singapura', biz: 'PEDRO', category: 'Shopping Mall', address: '68 Orchard Rd, #01-03 Plaza Singapura, Singapore 238839', size: '834 sqft', rent: 'S$35,000/월', tags: ['Retail', '쇼핑몰'],
-    photo: 'assets/shark_tank/plaze_sinpora_landscape.png', map: 'assets/shark_tank/plaza_singapura_map.png' },
+    photo: 'assets/shark_tank/plaze_sinpora_landscape.webp', map: 'assets/shark_tank/plaza_singapura_map.png' },
   { no: '④', name: 'KOTRA (Suntec Tower One)', biz: 'KOTRA 싱가포르무역관', category: 'Business District', address: '#13-02 Suntec Tower One, 7 Temasek Blvd, Singapore 038987', size: '2,000 sqft', rent: 'S$50,000/월', tags: ['무역', '기관 방문'],
     photo: 'assets/shark_tank/kotra_building.jpg', map: 'assets/shark_tank/kotra_map.png' },
 ];
 
 const SPEAKERS = [
-  { name: '이준원', role: 'SGX 증권거래소 한국 총괄', topic: '싱가포르 자본시장 소개 / SGX IPO의 이해', time: '8/14(금) 13:00–14:00', photo: 'assets/이준원%20SGX%20상무님.jpeg' },
-  { name: '한재경', role: 'OBBA Group 대표', topic: '직원에서 연매출 200억 대표가 되기까지', time: '8/14(금) 14:00–15:00', photo: 'assets/한재경_OBBA_대표님.png' },
-  { name: '장승환', role: '지마켓 대표이사', topic: '시장 변화에 대응하는 스타트업 성공 전략', time: '8/14(금) 15:00–17:00', photo: 'assets/장승환_지마켓_대표님.jpeg' },
+  { name: '이준원', role: 'SGX 증권거래소 한국 총괄', topic: '싱가포르 자본시장 소개 / SGX IPO의 이해', time: '8/14(금) 13:00–14:30', photo: 'assets/이준원%20SGX%20상무님.jpeg' },
+  { name: '한재경', role: 'OBBA Group 대표', topic: '직원에서 연매출 200억 대표가 되기까지', time: '8/14(금) 14:30–16:00', photo: 'assets/한재경_OBBA_대표님.png' },
+  { name: '장승환', role: '지마켓 대표이사', topic: '시장 변화에 대응하는 스타트업 성공 전략', time: '8/14(금) 16:00–17:30', photo: 'assets/장승환_지마켓_대표님.jpeg' },
 ];
 
 const SPEAKER_DETAILS = [
@@ -449,14 +469,30 @@ const JUDGES = [
   { name: '심사위원 3 (미정)', org: 'TBC' },
 ];
 
-// 통상위원회 15개 소분류를 6개 믹서 그룹으로 재편성한 초안 (인원수 데이터 없어 주제 유사성 기준으로 제안 — 확정 필요)
+// 통상위원회 15개 소분류 — 배열 순서가 곧 통상 번호(1~15)
+const TRADE_CATS = [
+  '리빙&뷰티', '건강식품·미용용품', '식음료·요식업', '호텔·여행', '전기·전자',
+  '전자상거래', '4차산업·컨텐츠·플랫폼', '화학·자원', '건축·재활용', '기계·공구',
+  '금융·법률·부동산', '교육·문화·리크루팅', '전시사업', '물류', '섬유·섬유제품',
+];
+const tradeCat = (n) => TRADE_CATS[n - 1];
+
+// 통상위원회 15개 소분류를 6개 믹서 그룹으로 재편성 (주제 유사성 기준 — 그룹명은 통상 번호로 표기)
 const MIXER_GROUPS = [
-  { no: 1, title: '리테일 · 뷰티', cats: ['리빙&뷰티', '건강식품·미용용품'] },
-  { no: 2, title: 'F&B · 호스피탈리티', cats: ['식음료·요식업', '호텔·여행'] },
-  { no: 3, title: '테크 · 디지털', cats: ['전기·전자', '전자상거래', '4차산업·컨텐츠·플랫폼'] },
-  { no: 4, title: '산업 · 소재', cats: ['화학·자원', '건축·재활용', '기계·공구'] },
-  { no: 5, title: '전문서비스', cats: ['금융·법률·부동산', '교육·문화·리크루팅', '전시사업'] },
-  { no: 6, title: '물류 · 섬유', cats: ['물류', '섬유·섬유제품'] },
+  { nos: [1, 2], title: '리테일 · 뷰티' },
+  { nos: [3, 4], title: 'F&B · 호스피탈리티' },
+  { nos: [5, 6, 7], title: '테크 · 디지털' },
+  { nos: [8, 9, 10], title: '산업 · 소재' },
+  { nos: [11, 12, 13], title: '전문서비스' },
+  { nos: [14, 15], title: '물류 · 섬유' },
+].map((g) => ({ ...g, label: `통상 ${g.nos.join('·')}`, cats: g.nos.map(tradeCat) }));
+
+// 믹서 좌석 배치 — 원형 테이블 10개(무대 쪽부터 2-3-2-3)에 통상 1~15번을 균등 분배 (한 테이블 최대 2개)
+const MIXER_TABLES = [
+  [1, 2], [3],
+  [4, 5], [6], [7, 8],
+  [9], [10, 11],
+  [12], [13, 14], [15],
 ];
 
 // OKTA Global Connection Challenge — "원하는 분야 네트워킹" 라운드 (13:10–13:40)
@@ -544,12 +580,13 @@ function speakerSlide(i) {
   `;
 }
 
-function breakSlide(duration, nextLabel, nextDesc, withCoffee) {
+// 브레이크 슬라이드 — 상단 라벨은 한글 한 단어만, 없으면 생략
+function breakSlide(label, duration, nextLabel, nextDesc, withCoffee) {
   return `
-    <div class="eyebrow">Break</div>
+    ${label ? `<div class="eyebrow">${label}</div>` : ''}
     <h2>잠시 쉬어갑니다</h2>
     ${withCoffee ? `<div class="coffee-cup"><span class="steam s1"></span><span class="steam s2"></span><span class="steam s3"></span><div class="cup"></div><div class="handle"></div></div>` : `<div class="break-dots"><span></span><span></span><span></span></div>`}
-    <div class="duration">${duration}</div>
+    ${duration ? `<div class="duration">${duration}</div>` : ''}
     ${nextLabel ? `<div class="next-up">다음 순서 · <b>${nextLabel}</b><br>${nextDesc}</div>` : ''}
   `;
 }
@@ -569,12 +606,19 @@ function teamSlide(n) {
   `;
 }
 
-function judgeCard(j) {
+// 믹서 좌석 배치도 — 원형 테이블 10개에 통상 번호를 뿌리고, 아래에 번호↔분류 범례를 붙인다
+function mixerSeatMap() {
+  let t = 0;
+  const rows = SEATING_ROWS.map((count) => `<div class="mixer-seat-row">${Array.from({ length: count }, () => {
+    const nos = MIXER_TABLES[t++];
+    return `<div class="mixer-table"><div class="tno">${t}번 테이블</div><div class="tcats">${nos.join('·')}</div></div>`;
+  }).join('')}</div>`).join('');
   return `
-    <div class="mc-photo-slot" style="width:150px;height:150px;"><span>사진<br>미정</span></div>
-    <div>
-      <div class="name">${j.name}</div>
-      <div class="role">${j.org}</div>
+    <div class="mixer-seat-wrap">
+      <div class="mixer-seat-label">무대</div>
+      <div class="mixer-seat-rows">${rows}</div>
+      <div class="mixer-seat-label">입구</div>
+      <div class="mixer-legend">${TRADE_CATS.map((c, i) => `<span><b>${i + 1}</b>${c}</span>`).join('')}</div>
     </div>
   `;
 }
@@ -600,35 +644,19 @@ const SLIDES = [
 
   // 1 hero image ------------------------------------------------------------
   { tag: 'hero', title: 'World OKTA Singapore', body: `
-    <img src="assets/hero_singapore.png" alt="World OKTA Singapore — 차세대 통합무역 스쿨" style="width:100%;height:100%;object-fit:contain;display:block;background:#0b1220;" />
+    <img src="assets/hero_singapore_3.png" alt="World OKTA Singapore — 차세대 통합무역 스쿨" style="width:100%;height:100%;object-fit:contain;display:block;background:#0b1220;" />
   `},
 
-  // 2 3-day overview ---------------------------------------------------------
-  { stub: 'OVERVIEW', body: `
-    <div class="eyebrow">3-Day Overview</div>
-    <h2>일정</h2>
-    <div class="overview-grid">
-      <div><h3>DAY 1 · 8/13(목)</h3>${timeline([
-        ['13:00', '참가자 접수'], ['15:00', 'OKTA 아이덴티티 · 임원소개'], ['16:00', '조장 임명 · 조별 자기소개'],
-        ['17:00', '조별 프로그램 설명'], ['18:00', '입교식'], ['21:00', '장소 추첨 결과 발표'],
-      ])}</div>
-      <div><h3>DAY 2 · 8/14(금)</h3>${timeline([
-        ['09:00', 'OKTA Global Mixer'], ['10:00', 'Shark Tank 현장 방문'], ['13:00', '특강 1·2·3'],
-        ['18:00', '석식'],
-      ])}</div>
-      <div><h3>DAY 3 · 8/15(토)</h3>${timeline([
-        ['09:00', '발표 준비 · 순서 추첨'], ['10:00', 'Shark Tank 발표'], ['13:00', 'Global Connection Challenge'],
-        ['15:00', '순위 발표 · 수료식'], ['19:00', '차세대 파티'],
-      ])}</div>
-    </div>
-    <p class="lede" style="margin-top:0.8rem;">8/16(일)은 조식 후 개별귀국으로 별도 세션 없음</p>
+  // 2 전체 일정표 (원본 이미지) -------------------------------------------------
+  { tag: 'schedule', title: '전체 일정표', body: `
+    <img src="assets/최종일정표.png" alt="2026 아세안 차세대 글로벌 창업무역스쿨 일정표" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
   `},
 
   // ============ DAY 1 (8/13 목) ============
   { tag: 'divider', stub: 'DAY 1', body: dayDivider(1, '2026년 8월 13일 (목)', [
-    ['13:00', '참가자 접수'], ['15:00', 'OKTA 아이덴티티 · 임원/서포터즈 소개'], ['16:00', '조장 임명, 조이름, 조별 자기소개'],
-    ['17:00', '조별 프로그램 설명 · 만찬장 이동'], ['18:00', '입교식'], ['19:00', '석식 (통합무역스쿨, 경제인대회)'],
-    ['21:00', '장소 추첨 결과 발표 · 숙소 이동'],
+    ['13:00', '참가자 접수'], ['15:00', 'OKTA 아이덴티티'], ['15:30', '임원 / 서포터즈 소개'],
+    ['16:00', '조장 임명, 조별 자기 소개'], ['17:00', '조별 프로그램 설명 · 장소 추첨'], ['17:30', '만찬장 이동'],
+    ['18:00', '입교식'], ['19:00', '석식 (통합무역스쿨, 경제인대회)'], ['21:00', '숙소 이동'],
   ])},
 
   { stub: 'DAY 1', body: `
@@ -658,20 +686,33 @@ const SLIDES = [
   // 10개 조별 자기소개 (개별 슬라이드) -------------------------------------
   ...TEAMS.map(n => ({ stub: 'TEAMS', title: `${n}조 자기소개`, body: teamSlide(n) })),
 
-  { stub: 'DAY 1', body: `
-    <div class="eyebrow">Opening · 17:00–18:00</div>
-    <h2>샤크탱크 챌린지 로케이션 소개</h2>
-    <div class="tags">${LOCATIONS.map(l => `<span class="tag">${l.no} ${l.name}</span>`).join('')}</div>
+  // 샤크탱크 로케이션 소개 (전체 → 개별 4곳) — 조별 프로그램 설명 시간에 진행 후 바로 장소 추첨
+  { stub: 'SHARK', body: `
+    <div class="eyebrow">조별 프로그램 설명 · 17:00–17:30</div>
+    <h2>Singapore 샤크탱크 로케이션</h2>
+    <p class="lede">현장조사 항목: 주요 고객층 · 경쟁업체 · 유동인구 · 주변 환경 · 성공·실패 요인</p>
+    ${locationGrid()}
   `},
 
-  { stub: 'DAY 1', body: `
-    <div class="eyebrow">입교식 · 18:00–19:00 / 석식 · 19:00–21:00</div>
-    <h2>입교식 &amp; 석식</h2>
-    <p class="lede">입교식(국민의례 등)과 석식(통합무역스쿨, 경제인대회)은 별도 운영팀에서 진행합니다.</p>
-  `},
+  ...LOCATIONS.map(l => ({ stub: 'SHARK', body: `
+    <div class="eyebrow">조별 프로그램 설명 · 17:00–17:30</div>
+    <h2>${l.no} ${l.name}</h2>
+    <div class="loc-biz" style="font-size:1.1rem;">${l.biz}</div>
+    <dl class="loc-dl" style="font-size:1rem;margin-top:0.6rem;">
+      <div class="loc-field"><dt>구분</dt><dd>${l.category}</dd></div>
+      <div class="loc-field"><dt>주소</dt><dd>${l.address}</dd></div>
+      <div class="loc-field"><dt>면적</dt><dd>${l.size}</dd></div>
+      <div class="loc-field"><dt>임대료</dt><dd>${l.rent}</dd></div>
+    </dl>
+    <div class="tags">${l.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+    <div class="photo-grid-lg">
+      <div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.photo}" alt="" aria-hidden="true"><img src="${l.photo}" alt="${l.name} 현장 사진"><span>현장 사진</span></div>
+      <div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.map || l.photo2}" alt="" aria-hidden="true"><img src="${l.map || l.photo2}" alt="${l.name} ${l.map ? '지도 위치' : l.photo2Label}"><span>${l.map ? '지도 위치' : l.photo2Label}</span></div>
+    </div>
+  ` })),
 
   { stub: 'DAY 1', body: `
-    <div class="eyebrow">장소 추첨 · 약 21:00 (숙소 이동 전)</div>
+    <div class="eyebrow">장소 추첨 · 17:00–17:30</div>
     <h2>샤크탱크 챌린지 장소 추첨</h2>
     <div class="tags">${LOCATIONS.map(l => `<span class="tag">${l.no} ${l.name}</span>`).join('')}</div>
     <div class="ladder-wrap" data-ladder>
@@ -690,9 +731,10 @@ const SLIDES = [
 
   // ============ DAY 2 (8/14 금) ============
   { tag: 'divider', stub: 'DAY 2', body: dayDivider(2, '2026년 8월 14일 (금)', [
-    ['08:00', '조식'], ['09:00', 'OKTA Global Mixer'], ['10:00', 'Shark Tank 현장 방문'], ['12:00', '중식'],
-    ['13:00', '특강1 · 이준원'], ['14:00', '특강2 · 한재경'], ['15:00', '커피 브레이크'], ['15:10', '특강3 · 장승환'],
-    ['17:00', '만찬장 이동'], ['18:00', '석식 (통합무역스쿨, 경제인대회)'], ['21:00', '숙소 이동'],
+    ['08:00', '조식'], ['09:00', 'OKTA Global Mixer'], ['10:00', 'Singapore Shark Tank Challenge 현장 방문'], ['12:00', '중식'],
+    ['13:00', '특강 1 · 이준원 (SGX 증권거래소 한국 총괄)'], ['14:30', '특강 2 · 한재경 (OBBA Group 대표)'],
+    ['16:00', '특강 3 · 장승환 (지마켓 대표이사)'], ['17:30', '만찬장 이동'],
+    ['18:00', '석식 (통합무역스쿨, 경제인대회)'], ['21:00', '숙소 이동'],
   ])},
 
   { tag: 'mixer', stub: 'DAY 2', body: `
@@ -703,77 +745,60 @@ const SLIDES = [
       <div class="mixer-left">
         <div class="mixer-stage">
           <div class="mixer-orbit" data-mixer-orbit>
-            ${MIXER_GROUPS.map((g, i) => `<div class="mixer-chip-pos" data-mixer-chip style="--r:120px;--pos-angle:${(360 / MIXER_GROUPS.length) * i}deg;"><div class="mixer-chip">${g.no}</div></div>`).join('')}
+            ${MIXER_GROUPS.map((g, i) => `<div class="mixer-chip-pos" data-mixer-chip style="--r:120px;--pos-angle:${(360 / MIXER_GROUPS.length) * i}deg;"><div class="mixer-chip">${g.nos.join('·')}</div></div>`).join('')}
           </div>
         </div>
         <div class="mixer-actions"><button type="button" data-mixer-go>그룹 편성 시작</button></div>
       </div>
       <div class="mixer-groups" data-mixer-groups>
         <div class="mixer-groups-inner">
-          ${MIXER_GROUPS.map(g => `<div class="mixer-group-card"><div class="gnum">그룹 ${g.no} · ${g.title}</div>${g.cats.join(' · ')}</div>`).join('')}
+          ${MIXER_GROUPS.map(g => `<div class="mixer-group-card"><div class="gnum">${g.label}</div><div class="gtitle">${g.title}</div>${g.cats.join(' · ')}</div>`).join('')}
         </div>
       </div>
     </div>
   `},
 
+  { stub: 'DAY 2', body: `
+    <div class="eyebrow">OKTA Global Mixer · 09:00–10:00</div>
+    <h2>통상 번호대로 모여주세요</h2>
+    <p class="lede">본인 통상위원회 번호가 적힌 테이블로 이동해 주세요.</p>
+    ${mixerSeatMap()}
+  `},
+
   { stub: 'SHARK', body: `
-    <div class="eyebrow">Field Visit · 10:00–12:00</div>
+    <div class="eyebrow">현장 방문 · 10:00–12:00</div>
     <h2>Singapore Shark Tank Challenge — 이동 안내</h2>
     <div class="route-map">
       <div class="route-stop"><div class="ricon">🏨</div>호텔 로비</div><span class="route-arrow">→</span>
       <div class="route-stop"><div class="ricon">🚕</div>이동</div><span class="route-arrow">→</span>
-      <div class="route-stop"><div class="ricon">🔍</div>현장조사<br>(1시간)</div><span class="route-arrow">→</span>
+      <div class="route-stop"><div class="ricon">🔍</div>현장조사</div><span class="route-arrow">→</span>
       <div class="route-stop"><div class="ricon">⏰</div>12:00까지<br>복귀</div>
     </div>
   `},
 
-  { stub: 'SHARK', body: `
-    <div class="eyebrow">Field Visit · 10:00–12:00</div>
-    <h2>Singapore 샤크탱크 로케이션</h2>
-    <p class="lede">현장조사 항목: 주요 고객층 · 경쟁업체 · 유동인구 · 주변 환경 · 성공·실패 요인</p>
-    ${locationGrid()}
-  `},
-
-  ...LOCATIONS.map(l => ({ stub: 'SHARK', body: `
-    <div class="eyebrow">Field Visit · 10:00–12:00</div>
-    <h2>${l.no} ${l.name}</h2>
-    <div class="loc-biz" style="font-size:1.1rem;">${l.biz}</div>
-    <dl class="loc-dl" style="font-size:1rem;margin-top:0.6rem;">
-      <div class="loc-field"><dt>구분</dt><dd>${l.category}</dd></div>
-      <div class="loc-field"><dt>주소</dt><dd>${l.address}</dd></div>
-      <div class="loc-field"><dt>면적</dt><dd>${l.size}</dd></div>
-      <div class="loc-field"><dt>임대료</dt><dd>${l.rent}</dd></div>
-    </dl>
-    <div class="tags">${l.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
-    <div class="photo-grid-lg">
-      <div class="photo-slot-lg has-img"><img src="${l.photo}" alt="${l.name} 현장 사진"><span>현장 사진</span></div>
-      <div class="photo-slot-lg has-img"><img src="${l.map || l.photo2}" alt="${l.name} ${l.map ? '지도 위치' : l.photo2Label}"><span>${l.map ? '지도 위치' : l.photo2Label}</span></div>
-    </div>
-  ` })),
-
   { stub: 'TALK', body: `
-    <div class="eyebrow">Special Lecture · 13:00–17:00</div>
+    <div class="eyebrow">특강 · 13:00–17:30</div>
     <h2>오늘의 강연자</h2>
     ${speakerGrid()}
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('중식 12:00–13:00', '특강 1', '이준원 (SGX 증권거래소 한국 총괄) — 싱가포르 자본시장 소개 / SGX IPO의 이해') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', '특강 1', '이준원 (SGX 증권거래소 한국 총괄) — 싱가포르 자본시장 소개 / SGX IPO의 이해') },
 
   { stub: 'TALK 1', body: speakerSlide(0) },
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('5분', '특강 2', '한재경 (OBBA Group 대표) — 직원에서 연매출 200억 대표가 되기까지') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('', '', '특강 2', '한재경 (OBBA Group 대표) — 직원에서 연매출 200억 대표가 되기까지') },
 
   { stub: 'TALK 2', body: speakerSlide(1) },
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('커피 브레이크 · 15:00–15:10', '특강 3', '장승환 (지마켓 대표이사) — 시장 변화에 대응하는 스타트업 성공 전략', true) },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('', '', '특강 3', '장승환 (지마켓 대표이사) — 시장 변화에 대응하는 스타트업 성공 전략', true) },
 
   { stub: 'TALK 3', body: speakerSlide(2) },
 
   // ============ DAY 3 (8/15 토) ============
   { tag: 'divider', stub: 'DAY 3', body: dayDivider(3, '2026년 8월 15일 (토)', [
-    ['08:00', '조식'], ['09:00', '발표 준비 · 발표순서 추첨'], ['10:00', 'Shark Tank 발표'], ['12:00', '중식 (번호별)'],
-    ['13:00', 'OKTA Global Connection Challenge'], ['15:00', '커피 브레이크'], ['15:10', '행사 전체 순위 발표'], ['16:00', '수료식'],
-    ['17:00', '개인정비'], ['18:00', '파티장 이동'], ['19:00', '차세대 파티'],
+    ['08:00', '조식'], ['09:00', '발표 준비'], ['10:00', 'Singapore Shark Tank Challenge 발표'], ['12:00', '중식'],
+    ['13:00', 'OKTA Global Connection Challenge'], ['15:00', '행사 전체 순위 발표'], ['16:00', '수료식'],
+    ['17:00', '개인정비'], ['18:00', '연회장 이동'], ['18:30', '차세대 파티'],
   ])},
 
   { stub: 'DAY 3', body: `
@@ -786,16 +811,10 @@ const SLIDES = [
   `},
 
   { stub: 'DAY 3', body: `
-    <div class="eyebrow">Judges</div>
+    <div class="eyebrow">심사위원</div>
     <h2>심사위원 소개</h2>
     <div class="speaker-grid">${JUDGES.map(j => `<div class="speaker-card"><div class="avatar">?</div><div class="name">${j.name}</div><div class="role">${j.org}</div></div>`).join('')}</div>
   `},
-
-  ...JUDGES.map((j) => ({ stub: 'JUDGE', body: `
-    <div class="eyebrow">Judges</div>
-    <h2>${j.name}</h2>
-    <div class="mc-card">${judgeCard(j)}</div>
-  ` })),
 
   { tag: 'wheel', stub: 'DAY 3', body: `
     <div class="eyebrow">Shark Tank Challenge · 09:00–10:00</div>
@@ -829,7 +848,7 @@ const SLIDES = [
     <div class="insert-box"><span>이 영역에 <b>조별 발표자료 10팀분</b>을 발표 순서대로 삽입하세요</span></div>
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('중식 12:00–13:00', 'OKTA Global Connection Challenge', '번호별로 순차 이동하여 중식 진행 · 13:00 시작') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', 'OKTA Global Connection Challenge', '번호별로 순차 이동하여 중식 진행 · 13:00 시작') },
 
   { stub: 'GCC', body: `
     <div class="eyebrow">Global Connection Challenge · 13:00–13:10</div>
@@ -865,10 +884,10 @@ const SLIDES = [
     </div>
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('커피 브레이크 · 15:00–15:10', '행사 전체 순위 발표', '', true) },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('휴식', '', '행사 전체 순위 발표', '', true) },
 
   { stub: 'DAY 3', body: `
-    <div class="eyebrow">Awards · 15:10–16:00</div>
+    <div class="eyebrow">순위 발표 · 15:00–16:00</div>
     <h2>행사 전체 순위 발표</h2>
     <p class="lede">Shark Tank Challenge · Global Connection Challenge를 종합한 행사 전체 순위를 발표합니다. 시상 상금·상품, 순위 발표 PPT, 마이크가 준비됩니다.</p>
   `},
@@ -890,17 +909,17 @@ const SLIDES = [
     `).join('')}
   `},
 
-  { tag: 'break', stub: 'BREAK', body: `
-    <div class="eyebrow">Free Time · 17:00–18:00</div>
-    <h2>잠시 쉬어갑니다</h2>
-    <div class="break-dots"><span></span><span></span><span></span></div>
-    <div class="duration">개인정비 · 18:00까지 파티장 이동</div>
-  ` },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('개인정비', '17:00–18:00', '차세대 파티', '18:00까지 연회장 이동 · 18:30 시작') },
 
   { stub: 'DAY 3', body: `
-    <div class="eyebrow">Networking Party · 19:00–22:00</div>
+    <div class="eyebrow">차세대 파티 · 18:30–21:00</div>
     <h2>차세대 파티</h2>
   `},
+
+  // ============ DAY 4 (8/16 일) ============
+  { tag: 'divider', stub: 'DAY 4', body: dayDivider(4, '2026년 8월 16일 (일)', [
+    ['08:00', '조식'], ['', '조식 후 개별귀국'],
+  ])},
 
   // info / notion link ------------------------------------------------------
   // appendix (photo/video recap + closing) -----------------------------------
@@ -918,8 +937,8 @@ const SLIDES = [
 const track = document.getElementById('track');
 SLIDES.forEach((s, i) => {
   const section = document.createElement('section');
-  section.className = 'slide' + (s.tag === 'seating' ? ' seating' : s.tag === 'hero' ? ' hero' : s.tag === 'divider' ? ' divider' : s.tag === 'break' ? ' break' : s.tag === 'appendix' ? ' appendix' : '');
-  if (s.tag === 'seating' || s.tag === 'hero' || s.tag === 'appendix') {
+  section.className = 'slide' + (s.tag === 'seating' ? ' seating' : s.tag === 'hero' ? ' hero' : s.tag === 'schedule' ? ' schedule' : s.tag === 'divider' ? ' divider' : s.tag === 'break' ? ' break' : s.tag === 'appendix' ? ' appendix' : '');
+  if (s.tag === 'seating' || s.tag === 'hero' || s.tag === 'schedule' || s.tag === 'appendix') {
     section.innerHTML = `<div class="ticket">${s.body}</div>`;
   } else {
     section.innerHTML = `
