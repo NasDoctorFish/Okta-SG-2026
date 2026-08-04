@@ -7,7 +7,7 @@
     --bg-elevated: #ffffff;
     --ink: #1d233b;
     --ink-muted: #5f5f5f;
-    --accent-gold: #c8940f;
+    --accent-gold: #1d4ed8;
     --accent-navy: #145a9f;
     --accent-navy-deep: #002d6c;
     --accent-red: #ae2329;
@@ -27,7 +27,7 @@
       --bg-elevated: #141d33;
       --ink: #eef1f6;
       --ink-muted: #9aa5bd;
-      --accent-gold: #eead1f;
+      --accent-gold: #5b8fe0;
       --accent-navy: #4f8fd1;
       --accent-navy-deep: #06132a;
       --accent-red: #d97a63;
@@ -39,13 +39,13 @@
   }
   :root[data-theme="dark"] {
     --bg: #0b1220; --bg-elevated: #141d33; --ink: #eef1f6; --ink-muted: #9aa5bd;
-    --accent-gold: #eead1f; --accent-navy: #4f8fd1; --accent-navy-deep: #06132a; --accent-red: #d97a63; --accent-green: #4fd18f;
+    --accent-gold: #5b8fe0; --accent-navy: #4f8fd1; --accent-navy-deep: #06132a; --accent-red: #d97a63; --accent-green: #4fd18f;
     --line: rgba(238, 241, 246, 0.16); --notch: var(--bg);
     --shadow: 0 24px 70px -34px rgba(0, 0, 0, 0.65);
   }
   :root[data-theme="light"] {
     --bg: #f0f2f5; --bg-elevated: #ffffff; --ink: #1d233b; --ink-muted: #5f5f5f;
-    --accent-gold: #c8940f; --accent-navy: #145a9f; --accent-navy-deep: #002d6c; --accent-red: #ae2329; --accent-green: #1f7a4d;
+    --accent-gold: #1d4ed8; --accent-navy: #145a9f; --accent-navy-deep: #002d6c; --accent-red: #ae2329; --accent-green: #1f7a4d;
     --line: rgba(29, 35, 59, 0.14); --notch: var(--bg);
     --shadow: 0 24px 70px -34px rgba(29, 35, 59, 0.45);
   }
@@ -100,6 +100,13 @@
   .cabin .eyebrow { margin-bottom: 0.5rem; }
   .cabin h2 { font-size: clamp(1.9rem, 3.6vw, 2.7rem); font-weight: 700; margin-bottom: 0.5rem; position: relative; }
   .cabin h2::after { content: ""; display: block; width: 36px; height: 3px; margin-top: 0.6rem; margin-bottom: 0.6rem; background: var(--accent-gold); }
+  .centered-header { text-align: center; }
+  .centered-header h2::after { margin-left: auto; margin-right: auto; }
+  .centered-header .lede { max-width: 640px; margin-left: auto; margin-right: auto; }
+  .centered-block { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 62%; text-align: center; }
+  .centered-block h2::after { margin-left: auto; margin-right: auto; }
+  .centered-block .plain-list { text-align: left; display: inline-block; }
+  .deadline-badge { margin-top: 1.6rem; display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-weight: 700; font-size: 1.35rem; color: var(--accent-red); background: color-mix(in srgb, var(--accent-red) 10%, transparent); border: 1.5px solid var(--accent-red); border-radius: 14px; padding: 0.7rem 1.6rem; }
   .lede { color: var(--ink-muted); font-size: 1.15rem; line-height: 1.7; max-width: 68ch; }
 
   /* ---------- Big statement (title-only slides, MC narrates the rest) ---------- */
@@ -132,8 +139,8 @@
   .timeline .row { display: grid; grid-template-columns: 4.2rem 1fr; gap: 0.9rem; padding: 0.55rem 0; border-bottom: 1px solid var(--line); }
   .timeline .row:last-child { border-bottom: none; }
   .timeline .row.dim { opacity: 0.55; }
-  .timeline time { font-family: var(--font-mono); font-size: 0.98rem; color: var(--accent-gold); font-variant-numeric: tabular-nums; }
-  .timeline .desc { font-size: 1.08rem; }
+  .timeline time { font-family: var(--font-mono); font-size: 0.98rem; color: var(--accent-gold); font-variant-numeric: tabular-nums; text-align: center; }
+  .timeline .desc { font-size: 1.08rem; text-align: center; }
   .timeline .desc small { display: block; color: var(--ink-muted); font-size: 0.9rem; margin-top: 0.15rem; }
 
   /* ---------- Team placeholder slides ---------- */
@@ -148,6 +155,13 @@
   .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   .speaker-card .role, .speaker-card .topic { font-size: 1.05rem; color: var(--ink-muted); }
   .speaker-card .topic { color: var(--ink); }
+
+  .exec-grid { margin-top: 0.6rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3.2rem; min-height: 62vh; }
+  .exec-row { display: flex; justify-content: center; gap: 4.5rem; }
+  .exec-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem; }
+  .exec-avatar { width: 150px; height: 150px; font-size: 1.3rem; }
+  .exec-card .name { font-weight: 700; font-size: 1.8rem; }
+  .exec-card .role { font-size: 1.25rem; color: var(--ink-muted); }
 
   /* ---------- MC intro card (speaker / judge, read before they come up) ---------- */
   .mc-card { display: flex; gap: 1.3rem; align-items: center; flex-wrap: wrap; margin-top: 0.6rem; }
@@ -199,6 +213,18 @@
   .loc-field { min-width: 0; }
   .tags { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.3rem; }
   .tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.03em; padding: 0.15rem 0.45rem; border-radius: 20px; border: 1px solid var(--line); color: var(--ink-muted); }
+  .prize-badges { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .prize-badge { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-weight: 700; font-size: 1.05rem; padding: 0.5rem 1.1rem; border-radius: 14px; border: 1.5px solid var(--line); background: var(--bg-elevated); }
+  .prize-badge .medal { font-size: 1.25rem; }
+  .prize-badge.gold { border-color: #d4af37; color: #d4af37; }
+  .prize-badge.silver { border-color: #a8a9ad; color: #a8a9ad; }
+  .prize-badge.bronze { border-color: #cd7f32; color: #cd7f32; }
+  .prize-badges-lg { gap: 1.1rem; }
+  .prize-badges-lg .prize-badge { font-size: clamp(1.6rem, 3.4vw, 2.4rem); padding: 1rem 2rem; border-radius: 20px; border-width: 2px; background: rgba(238, 243, 251, 0.08); }
+  .prize-badges-lg .prize-badge .medal { font-size: 1.35em; }
+  .prize-badges-lg .prize-badge.gold { border-color: #d4af37; color: #ffd76a; }
+  .prize-badges-lg .prize-badge.silver { border-color: #a8a9ad; color: #d9dadd; }
+  .prize-badges-lg .prize-badge.bronze { border-color: #cd7f32; color: #e3a06c; }
 
   /* ---------- Route / movement map ---------- */
   .route-map { margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; min-height: 55%; }
@@ -220,43 +246,44 @@
 
   /* ---------- Break slide ---------- */
   .break .ticket { align-items: center; justify-content: center; text-align: center; }
-  .break .cabin { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 60%; }
-  .break .duration { font-family: var(--font-mono); font-size: clamp(2.8rem, 8vw, 4.2rem); font-weight: 700; color: var(--accent-navy); letter-spacing: 0.02em; }
-  .break .next-up { margin-top: 0.4rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 1.08rem; color: var(--ink-muted); }
+  .break .cabin { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.3rem; min-height: 60%; }
+  .break h2 { font-size: clamp(2.6rem, 5.5vw, 4rem); }
+  .break .duration { font-family: var(--font-mono); font-size: clamp(3.4rem, 9.5vw, 5.2rem); font-weight: 700; color: var(--accent-navy); letter-spacing: 0.02em; }
+  .break .next-up { margin-top: 0.5rem; padding-top: 1.2rem; border-top: 1px solid var(--line); font-size: 1.35rem; color: var(--ink-muted); }
   .break .next-up b { color: var(--ink); }
-  .break-dots { display: flex; gap: 0.5rem; }
-  .break-dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-gold); animation: break-bounce 1.2s ease-in-out infinite; }
+  .break-dots { display: flex; gap: 0.7rem; }
+  .break-dots span { width: 14px; height: 14px; border-radius: 50%; background: var(--accent-gold); animation: break-bounce 1.2s ease-in-out infinite; }
   .break-dots span:nth-child(2) { animation-delay: 0.15s; }
   .break-dots span:nth-child(3) { animation-delay: 0.3s; }
   @keyframes break-bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.5; } 40% { transform: translateY(-10px); opacity: 1; } }
   @media (prefers-reduced-motion: reduce) { .break-dots span { animation: none; opacity: 0.8; } }
 
   /* coffee break cup animation */
-  .coffee-cup { width: 72px; height: 60px; position: relative; margin: 0.4rem 0; }
-  .coffee-cup .cup { position: absolute; bottom: 0; left: 8px; width: 56px; height: 38px; border: 3px solid var(--accent-navy); border-top: none; border-radius: 0 0 12px 12px; background: color-mix(in srgb, var(--accent-gold) 25%, var(--bg-elevated)); }
-  .coffee-cup .handle { position: absolute; bottom: 10px; right: -6px; width: 16px; height: 16px; border: 3px solid var(--accent-navy); border-left: none; border-radius: 0 8px 8px 0; }
-  .coffee-cup .steam { position: absolute; bottom: 40px; width: 3px; height: 16px; background: var(--ink-muted); border-radius: 2px; opacity: 0.6; animation: steam-rise 1.8s ease-in-out infinite; }
-  .coffee-cup .steam.s1 { left: 18px; animation-delay: 0s; }
-  .coffee-cup .steam.s2 { left: 30px; animation-delay: 0.4s; }
-  .coffee-cup .steam.s3 { left: 42px; animation-delay: 0.8s; }
+  .coffee-cup { width: 100px; height: 84px; position: relative; margin: 0.5rem 0; }
+  .coffee-cup .cup { position: absolute; bottom: 0; left: 11px; width: 78px; height: 53px; border: 4px solid var(--accent-navy); border-top: none; border-radius: 0 0 16px 16px; background: color-mix(in srgb, var(--accent-gold) 25%, var(--bg-elevated)); }
+  .coffee-cup .handle { position: absolute; bottom: 14px; right: -8px; width: 22px; height: 22px; border: 4px solid var(--accent-navy); border-left: none; border-radius: 0 11px 11px 0; }
+  .coffee-cup .steam { position: absolute; bottom: 56px; width: 4px; height: 22px; background: var(--ink-muted); border-radius: 2px; opacity: 0.6; animation: steam-rise 1.8s ease-in-out infinite; }
+  .coffee-cup .steam.s1 { left: 25px; animation-delay: 0s; }
+  .coffee-cup .steam.s2 { left: 42px; animation-delay: 0.4s; }
+  .coffee-cup .steam.s3 { left: 59px; animation-delay: 0.8s; }
   @keyframes steam-rise { 0% { transform: translateY(0) scaleY(1); opacity: 0.6; } 100% { transform: translateY(-18px) scaleY(1.4); opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .coffee-cup .steam { animation: none; opacity: 0.4; } }
 
   /* ---------- Ladder draw widget ---------- */
   .ladder-wrap { margin-top: 0.8rem; display: flex; flex-direction: column; gap: 0.8rem; align-items: center; width: 100%; }
   .ladder-track-box { max-width: 100%; overflow-x: auto; }
-  .ladder-row { position: relative; height: 38px; }
+  .ladder-row { position: relative; height: 52px; }
   .ladder-chip { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; font-family: var(--font-mono); }
   /* 조 이름표는 드래그 전용 — 끌어서 순서를 재배열한다 */
-  .ladder-chip.name { padding: 0.35rem 0.6rem; border-radius: 20px; border: 1.5px solid var(--line); background: var(--bg-elevated); color: var(--ink); font-size: 0.8rem; font-weight: 700; cursor: grab; touch-action: none; user-select: none; transition: left 0.18s ease, border-color 0.15s ease, color 0.15s ease; }
+  .ladder-chip.name { padding: 0.5rem 0.9rem; border-radius: 24px; border: 1.5px solid var(--line); background: var(--bg-elevated); color: var(--ink); font-size: 1.05rem; font-weight: 700; cursor: grab; touch-action: none; user-select: none; transition: left 0.18s ease, border-color 0.15s ease, color 0.15s ease; }
   .ladder-chip.name:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
   .ladder-chip.name.dragging { transition: none; cursor: grabbing; z-index: 5; border-color: var(--accent-gold); color: var(--accent-gold); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28); }
   .ladder-chip.name:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { .ladder-chip.name { transition: none; } }
-  .ladder-chip.result { padding: 0.3rem 0.55rem; border-radius: 10px; background: color-mix(in srgb, var(--accent-navy) 8%, transparent); color: var(--ink-muted); font-size: 0.85rem; font-weight: 700; text-align: center; cursor: default; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease; }
+  .ladder-chip.result { padding: 0.4rem 0.75rem; border-radius: 12px; background: color-mix(in srgb, var(--accent-navy) 8%, transparent); color: var(--ink-muted); font-size: 1.1rem; font-weight: 700; text-align: center; cursor: default; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease; }
   .ladder-chip.result.hit { color: var(--hit-color, var(--accent-gold)); background: color-mix(in srgb, var(--hit-color, var(--accent-gold)) 16%, transparent); box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hit-color, var(--accent-gold)) 50%, transparent); transform: translateX(-50%) scale(1.1); }
   .ladder-actions { display: flex; gap: 0.7rem; }
-  .ladder-actions button { font-family: var(--font-mono); font-size: 0.92rem; padding: 0.55rem 1.2rem; border-radius: 24px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #241a04; cursor: pointer; font-weight: 600; }
+  .ladder-actions button { font-family: var(--font-mono); font-size: 0.92rem; padding: 0.55rem 1.2rem; border-radius: 24px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #ffffff; cursor: pointer; font-weight: 600; }
   .ladder-actions button.secondary { background: none; color: var(--ink); border-color: var(--line); }
   .ladder-actions button:disabled { opacity: 0.5; cursor: default; }
   .ladder-actions button:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
@@ -267,28 +294,28 @@
   .wheel-wrap { margin-top: 0.8rem; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0; transition: gap 0.8s ease; }
   .wheel-wrap.revealed { gap: 2.6rem; }
   .wheel-col { display: flex; flex-direction: column; align-items: center; gap: 1rem; flex: none; }
-  .wheel-stage { position: relative; width: clamp(200px, 40vw, 260px); height: clamp(200px, 40vw, 260px); }
-  .wheel-disc { width: 100%; height: 100%; border-radius: 50%; box-shadow: var(--shadow); transition: transform 3.2s cubic-bezier(0.12, 0.72, 0.15, 1); }
+  .wheel-stage { position: relative; width: clamp(320px, 34vw, 400px); height: clamp(320px, 34vw, 400px); }
+  .wheel-disc { width: 100%; height: 100%; border-radius: 50%; transition: transform 3.2s cubic-bezier(0.12, 0.72, 0.15, 1); }
   .wheel-disc canvas { display: block; width: 100%; height: 100%; border-radius: 50%; }
   @media (prefers-reduced-motion: reduce) { .wheel-disc { transition: none; } }
-  .wheel-pointer { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-style: solid; border-width: 18px 10px 0 10px; border-color: var(--accent-gold) transparent transparent transparent; z-index: 1; }
-  .wheel-actions { display: flex; gap: 0.7rem; }
-  .wheel-actions button { font-family: var(--font-mono); font-size: 0.92rem; padding: 0.55rem 1.2rem; border-radius: 24px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #241a04; cursor: pointer; font-weight: 600; }
+  .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-style: solid; border-width: 26px 15px 0 15px; border-color: var(--accent-gold) transparent transparent transparent; z-index: 1; }
+  .wheel-actions { display: flex; gap: 0.9rem; }
+  .wheel-actions button { font-family: var(--font-mono); font-size: 1.1rem; padding: 0.7rem 1.5rem; border-radius: 28px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #ffffff; cursor: pointer; font-weight: 600; }
   .wheel-actions button.secondary { background: none; color: var(--ink); border-color: var(--line); }
   .wheel-actions button:disabled { opacity: 0.5; cursor: default; }
   /* latest single-draw result box (below the wheel, replaced each draw) */
-  .wheel-latest { min-width: 220px; border: 2px solid var(--accent-gold); border-radius: 16px; padding: 0.9rem 1.6rem; text-align: center; background: color-mix(in srgb, var(--accent-gold) 8%, var(--bg-elevated)); opacity: 0; transform: translateY(6px) scale(0.96); transition: opacity 0.3s ease, transform 0.3s ease; }
+  .wheel-latest { min-width: 260px; border: 2px solid var(--accent-gold); border-radius: 16px; padding: 1.1rem 1.9rem; text-align: center; background: color-mix(in srgb, var(--accent-gold) 8%, var(--bg-elevated)); opacity: 0; transform: translateY(6px) scale(0.96); transition: opacity 0.3s ease, transform 0.3s ease; }
   .wheel-latest.show { opacity: 1; transform: translateY(0) scale(1); }
-  .wheel-latest .wl-rank { font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.05em; color: var(--ink-muted); }
-  .wheel-latest .wl-team { margin-top: 0.25rem; font-family: var(--font-display); font-weight: 800; font-size: 2.4rem; color: var(--accent-gold); }
+  .wheel-latest .wl-rank { font-family: var(--font-mono); font-size: 1rem; letter-spacing: 0.05em; color: var(--ink-muted); }
+  .wheel-latest .wl-team { margin-top: 0.3rem; font-family: var(--font-display); font-weight: 800; font-size: 2.9rem; color: var(--accent-gold); }
   /* cumulative order list, left of the wheel */
   .wheel-order-box { width: 0; flex: none; overflow: hidden; opacity: 0; transition: width 0.8s ease, opacity 0.5s ease 0.3s; }
-  .wheel-order-box.show { width: clamp(220px, 26vw, 320px); opacity: 1; }
-  .wheel-order-inner { width: clamp(220px, 26vw, 320px); }
-  .wheel-order-row { display: grid; grid-template-columns: 2.2rem 1fr; align-items: center; gap: 0.7rem; padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
+  .wheel-order-box.show { width: clamp(260px, 28vw, 360px); opacity: 1; }
+  .wheel-order-inner { width: clamp(260px, 28vw, 360px); }
+  .wheel-order-row { display: grid; grid-template-columns: 2.6rem 1fr; align-items: center; gap: 0.8rem; padding: 0.6rem 0; border-bottom: 1px solid var(--line); }
   .wheel-order-row:last-child { border-bottom: none; }
-  .wheel-order-row .rank { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-muted); }
-  .wheel-order-row .team { font-size: 1.15rem; font-weight: 700; color: var(--ink); }
+  .wheel-order-row .rank { font-family: var(--font-mono); font-size: 1rem; color: var(--ink-muted); }
+  .wheel-order-row .team { font-size: 1.3rem; font-weight: 700; color: var(--ink); }
 
   /* ---------- Global Mixer orbit animation ---------- */
   .mixer-wrap { margin-top: 0.4rem; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0; transition: gap 0.8s ease; }
@@ -300,7 +327,7 @@
   @keyframes mixer-spin { from { transform: rotate(0deg); } to { transform: rotate(var(--final-angle, 1080deg)); } }
   .mixer-chip-pos { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform: rotate(var(--pos-angle, 0deg)); }
   /* 통상 번호가 최대 3개(예: 11·12·13)까지 들어가므로 칩을 그에 맞춰 키워 둔다 */
-  .mixer-chip { position: absolute; width: 76px; height: 76px; margin: -38px 0 0 -38px; top: calc(-1 * var(--r, 120px)); border-radius: 50%; background: var(--accent-gold); color: #241a04; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 0.76rem; letter-spacing: -0.02em; white-space: nowrap; transform: rotate(calc(-1 * var(--pos-angle, 0deg))); }
+  .mixer-chip { position: absolute; width: 76px; height: 76px; margin: -38px 0 0 -38px; top: calc(-1 * var(--r, 120px)); border-radius: 50%; background: var(--accent-gold); color: #ffffff; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 0.76rem; letter-spacing: -0.02em; white-space: nowrap; transform: rotate(calc(-1 * var(--pos-angle, 0deg))); }
   .mixer-chip-pos.spin .mixer-chip { animation: mixer-counter-spin 3.6s cubic-bezier(0.3, 0.1, 0.2, 1) forwards; }
   @keyframes mixer-counter-spin {
     from { transform: rotate(calc(-1 * var(--pos-angle, 0deg))); }
@@ -309,7 +336,7 @@
   @media (prefers-reduced-motion: reduce) {
     .mixer-orbit.spin, .mixer-chip-pos.spin .mixer-chip { animation: none; }
   }
-  .mixer-actions button { font-family: var(--font-mono); font-size: 0.92rem; padding: 0.55rem 1.2rem; border-radius: 24px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #241a04; cursor: pointer; font-weight: 600; }
+  .mixer-actions button { font-family: var(--font-mono); font-size: 0.92rem; padding: 0.55rem 1.2rem; border-radius: 24px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #ffffff; cursor: pointer; font-weight: 600; }
   .mixer-groups { width: 0; flex: none; overflow: hidden; opacity: 0; transition: width 0.8s ease, opacity 0.5s ease 0.3s; }
   .mixer-groups.show { width: clamp(360px, 46vw, 620px); opacity: 1; }
   .mixer-groups-inner { width: clamp(360px, 46vw, 620px); display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
@@ -319,27 +346,33 @@
 
   /* ---------- Global Mixer 좌석 배치도 (통상 번호별 테이블) ---------- */
   /* 왼쪽 = 통상 번호 범례(2열 세로), 오른쪽 = 좌석 배치도 */
-  .mixer-seat-layout { margin-top: 0.4rem; display: flex; align-items: center; justify-content: center; gap: clamp(1.5rem, 4vw, 3.5rem); flex-wrap: wrap; }
-  .mixer-seat-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; flex: none; }
-  .mixer-seat-label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em; color: var(--ink-muted); border: 1px solid var(--line); border-radius: 20px; padding: 0.22rem 1.3rem; }
-  .mixer-seat-rows { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; width: min(560px, 100%); }
-  .mixer-seat-row { display: flex; justify-content: center; gap: 0.9rem; width: 100%; }
-  .mixer-table { flex: none; width: clamp(64px, 9vh, 104px); aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--accent-navy); background: color-mix(in srgb, var(--accent-navy) 7%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.05rem; }
-  .mixer-table .tno { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.03em; color: var(--ink-muted); }
-  .mixer-table .tcats { font-family: var(--font-mono); font-weight: 700; font-size: clamp(0.9rem, 2vh, 1.3rem); line-height: 1.1; color: var(--accent-gold); }
-  .mixer-legend { flex: none; display: grid; grid-auto-flow: column; grid-template-rows: repeat(8, auto); gap: 0.4rem 1.8rem; font-size: clamp(0.95rem, 1.5vh, 1.2rem); color: var(--ink); }
+  .mixer-seat-layout { margin-top: 0.4rem; display: flex; align-items: center; justify-content: center; gap: clamp(2rem, 5vw, 4.5rem); flex-wrap: wrap; }
+  .mixer-seat-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; flex: none; }
+  .mixer-seat-label { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.2em; color: var(--ink-muted); border: 1px solid var(--line); border-radius: 20px; padding: 0.26rem 1.5rem; }
+  .mixer-seat-rows { display: flex; flex-direction: column; align-items: center; gap: 1rem; width: min(680px, 100%); }
+  .mixer-seat-row { display: flex; justify-content: center; gap: 1.3rem; width: 100%; }
+  .mixer-table { flex: none; width: clamp(92px, 13vh, 148px); aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--accent-navy); background: color-mix(in srgb, var(--accent-navy) 7%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.1rem; }
+  .mixer-table .tno { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.03em; color: var(--ink-muted); }
+  .mixer-table .tcats { font-family: var(--font-mono); font-weight: 700; font-size: clamp(1.1rem, 2.8vh, 1.75rem); line-height: 1.1; color: var(--accent-gold); }
+  .mixer-legend { flex: none; display: grid; grid-auto-flow: column; grid-template-rows: repeat(8, auto); gap: 0.55rem 2.2rem; font-size: clamp(1.1rem, 2vh, 1.5rem); color: var(--ink); }
   .mixer-legend span { display: flex; gap: 0.5rem; white-space: nowrap; }
   .mixer-legend span b { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 700; min-width: 1.5em; text-align: right; }
 
   /* ---------- Bingo grid ---------- */
   .bingo-wrap { position: relative; }
-  .bingo-grid { margin-top: 0.7rem; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
+  .bingo-grid { margin-top: 0.9rem; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.65rem; }
   @media (max-width: 700px) { .bingo-grid { grid-template-columns: repeat(2, 1fr); } }
-  .bingo-cell { border: 1px solid var(--line); border-radius: 8px; padding: 0.5rem; font-size: 0.76rem; line-height: 1.3; min-height: 62px; display: flex; align-items: center; justify-content: center; text-align: center; background: color-mix(in srgb, var(--accent-navy) 4%, var(--bg-elevated)); cursor: pointer; user-select: none; transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease; }
+  .bingo-cell { border: 1.5px solid var(--line); border-radius: 12px; padding: 0.8rem; font-size: clamp(0.95rem, 1.7vw, 1.2rem); font-weight: 600; line-height: 1.32; min-height: 112px; display: flex; align-items: center; justify-content: center; text-align: center; background: color-mix(in srgb, var(--accent-navy) 4%, var(--bg-elevated)); cursor: pointer; user-select: none; transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease; }
+  .bingo-cell:not(.revealed) { cursor: default; border-style: dashed; color: var(--ink-muted); background: color-mix(in srgb, var(--accent-navy) 2%, var(--bg-elevated)); }
+  .bingo-cell .bingo-num { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 700; color: var(--ink-muted); }
   .bingo-cell:hover { border-color: var(--accent-gold); }
   .bingo-cell:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
-  .bingo-cell.marked { background: var(--accent-gold); color: #241a04; font-weight: 700; border-color: var(--accent-gold); }
+  .bingo-cell.marked { background: var(--accent-gold); color: #ffffff; font-weight: 700; border-color: var(--accent-gold); }
   .bingo-cell.bingo-line { animation: bingo-pulse 0.6s ease 2; }
+  .bingo-actions { margin-top: 1.2rem; display: flex; gap: 0.9rem; }
+  .bingo-actions button { font-family: var(--font-mono); font-size: 1.1rem; padding: 0.7rem 1.5rem; border-radius: 28px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #ffffff; cursor: pointer; font-weight: 600; }
+  .bingo-actions button.secondary { background: none; color: var(--ink); border-color: var(--line); }
+  .bingo-actions button:disabled { opacity: 0.5; cursor: default; }
   @keyframes bingo-pulse { 0%, 100% { transform: scale(1); box-shadow: none; } 50% { transform: scale(1.06); box-shadow: 0 0 0 3px var(--accent-red); } }
   .bingo-toast { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; }
   .bingo-toast.show { animation: bingo-pop 1.8s ease forwards; }
@@ -381,6 +414,9 @@
 
   /* ---------- Bottom nav ---------- */
   .bottombar { flex: none; display: flex; align-items: center; justify-content: center; gap: 1.1rem; padding: 0.85rem 1rem 1rem; }
+  html:fullscreen .topbar, html:fullscreen .bottombar { display: none; }
+  html:-webkit-full-screen .topbar, html:-webkit-full-screen .bottombar { display: none; }
+  html:-ms-fullscreen .topbar, html:-ms-fullscreen .bottombar { display: none; }
   .navbtn { background: none; border: 1px solid var(--line); color: var(--ink); width: 2.15rem; height: 2.15rem; border-radius: 50%; cursor: pointer; font-family: var(--font-mono); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, opacity 0.2s; }
   .navbtn:hover { border-color: var(--accent-gold); }
   .navbtn:disabled { opacity: 0.3; cursor: default; }
@@ -423,25 +459,34 @@ const TEAMS = Array.from({ length: 10 }, (_, i) => i + 1);
 const SEATING_ROWS = [2, 3, 2, 3];
 
 const LOCATIONS = [
-  { no: '①', name: 'Maxwell Hawker Centre', biz: 'Ren Min Beer', category: 'Hawker Centre · F&B', address: '1 Kadayanallur St, #01-33 Maxwell Food Centre, Singapore 069184', size: '108 sqft', rent: 'S$3,500/월', tags: ['F&B', '호커센터'],
+  { no: '①', name: 'Maxwell Hawker Centre', biz: 'Ren Min Beer', category: 'Hawker Centre · F&B', address: '1 Kadayanallur St, #01-33 Maxwell Food Centre, Singapore 069184', size: '108 sqft', rent: 'S$3,500/월', tags: [],
     photo: 'assets/shark_tank/maxwell_hawker_RenMinBeer_landscape.png', photo2: 'assets/shark_tank/maxwell_hawker_RenMinBeer.png', photo2Label: '현장 사진 2' },
-  { no: '②', name: 'Tanjong Pagar Road', biz: '오빠짜장', category: 'Commercial · Restaurant', address: '77A Tg Pagar Rd, Singapore 088498', size: '970 sqft', rent: 'S$22,000/월', tags: ['F&B', '오피스 상권'],
+  { no: '②', name: 'Tanjong Pagar Road', biz: '오빠짜장', category: 'Commercial · Restaurant', address: '77A Tg Pagar Rd, Singapore 088498', size: '970 sqft', rent: 'S$22,000/월', tags: [],
     photo: 'assets/shark_tank/oppa_llm_landscape.jpg', map: 'assets/shark_tank/oppa_sg_map.png' },
-  { no: '③', name: 'Plaza Singapura', biz: 'PEDRO', category: 'Shopping Mall', address: '68 Orchard Rd, #01-03 Plaza Singapura, Singapore 238839', size: '834 sqft', rent: 'S$35,000/월', tags: ['Retail', '쇼핑몰'],
+  { no: '③', name: 'Plaza Singapura', biz: 'PEDRO', category: 'Shopping Mall', address: '68 Orchard Rd, #01-03 Plaza Singapura, Singapore 238839', size: '834 sqft', rent: 'S$35,000/월', tags: [],
     photo: 'assets/shark_tank/plaze_sinpora_landscape.webp', map: 'assets/shark_tank/plaza_singapura_map.png' },
-  { no: '④', name: 'KOTRA (Suntec Tower One)', biz: 'KOTRA 싱가포르무역관', category: 'Business District', address: '#13-02 Suntec Tower One, 7 Temasek Blvd, Singapore 038987', size: '2,000 sqft', rent: 'S$50,000/월', tags: ['무역', '기관 방문'],
-    photo: 'assets/shark_tank/kotra_building.jpg', map: 'assets/shark_tank/kotra_map.png' },
+  { no: '④', name: 'BBQ Box Prime (Clarke Quay)', biz: 'BBQ Box Prime', category: 'Tourist Sight', address: '3C River Valley Rd, Blk C #01-10 CQ @ Clarke Quay, Singapore 179022', size: '1,200 sqft', rent: 'S$25,000/월', tags: [],
+    photo: 'assets/shark_tank/BBQ_BOX_PRIME_landscape.png', map: 'assets/shark_tank/BBQ_BOX_PRIME_map.png' },
+];
+
+// 임원 소개 — 명단 확정 전 임시 플레이스홀더 (이름/직함/사진 추후 교체)
+const EXECUTIVES = [
+  { name: '임원 1', role: '직함' },
+  { name: '임원 2', role: '직함' },
+  { name: '임원 3', role: '직함' },
+  { name: '임원 4', role: '직함' },
+  { name: '임원 5', role: '직함' },
 ];
 
 const SPEAKERS = [
-  { name: '이준원', role: 'SGX 증권거래소 한국 총괄', topic: '싱가포르 자본시장 소개 / SGX IPO의 이해', time: '8/14(금) 13:00–14:30', photo: 'assets/이준원%20SGX%20상무님.jpeg' },
-  { name: '한재경', role: 'OBBA Group 대표', topic: '직원에서 연매출 200억 대표가 되기까지', time: '8/14(금) 14:30–16:00', photo: 'assets/한재경_OBBA_대표님.png' },
-  { name: '장승환', role: '지마켓 대표이사', topic: '시장 변화에 대응하는 스타트업 성공 전략', time: '8/14(금) 16:00–17:30', photo: 'assets/장승환_지마켓_대표님.jpeg' },
+  { name: '이준원', role: 'SGX 증권거래소 한국 총괄', topic: '싱가포르 자본시장 소개 / SGX IPO의 이해', time: '8/14(금) 13:00–14:30', photo: 'assets/lee-junwon-sgx.jpeg' },
+  { name: '한재경', role: 'OBBA Group 대표', topic: '직원에서 연매출 200억 대표가 되기까지', time: '8/14(금) 14:30–16:00', photo: 'assets/han-jaekyung-obba.png' },
+  { name: '장승환', role: '지마켓 대표이사', topic: '시장 변화에 대응하는 스타트업 성공 전략', time: '8/14(금) 16:00–17:30', photo: 'assets/jang-seunghwan-gmarket.jpeg' },
 ];
 
 const SPEAKER_DETAILS = [
   {
-    name: '이준원 상무', org: 'SGX', topic: '싱가포르 자본시장 소개 및 SGX IPO의 이해', photo: 'assets/이준원%20SGX%20상무님.jpeg',
+    name: '이준원 상무', org: 'SGX', topic: '싱가포르 자본시장 소개 및 SGX IPO의 이해', photo: 'assets/lee-junwon-sgx.jpeg',
     career: [
       ['2004 ~ 2005', 'HSBC 및 삼성선물 IT개발팀 근무'],
       ['2005 ~ 2015', '삼성 선물 국제영업팀, 신한금융투자 글로벌파생영업부, 한국투자증권 해외투자영업부'],
@@ -449,7 +494,7 @@ const SPEAKER_DETAILS = [
     ],
   },
   {
-    name: '한재경 대표', org: 'OBBA Group', topic: '직원에서 연매출 200억 기업 대표가 되기까지', photo: 'assets/한재경_OBBA_대표님.png',
+    name: '한재경 대표', org: 'OBBA Group', topic: '직원에서 연매출 200억 기업 대표가 되기까지', photo: 'assets/han-jaekyung-obba.png',
     career: [
       ['2012 ~ 2026', '싱가포르 OBBA 브랜드 창업/운영'],
       ['2024 ~ 2026', '말레이시아, 인도네시아 사업 확장 (연매출 200억)'],
@@ -459,7 +504,7 @@ const SPEAKER_DETAILS = [
     ],
   },
   {
-    name: '장승환 대표', org: 'Gmarket', topic: '시장 변화에 대응하는 스타트업 성공 전략', photo: 'assets/장승환_지마켓_대표님.jpeg',
+    name: '장승환 대표', org: 'Gmarket', topic: '시장 변화에 대응하는 스타트업 성공 전략', photo: 'assets/jang-seunghwan-gmarket.jpeg',
     career: [
       ['2008 ~ 2012', 'Accenture UK 시니어 전략 컨설턴트'],
       ['2012 ~ 2024', 'Lazada 그룹 (공동 창립자, 싱가포르/인도네시아 CEO 역임)'],
@@ -527,18 +572,29 @@ const SPONSORS = [
 
 // 사운드 이펙트 — 숫자 키를 누르면 어느 페이지에서든 재생 (soundeffects/ 폴더)
 const SFX_FILES = [
-  { key: '1', label: '1 · 띠링', src: 'soundeffects/띠링.mp3' },
-  { key: '2', label: '2 · 띠잉', src: 'soundeffects/띠잉.mp3' },
-  { key: '3', label: '3 · 따라따라따라다', src: 'soundeffects/따라따라따라다 (2).mp3' },
+  { key: '1', label: '1 · 띠링', src: 'soundeffects/sfx-1-ding.mp3' },
+  { key: '2', label: '2 · 띠잉', src: 'soundeffects/sfx-2-ding2.mp3' },
+  { key: '3', label: '3 · 따라따라따라다', src: 'soundeffects/sfx-3-dararadara.mp3' },
   { key: '4', label: '4 · Winning Moment', src: 'soundeffects/Brand X Music - WINNING MOMENT [Bu_KNdPWNhI].mp3' },
   { key: '5', label: '5 · Spirit Of Adventure', src: 'soundeffects/Spirit Of Adventure [tFZ8XJSnG1Y].mp3' },
-  { key: '6', label: '6 · Flying Merry Go Round (유키 구라모토)', src: 'soundeffects/유키 구라모토   Flying Merry Go Round.mp3' },
+  { key: '6', label: '6 · Flying Merry Go Round (유키 구라모토)', src: 'soundeffects/sfx-6-flying-merry-go-round.mp3' },
 ];
 
 /* ===================== 슬라이드 렌더러 ===================== */
 
 function timeline(rows) {
   return `<div class="timeline">${rows.map(r => `<div class="row${r[2] ? ' dim' : ''}"><time>${r[0]}</time><div class="desc">${r[1]}</div></div>`).join('')}</div>`;
+}
+
+// 임원 소개 — 2명·3명 두 줄로 가운데 정렬
+function executiveGrid() {
+  const rows = [EXECUTIVES.slice(0, 2), EXECUTIVES.slice(2)];
+  return `<div class="exec-grid">${rows.map(row => `<div class="exec-row">${row.map(e => `
+    <div class="exec-card">
+      <div class="avatar exec-avatar">${e.photo ? `<img src="${e.photo}" alt="${e.name}">` : '사진'}</div>
+      <div class="name">${e.name}</div>
+      <div class="role">${e.role}</div>
+    </div>`).join('')}</div>`).join('')}</div>`;
 }
 
 function speakerGrid() {
@@ -563,7 +619,7 @@ function locationGrid() {
         <div class="loc-field"><dt>면적</dt><dd>${l.size}</dd></div>
         <div class="loc-field"><dt>임대료</dt><dd>${l.rent}</dd></div>
       </dl>
-      <div class="tags">${l.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      ${l.tags.length ? `<div class="tags">${l.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
     </div>`).join('')}</div>`;
 }
 
@@ -587,10 +643,10 @@ function speakerSlide(i) {
 }
 
 // 브레이크 슬라이드 — 상단 라벨은 한글 한 단어만, 없으면 생략
-function breakSlide(label, duration, nextLabel, nextDesc, withCoffee) {
+function breakSlide(label, duration, nextLabel, nextDesc, withCoffee, title) {
   return `
     ${label ? `<div class="eyebrow">${label}</div>` : ''}
-    <h2>잠시 쉬어갑니다</h2>
+    <h2>${title || '잠시 쉬어갑니다'}</h2>
     ${withCoffee ? `<div class="coffee-cup"><span class="steam s1"></span><span class="steam s2"></span><span class="steam s3"></span><div class="cup"></div><div class="handle"></div></div>` : `<div class="break-dots"><span></span><span></span><span></span></div>`}
     ${duration ? `<div class="duration">${duration}</div>` : ''}
     ${nextLabel ? `<div class="next-up">다음 순서 · <b>${nextLabel}</b><br>${nextDesc}</div>` : ''}
@@ -657,13 +713,13 @@ const SLIDES = [
 
   // 2 전체 일정표 (원본 이미지) -------------------------------------------------
   { tag: 'schedule', title: '전체 일정표', body: `
-    <img src="assets/최종일정표.png" alt="2026 아세안 차세대 글로벌 창업무역스쿨 일정표" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+    <img src="assets/schedule-final.png" alt="2026 아세안 차세대 글로벌 창업무역스쿨 일정표" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
   `},
 
   // ============ DAY 1 (8/13 목) ============
   { tag: 'divider', stub: 'DAY 1', body: dayDivider(1, '2026년 8월 13일 (목)', [
     ['13:00', '참가자 접수'], ['15:00', 'OKTA 아이덴티티'], ['15:30', '임원 / 서포터즈 소개'],
-    ['16:00', '조장 임명, 조별 자기 소개'], ['17:00', '조별 프로그램 설명 · 장소 추첨'], ['17:30', '만찬장 이동'],
+    ['16:00', '조장 임명 · 조별 자기소개 · 조이름 만들기'], ['17:00', '조별 프로그램 설명 · 장소 추첨'], ['17:30', '만찬장 이동'],
     ['18:00', '입교식'], ['19:00', '석식 (통합무역스쿨, 경제인대회)'], ['21:00', '숙소 이동'],
   ])},
 
@@ -675,15 +731,11 @@ const SLIDES = [
   `},
 
   { stub: 'DAY 1', body: `
-    <div class="eyebrow">OKTA Identity · 15:00–16:00</div>
-    <h2>임원 소개</h2>
-    <p class="lede">행사를 이끄는 임원진을 소개합니다.</p>
-  `},
-
-  { stub: 'DAY 1', body: `
-    <div class="eyebrow">OKTA Identity · 15:00–16:00</div>
-    <h2>서포터즈 소개</h2>
-    <p class="lede">현장을 지원하는 서포터즈를 소개합니다.</p>
+    <div class="centered-header">
+      <h2>임원 소개</h2>
+      <p class="lede">행사를 이끄는 임원진을 소개합니다.</p>
+    </div>
+    ${executiveGrid()}
   `},
 
   { stub: 'DAY 1', title: '조장 임명', body: `
@@ -697,9 +749,24 @@ const SLIDES = [
   // 샤크탱크 로케이션 소개 (전체 → 개별 4곳) — 조별 프로그램 설명 시간에 진행 후 바로 장소 추첨
   { stub: 'SHARK', body: `
     <div class="eyebrow">조별 프로그램 설명 · 17:00–17:30</div>
-    <h2>Singapore 샤크탱크 로케이션</h2>
+    <h2>싱가포르 샤크탱크</h2>
     <p class="lede">현장조사 항목: 주요 고객층 · 경쟁업체 · 유동인구 · 주변 환경 · 성공·실패 요인</p>
     ${locationGrid()}
+  `},
+
+  // 샤크탱크 시상금 발표 (불꽃놀이 배경) -------------------------------------
+  { tag: 'seating', stub: 'SHARK', body: `
+    <canvas class="seating-fx-canvas" data-seating-fx data-no-flight></canvas>
+    <canvas class="seating-plane-canvas" data-seating-plane></canvas>
+    <div class="seating-content">
+      <div class="eyebrow">조별 프로그램 설명 · 17:00–17:30</div>
+      <h2>샤크탱크 시상금</h2>
+      <div class="prize-badges prize-badges-lg">
+        <span class="prize-badge gold"><span class="medal">🥇</span>1등 S$1000</span>
+        <span class="prize-badge silver"><span class="medal">🥈</span>2등 S$500</span>
+        <span class="prize-badge bronze"><span class="medal">🥉</span>3등 S$300</span>
+      </div>
+    </div>
   `},
 
   ...LOCATIONS.map(l => ({ stub: 'SHARK', body: `
@@ -712,10 +779,14 @@ const SLIDES = [
       <div class="loc-field"><dt>면적</dt><dd>${l.size}</dd></div>
       <div class="loc-field"><dt>임대료</dt><dd>${l.rent}</dd></div>
     </dl>
-    <div class="tags">${l.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+    ${l.tags.length ? `<div class="tags">${l.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
     <div class="photo-grid-lg">
-      <div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.photo}" alt="" aria-hidden="true"><img src="${l.photo}" alt="${l.name} 현장 사진"><span>현장 사진</span></div>
-      <div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.map || l.photo2}" alt="" aria-hidden="true"><img src="${l.map || l.photo2}" alt="${l.name} ${l.map ? '지도 위치' : l.photo2Label}"><span>${l.map ? '지도 위치' : l.photo2Label}</span></div>
+      ${l.photo
+        ? `<div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.photo}" alt="" aria-hidden="true"><img src="${l.photo}" alt="${l.name} 현장 사진"><span>현장 사진</span></div>`
+        : `<div class="photo-slot-lg"><span>현장 사진 삽입 영역</span></div>`}
+      ${(l.map || l.photo2)
+        ? `<div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.map || l.photo2}" alt="" aria-hidden="true"><img src="${l.map || l.photo2}" alt="${l.name} ${l.map ? '지도 위치' : l.photo2Label}"><span>${l.map ? '지도 위치' : l.photo2Label}</span></div>`
+        : `<div class="photo-slot-lg"><span>지도 위치 삽입 영역</span></div>`}
     </div>
   ` })),
 
@@ -740,7 +811,7 @@ const SLIDES = [
 
   // ============ DAY 2 (8/14 금) ============
   { tag: 'divider', stub: 'DAY 2', body: dayDivider(2, '2026년 8월 14일 (금)', [
-    ['08:00', '조식'], ['09:00', 'OKTA Global Mixer'], ['10:00', 'Singapore Shark Tank Challenge 현장 방문'], ['12:00', '중식'],
+    ['08:00', '조식'], ['09:00', 'OKTA Global Mixer'], ['10:00', '싱가포르 샤크탱크 챌린지 현장 방문'], ['12:00', '중식'],
     ['13:00', '특강 1 · 이준원 (SGX 증권거래소 한국 총괄)'], ['14:30', '특강 2 · 한재경 (OBBA Group 대표)'],
     ['16:00', '특강 3 · 장승환 (지마켓 대표이사)'], ['17:30', '만찬장 이동'],
     ['18:00', '석식 (통합무역스쿨, 경제인대회)'], ['21:00', '숙소 이동'],
@@ -776,7 +847,7 @@ const SLIDES = [
 
   { stub: 'SHARK', body: `
     <div class="eyebrow">현장 방문 · 10:00–12:00</div>
-    <h2>Singapore Shark Tank Challenge — 이동 안내</h2>
+    <h2>싱가포르 샤크탱크 챌린지 — 이동 안내</h2>
     <div class="route-map">
       <div class="route-stop"><div class="ricon">🏨</div>호텔 로비</div><span class="route-arrow">→</span>
       <div class="route-stop"><div class="ricon">🚕</div>이동</div><span class="route-arrow">→</span>
@@ -791,32 +862,35 @@ const SLIDES = [
     ${speakerGrid()}
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', '특강 1', '이준원 (SGX 증권거래소 한국 총괄) — 싱가포르 자본시장 소개 / SGX IPO의 이해') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', '특강 1', '이준원 (SGX 증권거래소 한국 총괄) — 싱가포르 자본시장 소개 / SGX IPO의 이해', false, '중식') },
 
   { stub: 'TALK 1', body: speakerSlide(0) },
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('', '', '특강 2', '한재경 (OBBA Group 대표) — 직원에서 연매출 200억 대표가 되기까지') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('', '14:30', '특강 2', '한재경 (OBBA Group 대표) — 직원에서 연매출 200억 대표가 되기까지') },
 
   { stub: 'TALK 2', body: speakerSlide(1) },
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('', '', '특강 3', '장승환 (지마켓 대표이사) — 시장 변화에 대응하는 스타트업 성공 전략', true) },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('', '16:00', '특강 3', '장승환 (지마켓 대표이사) — 시장 변화에 대응하는 스타트업 성공 전략', true) },
 
   { stub: 'TALK 3', body: speakerSlide(2) },
 
   // ============ DAY 3 (8/15 토) ============
   { tag: 'divider', stub: 'DAY 3', body: dayDivider(3, '2026년 8월 15일 (토)', [
-    ['08:00', '조식'], ['09:00', '발표 준비'], ['10:00', 'Singapore Shark Tank Challenge 발표'], ['12:00', '중식'],
+    ['08:00', '조식'], ['09:00', '발표 준비'], ['10:00', '싱가포르 샤크탱크 챌린지 발표'], ['12:00', '중식'],
     ['13:00', 'OKTA Global Connection Challenge'], ['15:00', '행사 전체 순위 발표'], ['16:00', '수료식'],
     ['17:00', '개인정비'], ['18:00', '연회장 이동'], ['18:30', '차세대 파티'],
   ])},
 
   { stub: 'DAY 3', body: `
-    <div class="eyebrow">Preparation · 09:00–10:00</div>
-    <h2>발표 준비</h2>
-    <ul class="plain-list">
-      <li>노트북, 발표자료 USB·클라우드 백업</li>
-      <li>마이크 테스트</li>
-    </ul>
+    <div class="centered-block">
+      <div class="eyebrow">Preparation · 09:00–10:00</div>
+      <h2>발표 준비</h2>
+      <ul class="plain-list">
+        <li>노트북, 발표자료 USB·클라우드 백업</li>
+        <li>마이크 테스트</li>
+      </ul>
+      <div class="deadline-badge">⏰ 발표자료 제출 마감 · 09:50</div>
+    </div>
   `},
 
   { stub: 'DAY 3', body: `
@@ -826,7 +900,7 @@ const SLIDES = [
   `},
 
   { tag: 'wheel', stub: 'DAY 3', body: `
-    <div class="eyebrow">Shark Tank Challenge · 09:00–10:00</div>
+    <div class="eyebrow">샤크탱크 챌린지 · 09:00–10:00</div>
     <h2>발표 순서 추첨</h2>
     <p class="lede">휠을 돌려 한 조씩 발표 순서를 무작위로 정합니다.</p>
     <div class="wheel-wrap" data-wheel>
@@ -851,7 +925,7 @@ const SLIDES = [
   `},
 
   { stub: 'SHARK', body: `
-    <div class="eyebrow">Singapore Shark Tank Challenge · 10:00–12:00</div>
+    <div class="eyebrow">싱가포르 샤크탱크 챌린지 · 10:00–12:00</div>
     <h2>팀별 발표</h2>
     <p class="lede">마이크(유·무선), 빔프로젝터·스크린, 타이머, 심사표, 심사위원(투자자 역) 좌석이 준비됩니다.</p>
     <div class="insert-box"><span>이 영역에 <b>조별 발표자료 10팀분</b>을 발표 순서대로 삽입하세요</span></div>
@@ -886,10 +960,14 @@ const SLIDES = [
   { stub: 'GCC', body: `
     <div class="eyebrow">빙고 게임 · 14:20–15:00</div>
     <h2>OKTA 빙고</h2>
-    <p class="lede">같은 조 조원은 인정되지 않습니다 · 이름이 불리면 자리에서 일어나 주세요. 칸을 클릭해서 표시하세요.</p>
+    <p class="lede">같은 조 조원은 인정되지 않습니다. 이름이 불리면 자리에서 일어나 주세요.<br>칸을 클릭해서 표시하세요.</p>
     <div class="bingo-wrap" data-bingo>
-      <div class="bingo-grid">${BINGO_GRID.flat().map((c) => `<div class="bingo-cell" data-bingo-cell>${c}</div>`).join('')}</div>
+      <div class="bingo-grid">${BINGO_GRID.flat().map((c, i) => `<div class="bingo-cell" data-bingo-cell data-bingo-text="${escapeHtml(c)}"><span class="bingo-num">${i + 1}</span></div>`).join('')}</div>
       <div class="bingo-toast" data-bingo-toast><span>BINGO!</span></div>
+    </div>
+    <div class="bingo-actions">
+      <button type="button" data-bingo-reveal>다음 칸 공개</button>
+      <button type="button" class="secondary" data-bingo-reveal-reset>초기화</button>
     </div>
   `},
 
@@ -898,7 +976,7 @@ const SLIDES = [
   { stub: 'DAY 3', body: `
     <div class="eyebrow">순위 발표 · 15:00–16:00</div>
     <h2>행사 전체 순위 발표</h2>
-    <p class="lede">Shark Tank Challenge · Global Connection Challenge를 종합한 행사 전체 순위를 발표합니다. 시상 상금·상품, 순위 발표 PPT, 마이크가 준비됩니다.</p>
+    <p class="lede">샤크탱크 챌린지 · Global Connection Challenge를 종합한 행사 전체 순위를 발표합니다. 시상 상금·상품, 순위 발표 PPT, 마이크가 준비됩니다.</p>
   `},
 
   { stub: 'DAY 3', body: `
@@ -1068,9 +1146,9 @@ fsBtn.addEventListener('click', toggleFullscreen);
 
 /* ===================== 사다리(Ladder) 위젯 — Canvas 기반, 조별 클릭 확인 지원 ===================== */
 
-const LADDER_MARGIN = 30;
-const LADDER_LANE_GAP = 58;
-const LADDER_CANVAS_H = 220;
+const LADDER_MARGIN = 40;
+const LADDER_LANE_GAP = 92;
+const LADDER_CANVAS_H = 320;
 const LADDER_STEPS = 12;
 const LADDER_PALETTE_VARS = ['--accent-gold', '--accent-navy', '--accent-red', '--accent-green'];
 
@@ -1403,7 +1481,7 @@ document.querySelectorAll('[data-wheel]').forEach((wrap) => {
   let spinning = false;
 
   function drawWheel() {
-    const size = 260;
+    const size = disc.getBoundingClientRect().width || 380;
     const dpr = window.devicePixelRatio || 1;
     canvas.width = size * dpr;
     canvas.height = size * dpr;
@@ -1427,7 +1505,7 @@ document.querySelectorAll('[data-wheel]').forEach((wrap) => {
       const lx = R + Math.cos(mid) * (R * 0.62);
       const ly = R + Math.sin(mid) * (R * 0.62);
       ctx.fillStyle = '#eef1f6';
-      ctx.font = `700 ${Math.max(14, Math.min(22, 90 / n))}px ${cssVar('--font-mono')}`;
+      ctx.font = `700 ${Math.max(20, Math.min(32, 130 / n))}px ${cssVar('--font-mono')}`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(`${pool[i]}조`, lx, ly);
     }
@@ -1511,6 +1589,8 @@ document.querySelectorAll('[data-wheel]').forEach((wrap) => {
 document.querySelectorAll('[data-bingo]').forEach((wrap) => {
   const cells = Array.from(wrap.querySelectorAll('[data-bingo-cell]'));
   const toast = wrap.querySelector('[data-bingo-toast]');
+  const revealBtn = wrap.parentElement.querySelector('[data-bingo-reveal]');
+  const revealResetBtn = wrap.parentElement.querySelector('[data-bingo-reveal-reset]');
   const lines = [];
   for (let r = 0; r < 5; r++) lines.push(Array.from({ length: 5 }, (_, c) => r * 5 + c));
   for (let c = 0; c < 5; c++) lines.push(Array.from({ length: 5 }, (_, r) => r * 5 + c));
@@ -1518,6 +1598,7 @@ document.querySelectorAll('[data-bingo]').forEach((wrap) => {
   lines.push([4, 8, 12, 16, 20]);
   const completedLines = new Set();
   let toastTimer = null;
+  let unrevealed = [];
 
   function showBingo() {
     toast.classList.remove('show');
@@ -1545,12 +1626,43 @@ document.querySelectorAll('[data-bingo]').forEach((wrap) => {
   cells.forEach((cell) => {
     cell.setAttribute('tabindex', '0');
     cell.setAttribute('role', 'button');
-    const toggle = () => { cell.classList.toggle('marked'); checkLines(); };
+    const toggle = () => {
+      if (!cell.classList.contains('revealed')) return;
+      cell.classList.toggle('marked'); checkLines();
+    };
     cell.addEventListener('click', toggle);
     cell.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
     });
   });
+
+  function resetReveal() {
+    unrevealed = cells.map((_, i) => i);
+    cells.forEach((cell, i) => {
+      cell.classList.remove('revealed', 'marked', 'bingo-line');
+      cell.textContent = '';
+      const num = document.createElement('span');
+      num.className = 'bingo-num';
+      num.textContent = String(i + 1);
+      cell.appendChild(num);
+    });
+    completedLines.clear();
+    if (revealBtn) revealBtn.disabled = false;
+  }
+
+  function revealNext() {
+    if (unrevealed.length === 0) return;
+    const pick = Math.floor(Math.random() * unrevealed.length);
+    const idx = unrevealed.splice(pick, 1)[0];
+    const cell = cells[idx];
+    cell.textContent = cell.dataset.bingoText;
+    cell.classList.add('revealed');
+    if (unrevealed.length === 0 && revealBtn) revealBtn.disabled = true;
+  }
+
+  resetReveal();
+  if (revealBtn) revealBtn.addEventListener('click', revealNext);
+  if (revealResetBtn) revealResetBtn.addEventListener('click', resetReveal);
 });
 
 /* ===================== Global Mixer 궤도 애니메이션 ===================== */
@@ -1583,13 +1695,14 @@ document.querySelectorAll('[data-mixer]').forEach((wrap) => {
 document.querySelectorAll('[data-seating-fx]').forEach((fx) => {
   const stage = fx.closest('.ticket');
   const plane = stage.querySelector('[data-seating-plane]');
+  const noFlight = fx.hasAttribute('data-no-flight');
   const fctx = fx.getContext('2d');
   const pctx = plane.getContext('2d');
 
   const oktaLogoImg = new Image();
   oktaLogoImg.src = 'logo/symbol_CI_250613_trimmed.png';
   const koreaFlagImg = new Image();
-  koreaFlagImg.src = 'assets/태극기.png';
+  koreaFlagImg.src = 'assets/korea-flag.png';
   const planeSprite = new Image();
   planeSprite.src = 'assets/plane_sprite.png';
 
@@ -1809,7 +1922,7 @@ document.querySelectorAll('[data-seating-fx]').forEach((fx) => {
     if (t > nextSpawn.L) { spawnRocket('L'); scheduleNext('L', t); }
     if (t > nextSpawn.R) { spawnRocket('R'); scheduleNext('R', t); }
 
-    if (!flight && t > nextFlightAt) startFlight(t);
+    if (!noFlight && !flight && t > nextFlightAt) startFlight(t);
     if (flight) {
       flight.elapsed += dt;
       const progress = Math.min(1, flight.elapsed / flight.duration);
