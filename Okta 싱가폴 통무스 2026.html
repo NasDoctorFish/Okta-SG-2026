@@ -21,36 +21,8 @@
     --font-mono: ui-monospace, "SF Mono", "IBM Plex Mono", "Roboto Mono", monospace;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0b1220;
-      --bg-elevated: #141d33;
-      --ink: #eef1f6;
-      --ink-muted: #9aa5bd;
-      --accent-gold: #5b8fe0;
-      --accent-navy: #4f8fd1;
-      --accent-navy-deep: #06132a;
-      --accent-red: #d97a63;
-      --accent-green: #4fd18f;
-      --line: rgba(238, 241, 246, 0.16);
-      --notch: var(--bg);
-      --shadow: 0 24px 70px -34px rgba(0, 0, 0, 0.65);
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #0b1220; --bg-elevated: #141d33; --ink: #eef1f6; --ink-muted: #9aa5bd;
-    --accent-gold: #5b8fe0; --accent-navy: #4f8fd1; --accent-navy-deep: #06132a; --accent-red: #d97a63; --accent-green: #4fd18f;
-    --line: rgba(238, 241, 246, 0.16); --notch: var(--bg);
-    --shadow: 0 24px 70px -34px rgba(0, 0, 0, 0.65);
-  }
-  :root[data-theme="light"] {
-    --bg: #f0f2f5; --bg-elevated: #ffffff; --ink: #1d233b; --ink-muted: #5f5f5f;
-    --accent-gold: #1d4ed8; --accent-navy: #145a9f; --accent-navy-deep: #002d6c; --accent-red: #ae2329; --accent-green: #1f7a4d;
-    --line: rgba(29, 35, 59, 0.14); --notch: var(--bg);
-    --shadow: 0 24px 70px -34px rgba(29, 35, 59, 0.45);
-  }
-
   * { box-sizing: border-box; }
+  html { font-size: 23px; }
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: var(--font-body); overflow: hidden; }
   body { display: flex; flex-direction: column; }
   ::selection { background: var(--accent-gold); color: var(--bg-elevated); }
@@ -96,10 +68,10 @@
   .stub .label { writing-mode: vertical-rl; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; opacity: 0.85; }
   .stub .mark { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.14em; }
 
-  .cabin { flex: 1; padding: clamp(1.5rem, 3.6vw, 2.8rem); min-width: 0; }
+  .cabin { flex: 1; padding: clamp(1.5rem, 3.6vw, 2.8rem); min-width: 0; display: flex; flex-direction: column; justify-content: safe center; align-items: safe center; gap: 0.3rem; }
   .cabin .eyebrow { margin-bottom: 0.5rem; }
   .cabin h2 { font-size: clamp(1.9rem, 3.6vw, 2.7rem); font-weight: 700; margin-bottom: 0.5rem; position: relative; }
-  .cabin h2::after { content: ""; display: block; width: 36px; height: 3px; margin-top: 0.6rem; margin-bottom: 0.6rem; background: var(--accent-gold); }
+  .cabin h2::after { content: ""; display: block; width: 36px; height: 3px; margin: 0.6rem auto; background: var(--accent-gold); }
   .centered-header { text-align: center; }
   .centered-header h2::after { margin-left: auto; margin-right: auto; }
   .centered-header .lede { max-width: 640px; margin-left: auto; margin-right: auto; }
@@ -225,6 +197,16 @@
   .prize-badges-lg .prize-badge.gold { border-color: #d4af37; color: #ffd76a; }
   .prize-badges-lg .prize-badge.silver { border-color: #a8a9ad; color: #d9dadd; }
   .prize-badges-lg .prize-badge.bronze { border-color: #cd7f32; color: #e3a06c; }
+
+  /* ---------- Rank table (blank, filled in live) ---------- */
+  .rank-table { margin-top: 1.4rem; display: flex; flex-direction: column; gap: 0.8rem; max-width: 560px; }
+  .rank-row { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.2rem; border-radius: 14px; border: 1.5px solid var(--line); background: var(--bg-elevated); }
+  .rank-row .medal { font-size: 1.8rem; flex: none; }
+  .rank-row .rank-label { font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem; flex: none; width: 3.2rem; }
+  .rank-row.gold { border-color: #d4af37; }
+  .rank-row.silver { border-color: #a8a9ad; }
+  .rank-row.bronze { border-color: #cd7f32; }
+  .rank-row .team-blank { flex: 1; height: 2.1rem; border-bottom: 2px dashed var(--line); }
 
   /* ---------- Route / movement map ---------- */
   .route-map { margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; min-height: 55%; }
@@ -458,15 +440,13 @@ const TEAMS = Array.from({ length: 10 }, (_, i) => i + 1);
 // 좌석 배치: 무대에서 가까운 줄부터 순서대로 (원형 테이블), 2-3-2-3
 const SEATING_ROWS = [2, 3, 2, 3];
 
+// 상권 5곳 — 주소/사진/스퀘어핏당 가격 미확정 (TBD), 확정 후 교체
 const LOCATIONS = [
-  { no: '①', name: 'Maxwell Hawker Centre', biz: 'Ren Min Beer', category: 'Hawker Centre · F&B', address: '1 Kadayanallur St, #01-33 Maxwell Food Centre, Singapore 069184', size: '108 sqft', rent: 'S$3,500/월', tags: [],
-    photo: 'assets/shark_tank/maxwell_hawker_RenMinBeer_landscape.png', photo2: 'assets/shark_tank/maxwell_hawker_RenMinBeer.png', photo2Label: '현장 사진 2' },
-  { no: '②', name: 'Tanjong Pagar Road', biz: '오빠짜장', category: 'Commercial · Restaurant', address: '77A Tg Pagar Rd, Singapore 088498', size: '970 sqft', rent: 'S$22,000/월', tags: [],
-    photo: 'assets/shark_tank/oppa_llm_landscape.jpg', map: 'assets/shark_tank/oppa_sg_map.png' },
-  { no: '③', name: 'Plaza Singapura', biz: 'PEDRO', category: 'Shopping Mall', address: '68 Orchard Rd, #01-03 Plaza Singapura, Singapore 238839', size: '834 sqft', rent: 'S$35,000/월', tags: [],
-    photo: 'assets/shark_tank/plaze_sinpora_landscape.webp', map: 'assets/shark_tank/plaza_singapura_map.png' },
-  { no: '④', name: 'BBQ Box Prime (Clarke Quay)', biz: 'BBQ Box Prime', category: 'Tourist Sight', address: '3C River Valley Rd, Blk C #01-10 CQ @ Clarke Quay, Singapore 179022', size: '1,200 sqft', rent: 'S$25,000/월', tags: [],
-    photo: 'assets/shark_tank/BBQ_BOX_PRIME_landscape.png', map: 'assets/shark_tank/BBQ_BOX_PRIME_map.png' },
+  { no: '①', name: '무스타바 (Mustafa Centre)', pricePerSqft: null, photo: null, photo2: null },
+  { no: '②', name: '마리나베이샌즈 (Marina Bay Sands)', pricePerSqft: null, photo: null, photo2: null },
+  { no: '③', name: '맥스웰 (Maxwell)', pricePerSqft: null, photo: null, photo2: null },
+  { no: '④', name: '하지레인 (Haji Lane)', pricePerSqft: null, photo: null, photo2: null },
+  { no: '⑤', name: '부기스 스트릿 (Bugis Street)', pricePerSqft: null, photo: null, photo2: null },
 ];
 
 // 임원 소개 — 명단 확정 전 임시 플레이스홀더 (이름/직함/사진 추후 교체)
@@ -612,14 +592,9 @@ function locationGrid() {
   return `<div class="loc-grid">${LOCATIONS.map(l => `
     <div class="loc-card">
       <div class="loc-name">${l.no} ${l.name}</div>
-      <div class="loc-biz">${l.biz}</div>
       <dl class="loc-dl">
-        <div class="loc-field"><dt>구분</dt><dd>${l.category}</dd></div>
-        <div class="loc-field"><dt>주소</dt><dd>${l.address}</dd></div>
-        <div class="loc-field"><dt>면적</dt><dd>${l.size}</dd></div>
-        <div class="loc-field"><dt>임대료</dt><dd>${l.rent}</dd></div>
+        <div class="loc-field"><dt>스퀘어핏당 부동산 가격</dt><dd>${l.pricePerSqft || 'TBD (추후 업데이트)'}</dd></div>
       </dl>
-      ${l.tags.length ? `<div class="tags">${l.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
     </div>`).join('')}</div>`;
 }
 
@@ -772,21 +747,16 @@ const SLIDES = [
   ...LOCATIONS.map(l => ({ stub: 'SHARK', body: `
     <div class="eyebrow">조별 프로그램 설명 · 17:00–17:30</div>
     <h2>${l.no} ${l.name}</h2>
-    <div class="loc-biz" style="font-size:1.1rem;">${l.biz}</div>
     <dl class="loc-dl" style="font-size:1rem;margin-top:0.6rem;">
-      <div class="loc-field"><dt>구분</dt><dd>${l.category}</dd></div>
-      <div class="loc-field"><dt>주소</dt><dd>${l.address}</dd></div>
-      <div class="loc-field"><dt>면적</dt><dd>${l.size}</dd></div>
-      <div class="loc-field"><dt>임대료</dt><dd>${l.rent}</dd></div>
+      <div class="loc-field"><dt>스퀘어핏당 부동산 가격</dt><dd>${l.pricePerSqft || 'TBD (추후 업데이트)'}</dd></div>
     </dl>
-    ${l.tags.length ? `<div class="tags">${l.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
     <div class="photo-grid-lg">
       ${l.photo
-        ? `<div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.photo}" alt="" aria-hidden="true"><img src="${l.photo}" alt="${l.name} 현장 사진"><span>현장 사진</span></div>`
-        : `<div class="photo-slot-lg"><span>현장 사진 삽입 영역</span></div>`}
-      ${(l.map || l.photo2)
-        ? `<div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.map || l.photo2}" alt="" aria-hidden="true"><img src="${l.map || l.photo2}" alt="${l.name} ${l.map ? '지도 위치' : l.photo2Label}"><span>${l.map ? '지도 위치' : l.photo2Label}</span></div>`
-        : `<div class="photo-slot-lg"><span>지도 위치 삽입 영역</span></div>`}
+        ? `<div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.photo}" alt="" aria-hidden="true"><img src="${l.photo}" alt="${l.name} 상권 사진"><span>상권 사진</span></div>`
+        : `<div class="photo-slot-lg"><span>상권 사진 삽입 영역</span></div>`}
+      ${l.photo2
+        ? `<div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.photo2}" alt="" aria-hidden="true"><img src="${l.photo2}" alt="${l.name} 상권 사진 2"><span>상권 사진 2</span></div>`
+        : `<div class="photo-slot-lg"><span>상권 사진 2 삽입 영역</span></div>`}
     </div>
   ` })),
 
@@ -977,6 +947,11 @@ const SLIDES = [
     <div class="eyebrow">순위 발표 · 15:00–16:00</div>
     <h2>행사 전체 순위 발표</h2>
     <p class="lede">샤크탱크 챌린지 · Global Connection Challenge를 종합한 행사 전체 순위를 발표합니다. 시상 상금·상품, 순위 발표 PPT, 마이크가 준비됩니다.</p>
+    <div class="rank-table">
+      <div class="rank-row gold"><span class="medal">🥇</span><span class="rank-label">1등</span><span class="team-blank"></span></div>
+      <div class="rank-row silver"><span class="medal">🥈</span><span class="rank-label">2등</span><span class="team-blank"></span></div>
+      <div class="rank-row bronze"><span class="medal">🥉</span><span class="rank-label">3등</span><span class="team-blank"></span></div>
+    </div>
   `},
 
   { stub: 'DAY 3', body: `
