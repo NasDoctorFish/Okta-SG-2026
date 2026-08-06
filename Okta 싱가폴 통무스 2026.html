@@ -128,19 +128,12 @@
   .seating-plane-canvas { z-index: 2; opacity: 1; }
   .seating-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
   /* 좌석 슬라이드에선 도면이 남는 세로 공간을 전부 먹는다 (전체화면에서 커지고 창 모드에선 줄어든다) */
-  .seating .ticket:has(.floorplan) { justify-content: flex-start; }
-  .seating-content:has(.floorplan) { flex: 1; min-height: 0; width: 100%; }
-  /* 연회장 도면 — 실제 평면도를 무대가 위로 오도록 돌려 옮긴 것.
-     좌표는 전부 %(방 폭·깊이 기준)이므로 방 크기만 바뀌면 통째로 따라 커진다.
-     방 비율 262:470 = 도면 실측(빈 구역 잘라낸 뒤) */
-  .floorplan { position: relative; aspect-ratio: 262 / 470; flex: 1 1 auto; min-height: 0; height: auto; padding-top: 2rem; }
-  .fp-room { position: relative; width: 100%; height: calc(100% - 2rem); border: 2px solid #93a1b8; border-radius: 4px; background: color-mix(in srgb, var(--accent-navy) 8%, #ffffff); }
-  /* 문 자리 — 벽선을 끊어 개구부처럼 보이게 한다 */
-  .fp-gap { position: absolute; top: -2px; transform: translateX(-50%); width: 4%; height: 3px; background: var(--bg-elevated); }
-  .fp-arrow { position: absolute; top: 0.15rem; transform: translateX(-50%); font-size: 1.05rem; line-height: 1; color: #1d233b; }
-  .fp-entry-label { position: absolute; top: 0.3rem; right: 24%; font-family: var(--font-mono); font-size: 0.86rem; letter-spacing: 0.12em; color: var(--ink-muted); }
-  .fp-stage { position: absolute; left: 29%; top: 3.5%; width: 54%; height: 13%; border: 1.5px solid #7d8ba3; background: #ffffff; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: clamp(0.8rem, 1.5vh, 1.15rem); font-weight: 700; letter-spacing: 0.22em; color: var(--ink); }
-  .fp-table { position: absolute; transform: translate(-50%, -50%); width: 21%; aspect-ratio: 1; border-radius: 50%; border: 1.5px solid #6b7a91; background: #ffffff; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: clamp(0.95rem, 2vh, 1.5rem); color: var(--accent-navy-deep); }
+  .seating .ticket:has(.floorplan-frame) { justify-content: flex-start; }
+  .seating-content:has(.floorplan-frame) { flex: 1; min-height: 0; width: 100%; }
+  /* 연회장 평면도 — 원본 도면 이미지 그대로. 원본 위쪽 1/3 이 빈 여백이라
+     프레임 비율(719:668)로 잘라내고(cover + bottom) 남는 세로 공간을 전부 먹는다. */
+  .floorplan-frame { flex: 1 1 auto; min-height: 0; aspect-ratio: 719 / 668; overflow: hidden; }
+  .floorplan-img { width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
   .seating .lede { max-width: 44ch; color: var(--ink-muted); }
 
   /* ---------- Overview (Day1/2/3 summary) ---------- */
@@ -515,19 +508,6 @@
 
 const TEAMS = Array.from({ length: 10 }, (_, i) => i + 1);
 
-// 좌석 배치도 — 연회장 도면(assets/조별좌석_배치도.jpeg)을 무대가 위 상단에 수평으로 오도록
-// 회전시켜 옮긴 값. [가로%, 세로%] = 테이블 중심 좌표, 배열 순서가 곧 테이블 번호(1~12).
-// 도면상 둘째 줄은 지그재그라 왼→오른 순서가 6·5·4 다. 테이블이 없는 홀 아래쪽 빈 구역은 잘라냈다.
-const FLOOR_TABLES = [
-  [24.1, 30.0], [56.6, 30.9], [85.0, 33.9],
-  [81.6, 52.6], [48.8, 48.8], [17.7, 47.4],
-  [15.0, 63.9], [46.2, 66.7], [74.7, 71.0],
-  [15.7, 84.9], [43.9, 86.9], [78.9, 88.0],
-];
-
-// 입구 2개 — 도면 그대로 무대 오른쪽 끝, 상단 벽 오른쪽 구석
-const FLOOR_DOORS = [86.5, 95.5];
-
 // 상권 5곳 — 스퀘어핏당 가격 미확정 (TBD), 확정 후 교체.
 // photoInside = 상권 대표/내부 사진 (샵·유동인구가 보이는 컷)
 // photoMap    = 구글지도 캡처 — 줌인하지 말고 싱가포르 전체 지도에서 위치가 보이게
@@ -797,14 +777,8 @@ const SLIDES = [
     <div class="seating-content">
       <div class="eyebrow">Seating</div>
       <h2>조별 좌석 배치도</h2>
-      <div class="floorplan">
-        <div class="fp-entry-label">입구</div>
-        ${FLOOR_DOORS.map((x) => `<div class="fp-arrow" style="left:${x}%;">▼</div>`).join('')}
-        <div class="fp-room">
-          ${FLOOR_DOORS.map((x) => `<div class="fp-gap" style="left:${x}%;"></div>`).join('')}
-          <div class="fp-stage">무대</div>
-          ${FLOOR_TABLES.map(([x, y], i) => `<div class="fp-table" style="left:${x}%;top:${y}%;">${i + 1}</div>`).join('')}
-        </div>
+      <div class="floorplan-frame">
+        <img class="floorplan-img" src="assets/조별좌석_배치도.jpeg" alt="조별 좌석 배치도 — 무대와 입구, 1~12번 테이블 위치">
       </div>
     </div>
   `},
