@@ -23,7 +23,7 @@
     /* 타이포 스케일 — 슬라이드별 하드코딩 대신 항상 이 토큰을 쓴다 */
     --fs-eyebrow: 1.02rem;      /* 상단 갈색 라벨 */
     --fs-h2: clamp(1.9rem, 3.6vw, 2.7rem);
-    --fs-h2-lg: clamp(2.8rem, 6vw, 4.4rem);   /* 브레이크 등 대형 제목 */
+    --fs-h2-lg: min(clamp(2.8rem, 6vw, 4.4rem), 120px);   /* 브레이크 등 대형 제목 · 상한 120px */
     --fs-lede: 1.15rem;
     --fs-body: 1.08rem;
     --fs-mono-sm: 0.85rem;      /* 시간·번호 등 보조 모노 */
@@ -230,7 +230,7 @@
   .timebox-row { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
   .timebox .tb-num { font-family: var(--font-display); font-weight: 800; font-size: min(clamp(2.8rem, 7.5vw, 5.6rem), 120px); line-height: 1; color: var(--accent-gold); }
   .timebox .tb-label { font-family: var(--font-mono); font-size: clamp(1.2rem, 2.6vw, 2rem); font-weight: 700; letter-spacing: 0.08em; color: var(--ink); }
-  .timebox-plus { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 6vw, 4.5rem); color: var(--ink-muted); }
+  .timebox-plus { font-family: var(--font-display); font-weight: 800; font-size: min(clamp(2.4rem, 6vw, 4.5rem), 120px); color: var(--ink-muted); }
 
   .insert-box { margin-top: 1.1rem; border: 1.5px dashed var(--line); border-radius: 12px; padding: 1.6rem; text-align: center; color: var(--ink-muted); background: color-mix(in srgb, var(--accent-gold) 6%, var(--bg-elevated)); font-size: 1.05rem; min-height: 110px; display: flex; align-items: center; justify-content: center; }
 
@@ -402,10 +402,12 @@
   .mixer-group-card .gnum { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 700; font-size: 1.05rem; }
   .mixer-group-card .gtitle { font-weight: 700; margin-bottom: 0.35rem; }
 
-  /* 밍글링 슬라이드 — 좌석배치도 없이 통상 분류/그룹만 크게 보여준다 */
-  .trade-grid { margin-top: 0.6rem; width: 100%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.7rem; }
+  /* 밍글링 슬라이드 — 좌석배치도 없이 통상 분류/그룹만 크게 보여준다.
+     칸이 남는 세로 공간을 전부 먹도록 1fr 행 — 전체화면에선 커지고 작은 창에선 알아서 줄어든다(잘림 없음).
+     글자 크기는 고정 — 박스만 커진다. */
+  .trade-grid { margin-top: 0.6rem; width: 100%; display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(0.7rem, 1.4vh, 1.6rem); flex: 1 1 auto; min-height: 0; grid-auto-rows: minmax(0, 1fr); align-content: stretch; }
   @media (max-width: 900px) { .trade-grid { grid-template-columns: repeat(3, 1fr); } }
-  .trade-card { display: flex; align-items: center; gap: 0.6rem; border: 1.5px solid var(--line); border-radius: 12px; padding: 0.8rem 0.9rem; background: var(--bg-elevated); line-height: var(--lh-tight); }
+  .trade-card { display: flex; align-items: center; gap: 0.6rem; border: 1.5px solid var(--line); border-radius: 12px; padding: clamp(0.8rem, 1.6vh, 1.8rem) 0.9rem; background: var(--bg-elevated); line-height: var(--lh-tight); min-height: 0; }
   .trade-card .tno { flex: none; width: 2rem; height: 2rem; border-radius: 50%; background: var(--accent-navy-deep); color: #eef1f6; font-family: var(--font-mono); font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
   .trade-card .tname { font-size: clamp(0.9rem, 1.5vw, 1.15rem); font-weight: 600; }
 
@@ -416,27 +418,15 @@
   .mixer-groups-grid .mixer-group-card .gtitle { font-size: clamp(1.1rem, 1.8vw, 1.45rem); }
 
 
-  /* ---------- Bingo grid (10 / 10 / 5) ---------- */
-  /* --bingo-cols = 가장 긴 줄의 칸 수. 마지막 5칸짜리 줄은 왼쪽부터 채워진다. */
-  .bingo-wrap { position: relative; width: 100%; }
-  .bingo-grid { margin-top: 0.35rem; display: grid; grid-template-columns: repeat(var(--bingo-cols, 10), 1fr); gap: 0.35rem; }
-  @media (max-width: 900px) { .bingo-grid { grid-template-columns: repeat(5, 1fr); } }
-  .bingo-cell { border: 1.5px solid var(--line); border-radius: 10px; padding: 0.35rem 0.3rem; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 0.15rem; text-align: center; min-height: clamp(56px, 6.4vh, 74px); background: color-mix(in srgb, var(--accent-navy) 4%, var(--bg-elevated)); cursor: pointer; user-select: none; transition: background 0.2s ease, color 0.2s ease, border-color 0.15s ease; }
-  .bingo-cell .bingo-num { font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; color: var(--accent-gold); line-height: 1; }
-  .bingo-cell .bingo-text { font-size: clamp(0.58rem, 0.78vw, 0.74rem); font-weight: 600; line-height: 1.2; }
-  .bingo-cell:hover { border-color: var(--accent-gold); }
-  .bingo-cell:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
-  .bingo-cell.marked { background: var(--accent-gold); color: #ffffff; border-color: var(--accent-gold); }
-  .bingo-cell.marked .bingo-num { color: #ffffff; }
-  .bingo-cell.bingo-line { outline: 2px solid var(--accent-gold); outline-offset: 1px; }
+  /* ---------- Bingo (화면은 호명 전용 — 빙고판은 참가자 종이) ---------- */
   .bingo-actions { margin-top: 0.5rem; display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
 
   /* 이름 호명 — 현재 호명된 이름 크게, 아래에 지금까지 부른 이름 누적 */
   .bingo-caller { margin-top: 0.3rem; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
-  .bingo-caller .bc-current { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 3.2vw, 2.4rem); line-height: 1.1; color: var(--accent-navy-deep); }
+  .bingo-caller .bc-current { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 4.8vw, 3.6rem); line-height: 1.1; color: var(--accent-navy-deep); }
   .bingo-caller .bc-current .bc-group { font-family: var(--font-mono); font-size: 0.4em; font-weight: 700; color: var(--ink-muted); margin-left: 0.5em; }
-  .bingo-caller .bc-called { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: center; max-height: 2rem; overflow-y: auto; }
-  .bingo-caller .bc-called span { font-family: var(--font-mono); font-size: 0.72rem; padding: 0.12rem 0.5rem; border-radius: 20px; border: 1px solid var(--line); color: var(--ink-muted); }
+  .bingo-caller .bc-called { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; max-height: 9rem; overflow-y: auto; }
+  .bingo-caller .bc-called span { font-family: var(--font-mono); font-size: 1.22rem; padding: 0.2rem 0.7rem; border-radius: 20px; border: 1px solid var(--line); color: var(--ink-muted); }
   .bingo-toast { position: absolute; inset: 0; margin: auto; width: fit-content; height: fit-content; padding: 1.2rem 3rem; border-radius: 20px; background: var(--accent-gold); color: #ffffff; font-family: var(--font-display); font-weight: 800; font-size: min(clamp(2.6rem, 7vw, 5rem), 120px); letter-spacing: 0.04em; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity 0.25s ease; z-index: 5; }
   .bingo-toast.show { opacity: 1; animation: bingo-pulse 0.6s ease infinite; }
   @media (prefers-reduced-motion: reduce) { .bingo-toast.show { animation: none; } }
@@ -1086,17 +1076,14 @@ const SLIDES = [
     <div class="eyebrow">빙고 게임 · 14:20–15:00</div>
     <h2>OKTA 빙고</h2>
     <p class="lede">호명된 이름이 내 빙고판에 있으면 그 칸을 표시하세요. <b>가로 한 줄</b>을 채우면 빙고입니다.</p>
-    <div class="bingo-caller" data-bingo-caller>
+    ${/* 화면 빙고판은 없앴다 — 참가자는 종이 빙고판을 보고, 화면은 호명만 담당한다 */ ''}
+    <div class="bingo-caller" data-bingo data-bingo-caller>
       <div class="bc-current" data-bingo-current>—</div>
       <div class="bc-called" data-bingo-called></div>
     </div>
-    <div class="bingo-wrap" data-bingo>
-      <div class="bingo-grid" style="--bingo-cols:${Math.max(...BINGO_ROWS)};">${BINGO_CELLS.map((c, i) => `
-        <div class="bingo-cell" data-bingo-cell><span class="bingo-num">${i + 1}</span><span class="bingo-text">${escapeHtml(c)}</span></div>
-      `).join('')}</div>
-    </div>
     <div class="bingo-actions">
       <button type="button" data-bingo-call>이름 호명</button>
+      <button type="button" data-bingo-shout>BINGO 선언 (B)</button>
       <button type="button" class="secondary" data-bingo-undo>한 명 취소</button>
       <button type="button" class="secondary" data-bingo-reset>초기화</button>
     </div>
@@ -1280,6 +1267,11 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'r' || e.key === 'R') resetActiveLadder();
   if (e.key === 's' || e.key === 'S') stopSfx();
   if (e.key === 'p' || e.key === 'P') triggerSeatingFlight();
+  // B — 지금 보이는 슬라이드에 빙고 위젯이 있을 때만 BINGO! 오버레이
+  if (e.key === 'b' || e.key === 'B') {
+    const shout = slides[idx] && slides[idx].querySelector('[data-bingo-shout]');
+    if (shout) shout.click();
+  }
   const sfx = SFX_FILES.find((s) => s.key === e.key);
   if (sfx) {
     if (currentSfxAudio) { currentSfxAudio.pause(); currentSfxAudio.currentTime = 0; }
@@ -1768,50 +1760,23 @@ document.querySelectorAll('[data-wheel]').forEach((wrap) => {
 /* ===================== 빙고 게임 (클릭 체크 + 한 줄 완성 시 BINGO!) ===================== */
 
 document.querySelectorAll('[data-bingo]').forEach((wrap) => {
-  const cells = Array.from(wrap.querySelectorAll('[data-bingo-cell]'));
   const panel = wrap.parentElement;
   const callBtn = panel.querySelector('[data-bingo-call]');
   const undoBtn = panel.querySelector('[data-bingo-undo]');
   const resetBtn = panel.querySelector('[data-bingo-reset]');
+  const shoutBtn = panel.querySelector('[data-bingo-shout]');
   const currentBox = panel.querySelector('[data-bingo-current]');
   const calledBox = panel.querySelector('[data-bingo-called]');
-  const completedLines = new Set();
   const toast = panel.querySelector('[data-bingo-toast]');
   let toastTimer = null;
 
+  // 화면 빙고판이 없으므로 줄 완성 판정도 없다 — 참가자가 외치면 MC 가 버튼(또는 B)으로 띄운다
   function showBingoToast() {
     if (!toast) return;
     toast.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
   }
-
-  // 가로 한 줄만 빙고 — 10/10/5 배열에는 세로·대각선 줄이 성립하지 않는다
-  function checkLines() {
-    BINGO_LINES.forEach((line, li) => {
-      const lineCells = line.map((i) => cells[i]).filter(Boolean);
-      const complete = lineCells.length > 0 && lineCells.every((c) => c.classList.contains('marked'));
-      if (complete && !completedLines.has(li)) {
-        completedLines.add(li);
-        lineCells.forEach((c) => c.classList.add('bingo-line'));
-        showBingoToast();
-      } else if (!complete && completedLines.has(li)) {
-        completedLines.delete(li);
-        lineCells.forEach((c) => c.classList.remove('bingo-line'));
-      }
-    });
-  }
-
-  // 칸은 처음부터 조건문이 보인다. 클릭하면 바로 마킹 토글.
-  cells.forEach((cell) => {
-    cell.setAttribute('tabindex', '0');
-    cell.setAttribute('role', 'button');
-    const toggle = () => { cell.classList.toggle('marked'); checkLines(); };
-    cell.addEventListener('click', toggle);
-    cell.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
-    });
-  });
 
   /* ---- 이름 호명 — 참가자 명단에서 중복 없이 한 명씩 뽑는다 ---- */
   let pool = [];
@@ -1842,8 +1807,6 @@ document.querySelectorAll('[data-bingo]').forEach((wrap) => {
   function resetAll() {
     pool = PARTICIPANTS.slice();
     called = [];
-    cells.forEach((cell) => cell.classList.remove('marked', 'bingo-line'));
-    completedLines.clear();
     renderCaller();
   }
 
@@ -1851,6 +1814,7 @@ document.querySelectorAll('[data-bingo]').forEach((wrap) => {
   if (callBtn) callBtn.addEventListener('click', callNext);
   if (undoBtn) undoBtn.addEventListener('click', undoCall);
   if (resetBtn) resetBtn.addEventListener('click', resetAll);
+  if (shoutBtn) shoutBtn.addEventListener('click', showBingoToast);
 });
 
 /* ===================== Global Mixer 궤도 애니메이션 ===================== */
