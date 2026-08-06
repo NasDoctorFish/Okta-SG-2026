@@ -209,7 +209,6 @@
   a.speaker-photo-slot { text-decoration: none; cursor: pointer; position: relative; border-style: solid; border-color: var(--accent-gold); transition: transform 0.18s ease, box-shadow 0.18s ease; }
   a.speaker-photo-slot:hover { transform: scale(1.02); box-shadow: var(--shadow); }
   a.speaker-photo-slot:focus-visible { outline: 3px solid var(--accent-gold); outline-offset: 3px; }
-  a.speaker-photo-slot .deck-badge { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); width: max-content; padding: 0.3rem 0.9rem; border-radius: 20px; background: var(--accent-navy-deep); color: #eef1f6; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; }
 
   .speaker-org-badge { display: inline-block; align-self: flex-start; background: var(--accent-navy-deep); color: #eef1f6; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; padding: 0.25rem 0.7rem; border-radius: 20px; margin-bottom: 0.35rem; }
   .speaker-detail-head .name { font-size: 1.5rem; font-weight: 700; }
@@ -285,8 +284,6 @@
   .rank-row[data-rank-step]:not(.revealed) { opacity: 0; transform: translateY(14px); pointer-events: none; }
   .rank-row[data-rank-step] { transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1); }
   @media (prefers-reduced-motion: reduce) { .rank-row[data-rank-step] { transition: none; } }
-  .rank-hint { margin: 0.7rem 0 0; font-family: var(--font-mono); font-size: 0.9rem; letter-spacing: 0.06em; color: var(--ink-muted); text-align: center; }
-  .rank-hint.done { opacity: 0; }
 
   /* ---------- 채점표 ---------- */
   .score-grid { margin-top: 1rem; width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
@@ -739,7 +736,6 @@ function speakerSlide(i) {
       ${d.deck
         ? `<a class="speaker-photo-slot has-deck" href="${encodeURI(d.deck)}" title="${d.name} 강연 자료 열기">
              ${d.photo ? `<img src="${d.photo}" alt="${d.name}">` : `<span>강연자 사진<br>삽입 예정</span>`}
-             <span class="deck-badge">강연 자료 열기</span>
            </a>`
         : `<div class="speaker-photo-slot">${d.photo ? `<img src="${d.photo}" alt="${d.name}">` : `<span>강연자 사진<br>삽입 예정</span>`}</div>`}
       <div>
@@ -797,7 +793,6 @@ const SLIDES = [
           return `<div class="seat-box"><span class="sno">${t}</span></div>`;
         }).join('')}</div>`).join('');
       })()}</div>
-      <div class="stage-label">입구</div>
     </div>
   `},
 
@@ -1054,7 +1049,7 @@ const SLIDES = [
     <div class="eyebrow">빙고 게임 안내</div>
     <h2>OKTA 빙고 — 이렇게 진행합니다</h2>
     <ol class="plain-list ordered bingo-rules">
-      <li>빙고판 각 칸에는 <b>조건</b>이 적혀 있습니다. 조건에 맞는 사람을 만나면 그 칸에 <b>그 사람 이름</b>을 적으세요.</li>
+      <li>빙고판 각 칸에는 <b>조건</b>이 적혀 있습니다.<br>조건에 맞는 사람을 만나면 그 칸에 <b>그 사람 이름</b>을 적으세요.</li>
       <li>같은 조 조원은 인정되지 않습니다. 한 사람은 <b>한 칸에만</b> 적을 수 있습니다.</li>
       <li>빙고판은 사람마다 조건 순서가 다릅니다. 옆 사람 것과 비교하지 마세요.</li>
       <li>마지막에 <b>이름을 호명</b>합니다. 내 칸에 그 이름이 있으면 칸을 표시하세요.</li>
@@ -1114,7 +1109,6 @@ const SLIDES = [
       <div class="rank-row silver" data-rank-step="2"><span class="medal">🥈</span><span class="rank-label">2등</span><span class="team-blank"></span></div>
       <div class="rank-row bronze" data-rank-step="1"><span class="medal">🥉</span><span class="rank-label">3등</span><span class="team-blank"></span></div>
     </div>
-    <p class="rank-hint" data-rank-hint>Enter — 3등부터 공개</p>
   `},
 
   // 채점표 — 순위 발표 직후, 배점 근거 설명용
@@ -1251,12 +1245,6 @@ function revealNextRank(section) {
     .sort((a, b) => Number(a.dataset.rankStep) - Number(b.dataset.rankStep))[0];
   if (!next) return false;
   next.classList.add('revealed');
-  const hint = section.querySelector('[data-rank-hint]');
-  const left = table.querySelectorAll('[data-rank-step]:not(.revealed)').length;
-  if (hint) {
-    hint.textContent = left ? `Enter — ${left}개 남음` : '';
-    hint.classList.toggle('done', left === 0);
-  }
   return true;
 }
 
@@ -1265,8 +1253,6 @@ function resetRankReveal(section) {
   const table = section && section.querySelector('[data-rank-reveal]');
   if (!table) return;
   table.querySelectorAll('[data-rank-step]').forEach((row) => row.classList.remove('revealed'));
-  const hint = section.querySelector('[data-rank-hint]');
-  if (hint) { hint.textContent = 'Enter — 3등부터 공개'; hint.classList.remove('done'); }
 }
 
 function stopSfx() {
