@@ -21,7 +21,7 @@
     --font-mono: ui-monospace, "SF Mono", "IBM Plex Mono", "Roboto Mono", monospace;
 
     /* 타이포 스케일 — 슬라이드별 하드코딩 대신 항상 이 토큰을 쓴다 */
-    --fs-eyebrow: 1.28rem;      /* 상단 갈색 라벨 */
+    --fs-eyebrow: 1.02rem;      /* 상단 갈색 라벨 */
     --fs-h2: clamp(1.9rem, 3.6vw, 2.7rem);
     --fs-h2-lg: clamp(2.8rem, 6vw, 4.4rem);   /* 브레이크 등 대형 제목 */
     --fs-lede: 1.15rem;
@@ -203,7 +203,8 @@
 
   /* ---------- Speaker detail (career list) ---------- */
   .speaker-detail-head { display: flex; gap: 1.3rem; align-items: center; flex-wrap: wrap; }
-  .speaker-photo-slot { flex: none; width: clamp(160px, min(19vw, 28vh), 260px); height: clamp(160px, min(19vw, 28vh), 260px); border-radius: 50%; border: 2px dashed var(--line); background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.82rem; text-align: center; overflow: hidden; }
+  /* 연혁 40% 확대 후 5줄짜리(한재경) 슬라이드가 넘쳐서 사진 상한을 260 → 224px 로 낮춤 */
+  .speaker-photo-slot { flex: none; width: clamp(150px, min(19vw, 21vh), 224px); height: clamp(150px, min(19vw, 21vh), 224px); border-radius: 50%; border: 2px dashed var(--line); background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.82rem; text-align: center; overflow: hidden; }
   .speaker-photo-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   /* 발표자료가 들어온 강연자만 사진이 링크가 된다 */
   a.speaker-photo-slot { text-decoration: none; cursor: pointer; position: relative; border-style: solid; border-color: var(--accent-gold); transition: transform 0.18s ease, box-shadow 0.18s ease; }
@@ -213,11 +214,11 @@
   .speaker-org-badge { display: inline-block; align-self: flex-start; background: var(--accent-navy-deep); color: #eef1f6; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; padding: 0.25rem 0.7rem; border-radius: 20px; margin-bottom: 0.35rem; }
   .speaker-detail-head .name { font-size: 1.5rem; font-weight: 700; }
   .speaker-detail-head .topic { color: var(--accent-navy); font-size: 1.05rem; font-weight: 600; margin-top: 0.25rem; }
-  .career-list { margin-top: 0.45rem; display: flex; flex-direction: column; gap: 0.15rem; width: 100%; }
-  .career-list .row { display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.7rem; padding: 0.12rem 0; border-bottom: 1px solid var(--line); }
+  .career-list { margin-top: 0.45rem; display: flex; flex-direction: column; gap: 0.25rem; width: 100%; }
+  .career-list .row { display: grid; grid-template-columns: 11.9rem 1fr; gap: 0.7rem; padding: 0.2rem 0; border-bottom: 1px solid var(--line); }
   .career-list .row:last-child { border-bottom: none; }
-  .career-list .yr { font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent-gold); font-variant-numeric: tabular-nums; }
-  .career-list .desc { font-size: var(--fs-body); line-height: var(--lh-tight); }
+  .career-list .yr { font-family: var(--font-mono); font-size: 1.23rem; color: var(--accent-gold); font-variant-numeric: tabular-nums; }
+  .career-list .desc { font-size: calc(var(--fs-body) * 1.4); line-height: var(--lh-tight); }
   @media (max-width: 560px) {
     .speaker-detail-head, .mc-card { flex-direction: column; align-items: flex-start; text-align: left; }
     .career-list .row { grid-template-columns: 1fr; gap: 0.15rem; }
@@ -325,11 +326,12 @@
   .divider .mini-agenda .row { grid-template-columns: 3.6rem 1fr; padding: 0.3rem 0; }
 
   /* ---------- Break slide ---------- */
-  .break .ticket { align-items: center; justify-content: center; text-align: center; }
+  /* stretch 유지 — center 로 두면 왼쪽 파란 스텁이 내용 높이로 줄어들어 'OKTA'/'BREAK' 가 붙어 보인다 */
+  .break .ticket { align-items: stretch; justify-content: center; text-align: center; }
   .break .cabin { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 0; }
   .break h2 { font-size: var(--fs-h2-lg); line-height: var(--lh-tight); color: var(--ink); }
   .break .duration { font-family: var(--font-mono); font-size: min(clamp(3.4rem, 9.5vw, 5.2rem), 120px); font-weight: 700; color: var(--accent-navy); letter-spacing: 0.02em; }
-  .break .next-up { margin-top: 0.3rem; padding-top: 0.9rem; border-top: 1px solid var(--line); font-size: 1.8rem; color: var(--ink-muted); }
+  .break .next-up { margin-top: 0.3rem; padding-top: 0.9rem; border-top: 1px solid var(--line); font-size: 1.8rem; line-height: 1.5; color: var(--ink-muted); }
   .break .next-up b { color: var(--ink); }
 
   /* ---------- Ladder draw widget ---------- */
@@ -751,11 +753,12 @@ function speakerSlide(i) {
 
 // 브레이크 슬라이드 — 제목(중식/휴식/개인정비)을 큰 글씨 하나로만 찍는다.
 // 예전에는 같은 단어를 갈색 eyebrow + 검은 h2 로 두 번 찍어 겹쳐 보였다.
-function breakSlide(title, duration, nextLabel, nextDesc) {
+// 다음 순서는 항상 3줄 — 라벨 / 사람(이름·소속) / 주제. 사람이 없는 순서면 그 줄은 건너뛴다.
+function breakSlide(title, duration, nextLabel, nextWho, nextDesc) {
   return `
     <h2>${title}</h2>
     ${duration ? `<div class="duration">${duration}</div>` : ''}
-    ${nextLabel ? `<div class="next-up">다음 순서 · <b>${nextLabel}</b><br>${nextDesc}</div>` : ''}
+    ${nextLabel ? `<div class="next-up">다음 순서 · <b>${nextLabel}</b>${nextWho ? `<br>${nextWho}` : ''}${nextDesc ? `<br>${nextDesc}` : ''}</div>` : ''}
   `;
 }
 
@@ -964,7 +967,7 @@ const SLIDES = [
   `},
 
   // 중식이 강연자 소개보다 먼저 온다 (12:00 중식 → 13:00 특강)
-  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', '특강 1', '이준원 (SGX 증권거래소 한국 총괄) — 싱가포르 자본시장 소개 / SGX IPO의 이해') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', '특강 1', '이준원 (SGX 증권거래소 한국 총괄)', '싱가포르 자본시장 소개 / SGX IPO의 이해') },
 
   { stub: 'TALK', cls: 'dense', body: `
     <div class="eyebrow">특강 · 13:00–17:30</div>
@@ -974,11 +977,11 @@ const SLIDES = [
 
   { stub: 'TALK 1', cls: 'dense', body: speakerSlide(0) },
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('10분 휴식', '14:30', '특강 2', '한재경 (OBBA Group 대표) — 직원에서 연매출 200억 대표가 되기까지') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('10분 휴식', '14:30', '특강 2', '한재경 (OBBA Group 대표)', '직원에서 연매출 200억 대표가 되기까지') },
 
   { stub: 'TALK 2', cls: 'dense', body: speakerSlide(1) },
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('10분 휴식', '16:00', '특강 3', '장승환 (지마켓 대표이사) — 시장 변화에 대응하는 스타트업 성공 전략') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('10분 휴식', '16:00', '특강 3', '장승환 (지마켓 대표이사)', '시장 변화에 대응하는 스타트업 성공 전략') },
 
   { stub: 'TALK 3', cls: 'dense', body: speakerSlide(2) },
 
@@ -1032,7 +1035,7 @@ const SLIDES = [
     </div>
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', 'OKTA Global Connection Challenge', '번호별로 순차 이동하여 중식 진행') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', 'OKTA Global Connection Challenge', '', '번호별로 순차 이동하여 중식 진행') },
 
   { stub: 'GCC', body: `
     <div class="eyebrow">Global Connection Challenge · 13:00–13:10</div>
@@ -1100,7 +1103,7 @@ const SLIDES = [
     <div class="bingo-toast" data-bingo-toast>BINGO!</div>
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('휴식', '', '행사 전체 순위 발표', '') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('휴식', '', '행사 전체 순위 발표', '', '') },
 
   { stub: 'DAY 3', cls: 'dense', body: `
     <div class="eyebrow">순위 발표 · 15:00–16:00</div>
@@ -1131,7 +1134,7 @@ const SLIDES = [
     <h2>수료식</h2>
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('개인정비', '17:00–18:00', '차세대 만찬', '18:00까지 연회장 이동 · 18:30 시작') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('개인정비', '17:00–18:00', '차세대 만찬', '', '18:00까지 연회장 이동 · 18:30 시작') },
 
   { stub: 'DAY 3', body: `
     <div class="eyebrow">차세대 만찬 · 18:30–21:00</div>
