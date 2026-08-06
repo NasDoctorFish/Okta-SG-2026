@@ -127,11 +127,20 @@
   .seating-fx-canvas, .seating-plane-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; opacity: 0.12; }
   .seating-plane-canvas { z-index: 2; opacity: 1; }
   .seating-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
-  .stage-label { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.2em; color: var(--ink-muted); border: 1px solid var(--line); border-radius: 20px; padding: 0.4rem 1.6rem; }
-  .seat-rows { display: flex; flex-direction: column; align-items: center; gap: 0.55rem; width: min(560px, 90vw); }
-  .seat-row { display: flex; justify-content: center; gap: 0.9rem; width: 100%; }
-  .seat-box { flex: none; width: clamp(42px, min(8.6vw, 9.2vh), 84px); aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--accent-navy); background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.1rem; padding: 0.2rem; font-family: var(--font-mono); font-weight: 700; color: var(--accent-gold); }
-  .seat-box .sno { font-size: clamp(1.4rem, 3.4vw, 2rem); line-height: 1; }
+  /* 좌석 슬라이드에선 도면이 남는 세로 공간을 전부 먹는다 (전체화면에서 커지고 창 모드에선 줄어든다) */
+  .seating .ticket:has(.floorplan) { justify-content: flex-start; }
+  .seating-content:has(.floorplan) { flex: 1; min-height: 0; width: 100%; }
+  /* 연회장 도면 — 실제 평면도를 무대가 위로 오도록 돌려 옮긴 것.
+     좌표는 전부 %(방 폭·깊이 기준)이므로 방 크기만 바뀌면 통째로 따라 커진다.
+     방 비율 262:470 = 도면 실측(빈 구역 잘라낸 뒤) */
+  .floorplan { position: relative; aspect-ratio: 262 / 470; flex: 1 1 auto; min-height: 0; height: auto; padding-top: 2rem; }
+  .fp-room { position: relative; width: 100%; height: calc(100% - 2rem); border: 2px solid #93a1b8; border-radius: 4px; background: color-mix(in srgb, var(--accent-navy) 8%, #ffffff); }
+  /* 문 자리 — 벽선을 끊어 개구부처럼 보이게 한다 */
+  .fp-gap { position: absolute; top: -2px; transform: translateX(-50%); width: 4%; height: 3px; background: var(--bg-elevated); }
+  .fp-arrow { position: absolute; top: 0.15rem; transform: translateX(-50%); font-size: 1.05rem; line-height: 1; color: #1d233b; }
+  .fp-entry-label { position: absolute; top: 0.3rem; right: 24%; font-family: var(--font-mono); font-size: 0.86rem; letter-spacing: 0.12em; color: var(--ink-muted); }
+  .fp-stage { position: absolute; left: 29%; top: 3.5%; width: 54%; height: 13%; border: 1.5px solid #7d8ba3; background: #ffffff; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: clamp(0.8rem, 1.5vh, 1.15rem); font-weight: 700; letter-spacing: 0.22em; color: var(--ink); }
+  .fp-table { position: absolute; transform: translate(-50%, -50%); width: 21%; aspect-ratio: 1; border-radius: 50%; border: 1.5px solid #6b7a91; background: #ffffff; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: clamp(0.95rem, 2vh, 1.5rem); color: var(--accent-navy-deep); }
   .seating .lede { max-width: 44ch; color: var(--ink-muted); }
 
   /* ---------- Overview (Day1/2/3 summary) ---------- */
@@ -506,8 +515,18 @@
 
 const TEAMS = Array.from({ length: 10 }, (_, i) => i + 1);
 
-// 좌석 배치: 무대에서 가까운 줄부터 순서대로 (원형 테이블 12개), 3-3-3-3
-const SEATING_ROWS = [3, 3, 3, 3];
+// 좌석 배치도 — 연회장 도면(assets/조별좌석_배치도.jpeg)을 무대가 위 상단에 수평으로 오도록
+// 회전시켜 옮긴 값. [가로%, 세로%] = 테이블 중심 좌표, 배열 순서가 곧 테이블 번호(1~12).
+// 도면상 둘째 줄은 지그재그라 왼→오른 순서가 6·5·4 다. 테이블이 없는 홀 아래쪽 빈 구역은 잘라냈다.
+const FLOOR_TABLES = [
+  [24.1, 30.0], [56.6, 30.9], [85.0, 33.9],
+  [81.6, 52.6], [48.8, 48.8], [17.7, 47.4],
+  [15.0, 63.9], [46.2, 66.7], [74.7, 71.0],
+  [15.7, 84.9], [43.9, 86.9], [78.9, 88.0],
+];
+
+// 입구 2개 — 도면 그대로 무대 오른쪽 끝, 상단 벽 오른쪽 구석
+const FLOOR_DOORS = [86.5, 95.5];
 
 // 상권 5곳 — 스퀘어핏당 가격 미확정 (TBD), 확정 후 교체.
 // photoInside = 상권 대표/내부 사진 (샵·유동인구가 보이는 컷)
@@ -778,15 +797,15 @@ const SLIDES = [
     <div class="seating-content">
       <div class="eyebrow">Seating</div>
       <h2>조별 좌석 배치도</h2>
-      <div class="stage-label">무대</div>
-      <div class="seat-rows">${(() => {
-        let n = 0;
-        // 1~12번 테이블 — 전부 같은 원으로 표시한다
-        return SEATING_ROWS.map((count) => `<div class="seat-row">${Array.from({ length: count }, () => {
-          const t = ++n;
-          return `<div class="seat-box"><span class="sno">${t}</span></div>`;
-        }).join('')}</div>`).join('');
-      })()}</div>
+      <div class="floorplan">
+        <div class="fp-entry-label">입구</div>
+        ${FLOOR_DOORS.map((x) => `<div class="fp-arrow" style="left:${x}%;">▼</div>`).join('')}
+        <div class="fp-room">
+          ${FLOOR_DOORS.map((x) => `<div class="fp-gap" style="left:${x}%;"></div>`).join('')}
+          <div class="fp-stage">무대</div>
+          ${FLOOR_TABLES.map(([x, y], i) => `<div class="fp-table" style="left:${x}%;top:${y}%;">${i + 1}</div>`).join('')}
+        </div>
+      </div>
     </div>
   `},
 
@@ -1083,7 +1102,8 @@ const SLIDES = [
     </div>
     <div class="bingo-actions">
       <button type="button" data-bingo-call>이름 호명</button>
-      <button type="button" data-bingo-shout>BINGO 선언 (B)</button>
+      ${/* 화면에는 숨긴다 — B 키가 이 버튼을 눌러 BINGO! 오버레이를 띄운다 */ ''}
+      <button type="button" data-bingo-shout hidden>BINGO 선언 (B)</button>
       <button type="button" class="secondary" data-bingo-undo>한 명 취소</button>
       <button type="button" class="secondary" data-bingo-reset>초기화</button>
     </div>
