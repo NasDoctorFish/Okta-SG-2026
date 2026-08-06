@@ -2,38 +2,69 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>심사위원 투자 의향 카드 — 2026 아세안 차세대 글로벌 창업무역스쿨</title>
+<title>Soft Commitment 카드 — 2026 아세안 차세대 글로벌 창업무역스쿨</title>
 <style>
   * { box-sizing: border-box; }
-  body { font-family: "Noto Sans KR", "Malgun Gothic", sans-serif; margin: 0; color: #1d233b; }
-  .toolbar { padding: 1rem; background: #f0f2f5; display: flex; align-items: center; gap: 1rem; }
+  body { font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif; margin: 0; color: #1d233b; background: #f0f2f5; }
+
+  .toolbar { padding: 1rem 1.2rem; background: #fff; border-bottom: 1px solid #d8dce4; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; position: sticky; top: 0; z-index: 10; }
   .toolbar button { font-size: 1rem; padding: 0.6rem 1.4rem; border-radius: 8px; border: none; background: #002d6c; color: #fff; cursor: pointer; }
-  .toolbar span { color: #5f5f5f; font-size: 0.9rem; }
-  .sheet { width: 210mm; min-height: 297mm; margin: 0 auto; padding: 12mm; background: #fff; display: flex; flex-direction: column; gap: 8mm; }
-  .card { flex: 1; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem; color: #fff; position: relative; }
-  .card .icon { font-size: 4.5rem; line-height: 1; }
-  .card .label { font-size: 2.6rem; font-weight: 800; letter-spacing: -0.01em; }
-  .card .sub { font-size: 1.15rem; opacity: 0.92; }
-  .card .cutline { position: absolute; inset: 4mm; border: 2px dashed rgba(255,255,255,0.55); border-radius: 14px; pointer-events: none; }
-  .green { background: #1f7a4d; }
+  .toolbar span { color: #5f5f5f; font-size: 0.88rem; max-width: 74ch; line-height: 1.55; }
+
+  /* A4 세로 1장당 카드 1매. 카드는 20cm × 20cm 정팔각형. */
+  .sheet { width: 210mm; height: 297mm; margin: 0 auto; padding: 5mm; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6mm; page-break-after: always; }
+  .sheet:last-child { page-break-after: auto; }
+
+  .card {
+    width: 200mm; height: 200mm; position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6mm;
+    color: #fff; text-align: center;
+    /* 정팔각형 — 재단선을 따라 잘라내면 다각형 카드가 된다 */
+    clip-path: polygon(29.3% 0%, 70.7% 0%, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0% 70.7%, 0% 29.3%);
+  }
+  .card .icon { font-size: 46mm; line-height: 1; }
+  .card .label { font-size: 17mm; font-weight: 800; letter-spacing: -0.01em; }
+  .card .sub { font-size: 7mm; opacity: 0.92; font-family: ui-monospace, "SF Mono", monospace; letter-spacing: 0.08em; }
+
+  .green  { background: #1f7a4d; }
   .yellow { background: #a67c00; }
-  .red { background: #ae2329; }
+  .red    { background: #ae2329; }
+
+  .caption { font-size: 3.6mm; color: #5f5f5f; text-align: center; }
+
   @media print {
     .toolbar { display: none; }
-    .sheet { width: auto; min-height: auto; padding: 6mm; }
-    @page { size: A4 portrait; margin: 6mm; }
+    body { background: #fff; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+  @media screen {
+    .sheet { box-shadow: 0 2px 14px rgba(0, 0, 0, 0.12); margin-top: 8mm; margin-bottom: 8mm; }
   }
 </style>
 </head>
 <body>
   <div class="toolbar">
     <button onclick="window.print()">인쇄</button>
-    <span>인쇄 대화상자에서 매수 15로 설정해 출력한 뒤, 점선을 따라 3장씩 잘라 심사위원 1인당 초록·진한노랑·빨강 1세트씩 배부하세요.</span>
+    <span>
+      Soft Commitment(관심 투자) 카드 — <b>20cm × 20cm 정팔각형</b>, A4 세로 1장당 1매.
+      3종(초록·노랑·빨강)이 1세트이므로 심사위원 15명 기준 <b>이 문서를 15부</b> 출력(= 45장)한 뒤
+      팔각형 외곽선을 따라 잘라 코팅하세요. 본부 코팅 요청 시 이 규격을 그대로 전달하면 됩니다.
+    </span>
   </div>
+
   <div class="sheet">
-    <div class="card green"><div class="cutline"></div><div class="icon">👍</div><div class="label">투자 의향 있음</div><div class="sub">GO</div></div>
-    <div class="card yellow"><div class="cutline"></div><div class="icon">🤔</div><div class="label">조건부 · 보류</div><div class="sub">CONDITIONAL</div></div>
-    <div class="card red"><div class="cutline"></div><div class="icon">👎</div><div class="label">투자 의향 없음</div><div class="sub">NO GO</div></div>
+    <div class="card green"><div class="icon">👍</div><div class="label">투자 의향 있음</div><div class="sub">GO</div></div>
+    <div class="caption">Soft Commitment · 관심 투자 — 초록</div>
+  </div>
+
+  <div class="sheet">
+    <div class="card yellow"><div class="icon">🤔</div><div class="label">조건부 · 보류</div><div class="sub">CONDITIONAL</div></div>
+    <div class="caption">Soft Commitment · 관심 투자 — 노랑</div>
+  </div>
+
+  <div class="sheet">
+    <div class="card red"><div class="icon">👎</div><div class="label">투자 의향 없음</div><div class="sub">NO GO</div></div>
+    <div class="caption">Soft Commitment · 관심 투자 — 빨강</div>
   </div>
 </body>
 </html>

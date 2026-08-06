@@ -7,7 +7,7 @@
     --bg-elevated: #ffffff;
     --ink: #1d233b;
     --ink-muted: #5f5f5f;
-    --accent-gold: #1d4ed8;
+    --accent-gold: #b45309;
     --accent-navy: #145a9f;
     --accent-navy-deep: #002d6c;
     --accent-red: #ae2329;
@@ -19,16 +19,30 @@
     --font-display: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, sans-serif;
     --font-body: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, sans-serif;
     --font-mono: ui-monospace, "SF Mono", "IBM Plex Mono", "Roboto Mono", monospace;
+
+    /* 타이포 스케일 — 슬라이드별 하드코딩 대신 항상 이 토큰을 쓴다 */
+    --fs-eyebrow: 0.85rem;      /* 상단 갈색 라벨 */
+    --fs-h2: clamp(1.9rem, 3.6vw, 2.7rem);
+    --fs-h2-lg: clamp(2.8rem, 6vw, 4.4rem);   /* 브레이크 등 대형 제목 */
+    --fs-lede: 1.15rem;
+    --fs-body: 1.08rem;
+    --fs-mono-sm: 0.85rem;      /* 시간·번호 등 보조 모노 */
+    --fs-huge: clamp(3.2rem, 9vw, 5.5rem);
+    --fs-btn: 1.05rem;
+
+    --lh-tight: 1.25;
+    --lh-body: 1.6;
+    --gap-block: 0.5rem;        /* 슬라이드 내 블록 간 세로 간격 */
   }
 
   * { box-sizing: border-box; }
-  html { font-size: 23px; }
+  html { font-size: clamp(14px, 2.6vh, 28px); }
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: var(--font-body); overflow: hidden; }
   body { display: flex; flex-direction: column; }
   ::selection { background: var(--accent-gold); color: var(--bg-elevated); }
   h1, h2, h3 { text-wrap: balance; margin: 0; font-family: var(--font-display); }
 
-  .eyebrow { font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.16em; color: var(--accent-gold); text-transform: uppercase; }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--fs-eyebrow); letter-spacing: 0.16em; color: var(--accent-gold); text-transform: uppercase; }
 
   /* ---------- Chrome ---------- */
   .topbar { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 1rem clamp(1rem, 4vw, 2.5rem); gap: 1rem; background: var(--accent-navy-deep); border-bottom: 3px solid var(--accent-gold); }
@@ -53,10 +67,12 @@
 
   /* ---------- Deck ---------- */
   .deck { flex: 1; position: relative; overflow: hidden; }
-  .track { display: flex; width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1); }
+  .track { display: flex; width: 100%; height: 100%; transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1); }
   @media (prefers-reduced-motion: reduce) { .track { transition: none; } }
   .slide { flex: 0 0 100%; height: 100%; overflow-y: auto; display: flex; justify-content: center; }
   .ticket { position: relative; width: min(1680px, 94vw); margin: clamp(1rem, 2.6vh, 2.2rem) 0; background: var(--bg-elevated); border-radius: 18px; box-shadow: var(--shadow); display: flex; min-height: calc(100% - 2.2rem); overflow: hidden; }
+  .schedule { align-items: stretch; overflow: hidden; }
+  .schedule .ticket { width: 100%; height: 100%; min-height: 100%; margin: 0; border-radius: 0; box-shadow: none; }
 
   .stub { flex: none; width: 100px; padding: 1.4rem 0.8rem; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; background: linear-gradient(180deg, var(--accent-navy), var(--accent-navy-deep)); color: #eef1f6; position: relative; }
   .stub::after {
@@ -65,13 +81,22 @@
     background-size: 18px 100%, 18px 100%, 2px 20px; background-repeat: no-repeat, no-repeat, repeat-y; background-position: left, left, calc(50% - 1px) 4px;
   }
   .stub .num { font-family: var(--font-mono); font-size: 1.7rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--accent-gold); }
-  .stub .label { writing-mode: vertical-rl; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; opacity: 0.85; }
-  .stub .mark { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.14em; }
+  /* OKTA(위) · BREAK(가운데)는 같은 세로쓰기 축에 올려 정렬을 맞춘다 */
+  .stub .label, .stub .mark { writing-mode: vertical-rl; font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.18em; opacity: 0.85; }
+  .stub .mark { opacity: 1; font-weight: 700; }
 
-  .cabin { flex: 1; padding: clamp(1.5rem, 3.6vw, 2.8rem); min-width: 0; display: flex; flex-direction: column; justify-content: safe center; align-items: safe center; gap: 0.3rem; }
+  .cabin { flex: 1; position: relative; padding: clamp(1.5rem, 3.6vw, 2.8rem); min-width: 0; display: flex; flex-direction: column; justify-content: safe center; align-items: safe center; gap: var(--gap-block); }
   .cabin .eyebrow { margin-bottom: 0.5rem; }
-  .cabin h2 { font-size: clamp(1.9rem, 3.6vw, 2.7rem); font-weight: 700; margin-bottom: 0.5rem; position: relative; }
+  .cabin h2 { font-size: var(--fs-h2); line-height: var(--lh-tight); font-weight: 700; margin-bottom: 0.5rem; position: relative; }
   .cabin h2::after { content: ""; display: block; width: 36px; height: 3px; margin: 0.6rem auto; background: var(--accent-gold); }
+  /* 내용이 많은 슬라이드 — 세로 가운데 정렬을 풀고 위에서부터 채운다.
+     가운데 정렬은 내용이 화면보다 길어지면 아래쪽이 잘려나가서 못 쓴다. */
+  .slide.dense .cabin { justify-content: flex-start; padding-top: clamp(0.8rem, 1.7vw, 1.3rem); padding-bottom: clamp(0.4rem, 0.9vw, 0.8rem); gap: 0.25rem; }
+  .slide.dense .cabin h2 { margin-bottom: 0.2rem; }
+  .slide.dense .cabin h2::after { margin: 0.35rem auto; }
+  .slide.dense .cabin .eyebrow { margin-bottom: 0.25rem; }
+  .slide.dense .lede { margin: 0.2rem 0 0; }
+
   .centered-header { text-align: center; }
   .centered-header h2::after { margin-left: auto; margin-right: auto; }
   .centered-header .lede { max-width: 640px; margin-left: auto; margin-right: auto; }
@@ -79,53 +104,90 @@
   .centered-block h2::after { margin-left: auto; margin-right: auto; }
   .centered-block .plain-list { text-align: left; display: inline-block; }
   .deadline-badge { margin-top: 1.6rem; display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-weight: 700; font-size: 1.35rem; color: var(--accent-red); background: color-mix(in srgb, var(--accent-red) 10%, transparent); border: 1.5px solid var(--accent-red); border-radius: 14px; padding: 0.7rem 1.6rem; }
-  .lede { color: var(--ink-muted); font-size: 1.15rem; line-height: 1.7; max-width: 68ch; }
+  .deadline-badge-lg { font-size: clamp(1.6rem, 3.2vw, 2.4rem); padding: 1rem 2.2rem; border-radius: 18px; border-width: 2px; }
+  .lede { color: var(--ink-muted); font-size: var(--fs-lede); line-height: var(--lh-body); max-width: 68ch; }
+
+  /* 위젯 조작 버튼 — 사다리/휠/믹서/빙고가 전부 이 규칙을 공유한다 */
+  .ladder-actions button, .wheel-actions button, .mixer-actions button, .bingo-actions button {
+    font-family: var(--font-mono); font-size: var(--fs-btn); padding: 0.65rem 1.4rem; border-radius: 26px;
+    border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #ffffff; cursor: pointer; font-weight: 600;
+  }
+  .ladder-actions button.secondary, .wheel-actions button.secondary, .mixer-actions button.secondary, .bingo-actions button.secondary { background: none; color: var(--ink); border-color: var(--line); }
+  .ladder-actions button:disabled, .wheel-actions button:disabled, .mixer-actions button:disabled, .bingo-actions button:disabled { opacity: 0.5; cursor: default; }
+  .ladder-actions button:focus-visible, .wheel-actions button:focus-visible, .mixer-actions button:focus-visible, .bingo-actions button:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
 
   /* ---------- Big statement (title-only slides, MC narrates the rest) ---------- */
   .big-statement { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60%; text-align: center; }
-  .huge { font-family: var(--font-display); font-weight: 800; font-size: clamp(3.2rem, 9vw, 5.5rem); color: var(--ink); text-wrap: balance; }
+  .huge { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-huge); line-height: var(--lh-tight); color: var(--ink); text-wrap: balance; }
 
   /* ---------- Seating (slide 1) ---------- */
-  .seating .ticket { flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2.2rem 1.5rem; gap: 1.3rem; position: relative; overflow: hidden; background: radial-gradient(ellipse at 50% 12%, #16233f 0%, #0b1220 48%, #050912 100%); }
+  .seating .ticket { flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2.2rem 1.5rem; gap: 1.3rem; position: relative; overflow: hidden; background: var(--bg-elevated); }
   .seating .stub { display: none; }
-  .seating h2 { color: #eef1f6; }
-  .seating-fx-canvas, .seating-plane-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
-  .seating-plane-canvas { z-index: 2; }
+  .seating h2 { color: var(--ink); }
+  .seating-fx-canvas, .seating-plane-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; opacity: 0.12; }
+  .seating-plane-canvas { z-index: 2; opacity: 1; }
   .seating-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 1.3rem; }
-  .stage-label { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.2em; color: rgba(238, 243, 251, 0.75); border: 1px solid rgba(238, 243, 251, 0.35); border-radius: 20px; padding: 0.4rem 1.6rem; }
+  .stage-label { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.2em; color: var(--ink-muted); border: 1px solid var(--line); border-radius: 20px; padding: 0.4rem 1.6rem; }
   .seat-rows { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; width: min(560px, 90vw); }
   .seat-row { display: flex; justify-content: center; gap: 1.1rem; width: 100%; }
-  .seat-box { flex: none; width: clamp(64px, 14vw, 92px); aspect-ratio: 1; border-radius: 50%; border: 2px dashed rgba(238, 243, 251, 0.4); background: rgba(238, 243, 251, 0.08); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: clamp(1.4rem, 3.4vw, 2rem); font-weight: 700; color: var(--accent-gold); }
-  .seating .lede { max-width: 44ch; }
+  .seat-box { flex: none; width: clamp(64px, 12vw, 92px); aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--accent-navy); background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.1rem; padding: 0.2rem; font-family: var(--font-mono); font-weight: 700; color: var(--accent-gold); }
+  .seat-box .sno { font-size: clamp(1.4rem, 3.4vw, 2rem); line-height: 1; }
+  /* 스텝·예비 테이블은 참가 조와 구분되게 톤을 낮춘다 */
+  .seat-box.aux { border-style: dashed; border-color: var(--line); color: var(--ink-muted); background: var(--bg-elevated); }
+  .seat-box .srole { font-size: 0.52rem; font-weight: 600; letter-spacing: 0; line-height: 1.15; color: var(--ink-muted); text-align: center; }
+  .seating .lede { max-width: 44ch; color: var(--ink-muted); }
 
   /* ---------- Overview (Day1/2/3 summary) ---------- */
-  .overview-grid { margin-top: 0.4rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .overview-grid { margin-top: 0.4rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; width: 100%; }
   @media (max-width: 760px) { .overview-grid { grid-template-columns: 1fr; } }
   .overview-grid h3 { font-size: 0.92rem; color: var(--accent-navy); margin-bottom: 0.4rem; font-family: var(--font-mono); letter-spacing: 0.03em; }
   .overview-grid .timeline .row { grid-template-columns: 3rem 1fr; padding: 0.35rem 0; }
   .overview-grid .timeline time { font-size: 0.78rem; }
   .overview-grid .timeline .desc { font-size: 0.82rem; line-height: 1.35; }
 
+  /* ---------- 팀 구성 (10개 조 명단 한 장) ---------- */
+  .roster-grid { margin-top: 0.6rem; width: 100%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; }
+  @media (max-width: 1100px) { .roster-grid { grid-template-columns: repeat(3, 1fr); } }
+  .roster-card { border: 1.5px solid var(--line); border-radius: 12px; padding: 0.45rem 0.55rem; background: var(--bg-elevated); min-width: 0; }
+  .roster-card .rteam { font-family: var(--font-mono); font-weight: 700; font-size: 1rem; color: var(--accent-gold); margin-bottom: 0.25rem; }
+  .rmembers { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+  .rmembers li { display: flex; align-items: baseline; gap: 0.35rem; line-height: 1.18; min-width: 0; }
+  .rmembers .rname { font-size: 0.84rem; font-weight: 600; flex: none; }
+  .rmembers .rorg { font-size: 0.62rem; color: var(--ink-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+  /* ---------- 상권 비교분석표 (Mac 사양 비교 스타일) ---------- */
+  .compare-scroll { margin-top: 0.9rem; width: 100%; overflow-x: auto; }
+  .compare-table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 720px; }
+  .compare-table th, .compare-table td { border-bottom: 1px solid var(--line); padding: 0.6rem 0.7rem; text-align: center; vertical-align: middle; }
+  .compare-table thead th { border-bottom: 2px solid var(--accent-navy); vertical-align: bottom; }
+  .compare-table .crow-head { width: 8.5rem; text-align: left; font-size: 0.92rem; font-weight: 700; color: var(--accent-navy); background: color-mix(in srgb, var(--accent-navy) 4%, transparent); }
+  .compare-table tbody td { font-family: var(--font-mono); font-size: 0.95rem; color: var(--ink-muted); }
+  /* 대표사진 — 작은 정사각 썸네일, 확정 전에는 점선 빈칸 */
+  .cthumb { width: clamp(52px, 6vw, 76px); aspect-ratio: 1; margin: 0 auto 0.4rem; border-radius: 10px; border: 1.5px dashed var(--line); background: color-mix(in srgb, var(--accent-navy) 5%, var(--bg-elevated)); overflow: hidden; }
+  .cthumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .compare-table .cname { font-size: 0.92rem; font-weight: 700; line-height: var(--lh-tight); }
+
   /* ---------- Timeline ---------- */
   .timeline { margin-top: 0.3rem; display: flex; flex-direction: column; }
-  .timeline .row { display: grid; grid-template-columns: 4.2rem 1fr; gap: 0.9rem; padding: 0.55rem 0; border-bottom: 1px solid var(--line); }
+  .timeline .row { display: grid; grid-template-columns: 4.2rem 1fr; gap: 0.9rem; padding: 0.4rem 0; border-bottom: 1px solid var(--line); }
   .timeline .row:last-child { border-bottom: none; }
   .timeline .row.dim { opacity: 0.55; }
   .timeline time { font-family: var(--font-mono); font-size: 0.98rem; color: var(--accent-gold); font-variant-numeric: tabular-nums; text-align: center; }
-  .timeline .desc { font-size: 1.08rem; text-align: center; }
+  .timeline .desc { font-size: var(--fs-body); line-height: var(--lh-tight); text-align: left; }
   .timeline .desc small { display: block; color: var(--ink-muted); font-size: 0.9rem; margin-top: 0.15rem; }
 
   /* ---------- Team placeholder slides ---------- */
 
   /* ---------- Speakers ---------- */
-  .speaker-grid { margin-top: 0.6rem; display: flex; min-height: 56vh; }
+  .speaker-grid { margin-top: 0.4rem; display: flex; min-height: 50vh; }
   .speaker-card { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.7rem; padding: 1.5rem 1.2rem; border-right: 1px solid var(--line); }
   .speaker-card:last-child { border-right: none; }
-  .speaker-card .avatar { width: 96px; height: 96px; font-size: 2rem; }
-  .speaker-card .name { font-weight: 700; font-size: 1.35rem; }
+  .speaker-card .avatar { width: clamp(140px, 14vw, 195px); height: clamp(140px, 14vw, 195px); font-size: 2.6rem; }
+  .speaker-card .name { font-weight: 700; font-size: 1.6rem; }
   .avatar { width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--accent-gold); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.92rem; flex: none; overflow: hidden; }
   .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   .speaker-card .role, .speaker-card .topic { font-size: 1.05rem; color: var(--ink-muted); }
+  .speaker-card .stime { font-family: var(--font-mono); font-size: var(--fs-mono-sm); color: var(--ink-muted); }
   .speaker-card .topic { color: var(--ink); }
 
   .exec-grid { margin-top: 0.6rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3.2rem; min-height: 62vh; }
@@ -144,28 +206,42 @@
 
   /* ---------- Speaker detail (career list) ---------- */
   .speaker-detail-head { display: flex; gap: 1.3rem; align-items: center; flex-wrap: wrap; }
-  .speaker-photo-slot { flex: none; width: clamp(170px, 24vw, 260px); height: clamp(170px, 24vw, 260px); border-radius: 50%; border: 2px dashed var(--line); background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.82rem; text-align: center; overflow: hidden; }
+  .speaker-photo-slot { flex: none; width: clamp(160px, min(19vw, 28vh), 260px); height: clamp(160px, min(19vw, 28vh), 260px); border-radius: 50%; border: 2px dashed var(--line); background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.82rem; text-align: center; overflow: hidden; }
   .speaker-photo-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  /* 발표자료가 들어온 강연자만 사진이 링크가 된다 */
+  a.speaker-photo-slot { text-decoration: none; cursor: pointer; position: relative; border-style: solid; border-color: var(--accent-gold); transition: transform 0.18s ease, box-shadow 0.18s ease; }
+  a.speaker-photo-slot:hover { transform: scale(1.02); box-shadow: var(--shadow); }
+  a.speaker-photo-slot:focus-visible { outline: 3px solid var(--accent-gold); outline-offset: 3px; }
+  a.speaker-photo-slot .deck-badge { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); width: max-content; padding: 0.3rem 0.9rem; border-radius: 20px; background: var(--accent-navy-deep); color: #eef1f6; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; }
+
   .speaker-org-badge { display: inline-block; align-self: flex-start; background: var(--accent-navy-deep); color: #eef1f6; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; padding: 0.25rem 0.7rem; border-radius: 20px; margin-bottom: 0.35rem; }
   .speaker-detail-head .name { font-size: 1.5rem; font-weight: 700; }
   .speaker-detail-head .topic { color: var(--accent-navy); font-size: 1.05rem; font-weight: 600; margin-top: 0.25rem; }
-  .career-list { margin-top: 1.1rem; display: flex; flex-direction: column; gap: 0.55rem; }
-  .career-list .row { display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.7rem; padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
+  .career-list { margin-top: 0.45rem; display: flex; flex-direction: column; gap: 0.15rem; width: 100%; }
+  .career-list .row { display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.7rem; padding: 0.12rem 0; border-bottom: 1px solid var(--line); }
   .career-list .row:last-child { border-bottom: none; }
   .career-list .yr { font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent-gold); font-variant-numeric: tabular-nums; }
-  .career-list .desc { font-size: 1rem; line-height: 1.5; }
+  .career-list .desc { font-size: var(--fs-body); line-height: var(--lh-tight); }
   @media (max-width: 560px) {
     .speaker-detail-head, .mc-card { flex-direction: column; align-items: flex-start; text-align: left; }
     .career-list .row { grid-template-columns: 1fr; gap: 0.15rem; }
   }
 
   /* ---------- Insert placeholder ---------- */
+  /* 조당 배정 시간 — 무대 뒤에서도 읽히도록 최대 크기 */
+  .timebox { margin-top: 1.4rem; display: flex; align-items: center; justify-content: center; gap: clamp(1.2rem, 4vw, 3.2rem); flex-wrap: wrap; }
+  .timebox-row { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+  .timebox .tb-num { font-family: var(--font-display); font-weight: 800; font-size: clamp(4rem, 12vw, 8.5rem); line-height: 1; color: var(--accent-gold); }
+  .timebox .tb-label { font-family: var(--font-mono); font-size: clamp(1.2rem, 2.6vw, 2rem); font-weight: 700; letter-spacing: 0.08em; color: var(--ink); }
+  .timebox-plus { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 6vw, 4.5rem); color: var(--ink-muted); }
+  .timebox-note { margin-top: 1.6rem; font-size: clamp(1.05rem, 2vw, 1.5rem); color: var(--ink-muted); text-align: center; }
+
   .insert-box { margin-top: 1.1rem; border: 1.5px dashed var(--line); border-radius: 12px; padding: 1.6rem; text-align: center; color: var(--ink-muted); background: color-mix(in srgb, var(--accent-gold) 6%, var(--bg-elevated)); font-size: 1.05rem; min-height: 110px; display: flex; align-items: center; justify-content: center; }
 
-  .photo-grid-lg { margin-top: 1.2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .photo-grid-lg { margin-top: 1.2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%; }
   @media (max-width: 620px) { .photo-grid-lg { grid-template-columns: 1fr; } }
   /* 카드 밖으로 넘치지 않도록 높이를 제한 — 남는 폭은 흐린 배경이 채운다 */
-  .photo-slot-lg { aspect-ratio: 4 / 3; max-height: 40vh; border: 1.5px dashed var(--line); border-radius: 12px; background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem; color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.92rem; overflow: hidden; position: relative; }
+  .photo-slot-lg { aspect-ratio: 4 / 3; min-height: 160px; max-height: 42vh; border: 1.5px dashed var(--line); border-radius: 12px; background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem; color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.92rem; overflow: hidden; position: relative; }
   .photo-slot-lg.has-img { border-style: solid; padding: 0; }
   /* 세로 사진도 잘리지 않게 전체를 보여주고, 남는 여백은 같은 사진을 흐리게 깔아 채운다 */
   .photo-slot-lg.has-img img { width: 100%; height: 100%; object-fit: contain; display: block; position: relative; z-index: 1; }
@@ -173,12 +249,13 @@
   .photo-slot-lg.has-img span { position: absolute; z-index: 2; left: 0.6rem; bottom: 0.5rem; padding: 0.15rem 0.55rem; border-radius: 6px; background: rgba(0, 0, 0, 0.55); color: #eef1f6; font-size: 0.76rem; }
 
   /* ---------- Shark Tank locations ---------- */
-  .loc-grid { margin-top: 0.5rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .loc-grid { margin-top: 0.5rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; }
   @media (max-width: 560px) { .loc-grid { grid-template-columns: 1fr; } }
   .loc-card { border: 1px solid var(--line); border-radius: 10px; padding: 0.9rem; background: color-mix(in srgb, var(--accent-navy) 5%, var(--bg-elevated)); }
   .loc-card .loc-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.15rem; }
   .loc-card .loc-biz { font-size: 0.9rem; color: var(--accent-gold); font-family: var(--font-mono); margin-bottom: 0.5rem; }
   .loc-dl { margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem 1rem; font-size: 0.84rem; }
+  .loc-dl-lg { font-size: var(--fs-body); margin-top: 0.6rem; }
   @media (max-width: 420px) { .loc-dl { grid-template-columns: 1fr; } }
   .loc-dl dt { color: var(--ink-muted); }
   .loc-dl dd { margin: 0.15rem 0 0; }
@@ -191,105 +268,109 @@
   .prize-badge.gold { border-color: #d4af37; color: #d4af37; }
   .prize-badge.silver { border-color: #a8a9ad; color: #a8a9ad; }
   .prize-badge.bronze { border-color: #cd7f32; color: #cd7f32; }
-  .prize-badges-lg { gap: 1.1rem; }
-  .prize-badges-lg .prize-badge { font-size: clamp(1.6rem, 3.4vw, 2.4rem); padding: 1rem 2rem; border-radius: 20px; border-width: 2px; background: rgba(238, 243, 251, 0.08); }
+  .prize-badges-lg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; width: 100%; }
+  .prize-badges-lg .prize-badge { font-size: clamp(1.6rem, 3.4vw, 2.4rem); padding: 1rem 2rem; border-radius: 20px; border-width: 2px; background: var(--bg-elevated); width: 100%; justify-content: center; }
   .prize-badges-lg .prize-badge .medal { font-size: 1.35em; }
-  .prize-badges-lg .prize-badge.gold { border-color: #d4af37; color: #ffd76a; }
-  .prize-badges-lg .prize-badge.silver { border-color: #a8a9ad; color: #d9dadd; }
-  .prize-badges-lg .prize-badge.bronze { border-color: #cd7f32; color: #e3a06c; }
+  .prize-badges-lg .prize-badge.gold { border-color: #d4af37; color: #a07c10; }
+  .prize-badges-lg .prize-badge.silver { border-color: #a8a9ad; color: #5f5f5f; }
+  .prize-badges-lg .prize-badge.bronze { border-color: #cd7f32; color: #7a4810; }
 
   /* ---------- Rank table (blank, filled in live) ---------- */
-  .rank-table { margin-top: 1.4rem; display: flex; flex-direction: column; gap: 0.8rem; max-width: 560px; }
-  .rank-row { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.2rem; border-radius: 14px; border: 1.5px solid var(--line); background: var(--bg-elevated); }
-  .rank-row .medal { font-size: 1.8rem; flex: none; }
-  .rank-row .rank-label { font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem; flex: none; width: 3.2rem; }
+  .rank-table { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.8rem; width: min(820px, 100%); align-self: center; }
+  .rank-row { display: flex; align-items: center; gap: 1.4rem; padding: 0.95rem 2rem; border-radius: 18px; border: 2px solid var(--line); background: var(--bg-elevated); }
+  .rank-row .medal { font-size: 2.4rem; flex: none; }
+  .rank-row .rank-label { font-family: var(--font-mono); font-weight: 700; font-size: 1.6rem; flex: none; width: 3.8rem; }
   .rank-row.gold { border-color: #d4af37; }
   .rank-row.silver { border-color: #a8a9ad; }
   .rank-row.bronze { border-color: #cd7f32; }
   .rank-row .team-blank { flex: 1; height: 2.1rem; border-bottom: 2px dashed var(--line); }
+  /* Enter 로 한 줄씩 공개 — 공개 전에는 자리만 차지하고 안 보인다 (레이아웃 점프 방지) */
+  .rank-row[data-rank-step]:not(.revealed) { opacity: 0; transform: translateY(14px); pointer-events: none; }
+  .rank-row[data-rank-step] { transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1); }
+  @media (prefers-reduced-motion: reduce) { .rank-row[data-rank-step] { transition: none; } }
+  .rank-hint { margin: 0.7rem 0 0; font-family: var(--font-mono); font-size: 0.9rem; letter-spacing: 0.06em; color: var(--ink-muted); text-align: center; }
+  .rank-hint.done { opacity: 0; }
+
+  /* ---------- 채점표 ---------- */
+  .score-grid { margin-top: 1rem; width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 900px) { .score-grid { grid-template-columns: 1fr; } }
+  .score-card { border: 1.5px solid var(--line); border-radius: 14px; padding: 1rem 1.1rem; background: var(--bg-elevated); }
+  .sc-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; padding-bottom: 0.5rem; margin-bottom: 0.5rem; border-bottom: 2px solid var(--accent-navy); }
+  .sc-head .sc-name { font-weight: 700; font-size: 1.1rem; }
+  .sc-head .sc-total { font-family: var(--font-mono); font-weight: 700; color: var(--accent-gold); }
+  .sc-items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+  .sc-items li { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; font-size: 0.95rem; line-height: var(--lh-tight); }
+  .sc-items li b { font-family: var(--font-mono); color: var(--accent-navy); flex: none; }
+  .score-sum { margin-top: 1rem; font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; text-align: center; }
+  .score-sum b { color: var(--accent-gold); font-size: 1.6rem; }
 
   /* ---------- Route / movement map ---------- */
   .route-map { margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; min-height: 55%; }
   .route-stop { border: 2px solid var(--accent-navy); border-radius: 18px; padding: 2rem 1.8rem; font-family: var(--font-mono); font-size: 1.3rem; font-weight: 700; background: var(--bg-elevated); text-align: center; color: var(--ink); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 0.6rem; min-width: 170px; }
-  .route-stop .ricon { font-size: 2.4rem; }
+  .route-stop .ricon { font-size: 1rem; font-weight: 400; letter-spacing: 0.1em; color: var(--accent-gold); font-family: var(--font-mono); text-transform: uppercase; }
   .route-arrow { color: var(--accent-gold); font-size: 2.4rem; font-weight: 700; }
   @media (max-width: 700px) { .route-map { gap: 0.8rem; } .route-stop { padding: 1.2rem 1rem; font-size: 1.05rem; min-width: 120px; } .route-arrow { font-size: 1.6rem; } }
 
-  .plain-list { margin: 0; padding-left: 1.1rem; font-size: 1.08rem; line-height: 1.7; }
+  .plain-list { margin: 0; padding-left: 1.1rem; font-size: var(--fs-body); line-height: var(--lh-body); }
+  /* GCC 3단계 — MC가 멀리서도 읽도록 대형 */
+  .gcc-steps { font-size: clamp(1.6rem, 3.4vw, 2.6rem); font-weight: 700; line-height: 1.9; font-variant-numeric: tabular-nums; }
+  .gcc-steps::marker, .gcc-steps li::marker { color: var(--accent-gold); }
+  .bingo-rules { font-size: clamp(1.05rem, 1.9vw, 1.5rem); line-height: 1.75; max-width: 62ch; }
+  .bingo-rules li::marker { color: var(--accent-gold); font-weight: 700; }
+  .bingo-rules b { color: var(--accent-navy); }
+  .bingo-rules-note { margin-top: 1.1rem; text-align: center; }
   .plain-list.ordered { padding-left: 1.3rem; }
 
   /* ---------- Day divider ---------- */
   .divider .ticket { align-items: stretch; }
-  .divider .cabin { display: flex; flex-direction: column; justify-content: center; gap: 1.2rem; }
-  .divider .daynum { font-family: var(--font-mono); font-size: clamp(3.2rem, 9vw, 5.2rem); font-weight: 700; color: var(--accent-gold); line-height: 1; }
+  .divider .cabin { display: flex; flex-direction: column; justify-content: center; gap: 0.7rem; padding-block: clamp(0.8rem, 1.6vw, 1.2rem); }
+  .divider .daynum { font-family: var(--font-mono); font-size: clamp(2.8rem, 7.2vw, 4.2rem); font-weight: 700; color: var(--accent-gold); line-height: 1; }
   .divider .datestr { font-family: var(--font-mono); font-size: 1.12rem; color: var(--ink-muted); letter-spacing: 0.04em; }
-  .divider .mini-agenda { margin-top: 0.5rem; }
-  .divider .mini-agenda .row { grid-template-columns: 3.6rem 1fr; }
+  .divider .mini-agenda { margin-top: 0.2rem; }
+  .divider .mini-agenda .row { grid-template-columns: 3.6rem 1fr; padding: 0.3rem 0; }
 
   /* ---------- Break slide ---------- */
   .break .ticket { align-items: center; justify-content: center; text-align: center; }
   .break .cabin { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.3rem; min-height: 60%; }
-  .break h2 { font-size: clamp(2.6rem, 5.5vw, 4rem); }
+  .break h2 { font-size: var(--fs-h2-lg); line-height: var(--lh-tight); color: var(--ink); }
   .break .duration { font-family: var(--font-mono); font-size: clamp(3.4rem, 9.5vw, 5.2rem); font-weight: 700; color: var(--accent-navy); letter-spacing: 0.02em; }
-  .break .next-up { margin-top: 0.5rem; padding-top: 1.2rem; border-top: 1px solid var(--line); font-size: 1.35rem; color: var(--ink-muted); }
+  .break .next-up { margin-top: 0.5rem; padding-top: 1.2rem; border-top: 1px solid var(--line); font-size: 2rem; color: var(--ink-muted); }
   .break .next-up b { color: var(--ink); }
-  .break-dots { display: flex; gap: 0.7rem; }
-  .break-dots span { width: 14px; height: 14px; border-radius: 50%; background: var(--accent-gold); animation: break-bounce 1.2s ease-in-out infinite; }
-  .break-dots span:nth-child(2) { animation-delay: 0.15s; }
-  .break-dots span:nth-child(3) { animation-delay: 0.3s; }
-  @keyframes break-bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.5; } 40% { transform: translateY(-10px); opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { .break-dots span { animation: none; opacity: 0.8; } }
-
-  /* coffee break cup animation */
-  .coffee-cup { width: 100px; height: 84px; position: relative; margin: 0.5rem 0; }
-  .coffee-cup .cup { position: absolute; bottom: 0; left: 11px; width: 78px; height: 53px; border: 4px solid var(--accent-navy); border-top: none; border-radius: 0 0 16px 16px; background: color-mix(in srgb, var(--accent-gold) 25%, var(--bg-elevated)); }
-  .coffee-cup .handle { position: absolute; bottom: 14px; right: -8px; width: 22px; height: 22px; border: 4px solid var(--accent-navy); border-left: none; border-radius: 0 11px 11px 0; }
-  .coffee-cup .steam { position: absolute; bottom: 56px; width: 4px; height: 22px; background: var(--ink-muted); border-radius: 2px; opacity: 0.6; animation: steam-rise 1.8s ease-in-out infinite; }
-  .coffee-cup .steam.s1 { left: 25px; animation-delay: 0s; }
-  .coffee-cup .steam.s2 { left: 42px; animation-delay: 0.4s; }
-  .coffee-cup .steam.s3 { left: 59px; animation-delay: 0.8s; }
-  @keyframes steam-rise { 0% { transform: translateY(0) scaleY(1); opacity: 0.6; } 100% { transform: translateY(-18px) scaleY(1.4); opacity: 0; } }
-  @media (prefers-reduced-motion: reduce) { .coffee-cup .steam { animation: none; opacity: 0.4; } }
 
   /* ---------- Ladder draw widget ---------- */
-  .ladder-wrap { margin-top: 0.8rem; display: flex; flex-direction: column; gap: 0.8rem; align-items: center; width: 100%; }
+  .ladder-wrap { margin-top: 0.4rem; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; width: 100%; }
   .ladder-track-box { max-width: 100%; overflow-x: auto; }
   .ladder-row { position: relative; height: 52px; }
+  [data-ladder-results] { height: auto; min-height: 70px; }
   .ladder-chip { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; font-family: var(--font-mono); }
   /* 조 이름표는 드래그 전용 — 끌어서 순서를 재배열한다 */
-  .ladder-chip.name { padding: 0.5rem 0.9rem; border-radius: 24px; border: 1.5px solid var(--line); background: var(--bg-elevated); color: var(--ink); font-size: 1.05rem; font-weight: 700; cursor: grab; touch-action: none; user-select: none; transition: left 0.18s ease, border-color 0.15s ease, color 0.15s ease; }
+  .ladder-chip.name { padding: 9px 18px; border-radius: 24px; border: 1.5px solid var(--line); background: var(--bg-elevated); color: var(--ink); font-size: 22px; font-weight: 700; cursor: grab; touch-action: none; user-select: none; transition: left 0.18s ease, border-color 0.15s ease, color 0.15s ease; }
   .ladder-chip.name:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
   .ladder-chip.name.dragging { transition: none; cursor: grabbing; z-index: 5; border-color: var(--accent-gold); color: var(--accent-gold); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28); }
   .ladder-chip.name:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { .ladder-chip.name { transition: none; } }
-  .ladder-chip.result { padding: 0.4rem 0.75rem; border-radius: 12px; background: color-mix(in srgb, var(--accent-navy) 8%, transparent); color: var(--ink-muted); font-size: 1.1rem; font-weight: 700; text-align: center; cursor: default; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease; }
+  .ladder-chip.result { padding: 8px 10px; border-radius: 14px; background: color-mix(in srgb, var(--accent-navy) 8%, transparent); color: var(--ink-muted); font-size: 17px; font-weight: 700; text-align: center; cursor: default; white-space: normal; max-width: 120px; line-height: 1.35; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease; }
+  .ladder-chip.result .loc-en { font-weight: 400; opacity: 0.72; font-size: 0.88em; display: block; }
   .ladder-chip.result.hit { color: var(--hit-color, var(--accent-gold)); background: color-mix(in srgb, var(--hit-color, var(--accent-gold)) 16%, transparent); box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hit-color, var(--accent-gold)) 50%, transparent); transform: translateX(-50%) scale(1.1); }
   .ladder-actions { display: flex; gap: 0.7rem; }
-  .ladder-actions button { font-family: var(--font-mono); font-size: 0.92rem; padding: 0.55rem 1.2rem; border-radius: 24px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #ffffff; cursor: pointer; font-weight: 600; }
-  .ladder-actions button.secondary { background: none; color: var(--ink); border-color: var(--line); }
-  .ladder-actions button:disabled { opacity: 0.5; cursor: default; }
-  .ladder-actions button:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
   .ladder-toast { min-height: 1.2rem; margin: 0; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--accent-gold); opacity: 0; transform: translateY(-4px); transition: opacity 0.25s ease, transform 0.25s ease; }
   .ladder-toast.show { opacity: 1; transform: translateY(0); }
 
   /* ---------- Spin wheel widget (left: cumulative order list, right: wheel + latest result) ---------- */
-  .wheel-wrap { margin-top: 0.8rem; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0; transition: gap 0.8s ease; }
+  .wheel-wrap { margin-top: 0.1rem; flex: 1; width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0; transition: gap 0.8s ease; }
   .wheel-wrap.revealed { gap: 2.6rem; }
-  .wheel-col { display: flex; flex-direction: column; align-items: center; gap: 1rem; flex: none; }
-  .wheel-stage { position: relative; width: clamp(320px, 34vw, 400px); height: clamp(320px, 34vw, 400px); }
+  .wheel-col { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; flex: none; }
+  .wheel-stage { position: relative; width: min(39vh, 32vw); height: min(39vh, 32vw); min-width: 240px; min-height: 240px; }
   .wheel-disc { width: 100%; height: 100%; border-radius: 50%; transition: transform 3.2s cubic-bezier(0.12, 0.72, 0.15, 1); }
   .wheel-disc canvas { display: block; width: 100%; height: 100%; border-radius: 50%; }
   @media (prefers-reduced-motion: reduce) { .wheel-disc { transition: none; } }
   .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-style: solid; border-width: 26px 15px 0 15px; border-color: var(--accent-gold) transparent transparent transparent; z-index: 1; }
   .wheel-actions { display: flex; gap: 0.9rem; }
-  .wheel-actions button { font-family: var(--font-mono); font-size: 1.1rem; padding: 0.7rem 1.5rem; border-radius: 28px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #ffffff; cursor: pointer; font-weight: 600; }
-  .wheel-actions button.secondary { background: none; color: var(--ink); border-color: var(--line); }
-  .wheel-actions button:disabled { opacity: 0.5; cursor: default; }
   /* latest single-draw result box (below the wheel, replaced each draw) */
-  .wheel-latest { min-width: 260px; border: 2px solid var(--accent-gold); border-radius: 16px; padding: 1.1rem 1.9rem; text-align: center; background: color-mix(in srgb, var(--accent-gold) 8%, var(--bg-elevated)); opacity: 0; transform: translateY(6px) scale(0.96); transition: opacity 0.3s ease, transform 0.3s ease; }
+  .wheel-latest { min-width: 260px; border: 2px solid var(--accent-gold); border-radius: 16px; padding: 0.7rem 1.6rem; text-align: center; background: color-mix(in srgb, var(--accent-gold) 8%, var(--bg-elevated)); opacity: 0; transform: translateY(6px) scale(0.96); transition: opacity 0.3s ease, transform 0.3s ease; }
   .wheel-latest.show { opacity: 1; transform: translateY(0) scale(1); }
   .wheel-latest .wl-rank { font-family: var(--font-mono); font-size: 1rem; letter-spacing: 0.05em; color: var(--ink-muted); }
-  .wheel-latest .wl-team { margin-top: 0.3rem; font-family: var(--font-display); font-weight: 800; font-size: 2.9rem; color: var(--accent-gold); }
+  .wheel-latest .wl-team { margin-top: 0.2rem; font-family: var(--font-display); font-weight: 800; font-size: 2.3rem; color: var(--accent-gold); }
   /* cumulative order list, left of the wheel */
   .wheel-order-box { width: 0; flex: none; overflow: hidden; opacity: 0; transition: width 0.8s ease, opacity 0.5s ease 0.3s; }
   .wheel-order-box.show { width: clamp(260px, 28vw, 360px); opacity: 1; }
@@ -318,7 +399,6 @@
   @media (prefers-reduced-motion: reduce) {
     .mixer-orbit.spin, .mixer-chip-pos.spin .mixer-chip { animation: none; }
   }
-  .mixer-actions button { font-family: var(--font-mono); font-size: 0.92rem; padding: 0.55rem 1.2rem; border-radius: 24px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #ffffff; cursor: pointer; font-weight: 600; }
   .mixer-groups { width: 0; flex: none; overflow: hidden; opacity: 0; transition: width 0.8s ease, opacity 0.5s ease 0.3s; }
   .mixer-groups.show { width: clamp(360px, 46vw, 620px); opacity: 1; }
   .mixer-groups-inner { width: clamp(360px, 46vw, 620px); display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
@@ -326,44 +406,46 @@
   .mixer-group-card .gnum { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 700; font-size: 1.05rem; }
   .mixer-group-card .gtitle { font-weight: 700; margin-bottom: 0.35rem; }
 
-  /* ---------- Global Mixer 좌석 배치도 (통상 번호별 테이블) ---------- */
-  /* 왼쪽 = 통상 번호 범례(2열 세로), 오른쪽 = 좌석 배치도 */
-  .mixer-seat-layout { margin-top: 0.4rem; display: flex; align-items: center; justify-content: center; gap: clamp(2rem, 5vw, 4.5rem); flex-wrap: wrap; }
-  .mixer-seat-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; flex: none; }
-  .mixer-seat-label { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.2em; color: var(--ink-muted); border: 1px solid var(--line); border-radius: 20px; padding: 0.26rem 1.5rem; }
-  .mixer-seat-rows { display: flex; flex-direction: column; align-items: center; gap: 1rem; width: min(680px, 100%); }
-  .mixer-seat-row { display: flex; justify-content: center; gap: 1.3rem; width: 100%; }
-  .mixer-table { flex: none; width: clamp(92px, 13vh, 148px); aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--accent-navy); background: color-mix(in srgb, var(--accent-navy) 7%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.1rem; }
-  .mixer-table .tno { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.03em; color: var(--ink-muted); }
-  .mixer-table .tcats { font-family: var(--font-mono); font-weight: 700; font-size: clamp(1.1rem, 2.8vh, 1.75rem); line-height: 1.1; color: var(--accent-gold); }
-  .mixer-legend { flex: none; display: grid; grid-auto-flow: column; grid-template-rows: repeat(8, auto); gap: 0.55rem 2.2rem; font-size: clamp(1.1rem, 2vh, 1.5rem); color: var(--ink); }
-  .mixer-legend span { display: flex; gap: 0.5rem; white-space: nowrap; }
-  .mixer-legend span b { font-family: var(--font-mono); color: var(--accent-gold); font-weight: 700; min-width: 1.5em; text-align: right; }
+  /* 밍글링 슬라이드 — 좌석배치도 없이 통상 분류/그룹만 크게 보여준다 */
+  .trade-grid { margin-top: 0.6rem; width: 100%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.7rem; }
+  @media (max-width: 900px) { .trade-grid { grid-template-columns: repeat(3, 1fr); } }
+  .trade-card { display: flex; align-items: center; gap: 0.6rem; border: 1.5px solid var(--line); border-radius: 12px; padding: 0.8rem 0.9rem; background: var(--bg-elevated); line-height: var(--lh-tight); }
+  .trade-card .tno { flex: none; width: 2rem; height: 2rem; border-radius: 50%; background: var(--accent-navy-deep); color: #eef1f6; font-family: var(--font-mono); font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+  .trade-card .tname { font-size: clamp(0.9rem, 1.5vw, 1.15rem); font-weight: 600; }
 
-  /* ---------- Bingo grid ---------- */
-  .bingo-wrap { position: relative; }
-  .bingo-grid { margin-top: 0.9rem; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.65rem; }
-  @media (max-width: 700px) { .bingo-grid { grid-template-columns: repeat(2, 1fr); } }
-  .bingo-cell { border: 1.5px solid var(--line); border-radius: 12px; padding: 0.8rem; font-size: clamp(0.95rem, 1.7vw, 1.2rem); font-weight: 600; line-height: 1.32; min-height: 112px; display: flex; align-items: center; justify-content: center; text-align: center; background: color-mix(in srgb, var(--accent-navy) 4%, var(--bg-elevated)); cursor: pointer; user-select: none; transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease; }
-  .bingo-cell:not(.revealed) { cursor: default; border-style: dashed; color: var(--ink-muted); background: color-mix(in srgb, var(--accent-navy) 2%, var(--bg-elevated)); }
-  .bingo-cell .bingo-num { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 700; color: var(--ink-muted); }
+  .mixer-groups-grid { margin-top: 0.45rem; width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+  @media (max-width: 900px) { .mixer-groups-grid { grid-template-columns: repeat(2, 1fr); } }
+  .mixer-groups-grid .mixer-group-card { font-size: clamp(0.92rem, 1.4vw, 1.1rem); padding: 0.9rem 1rem; }
+  .mixer-groups-grid .mixer-group-card .gnum { font-size: clamp(1.15rem, 1.9vw, 1.5rem); }
+  .mixer-groups-grid .mixer-group-card .gtitle { font-size: clamp(1.1rem, 1.8vw, 1.45rem); }
+
+
+  /* ---------- Bingo grid (10 / 10 / 5) ---------- */
+  /* --bingo-cols = 가장 긴 줄의 칸 수. 마지막 5칸짜리 줄은 왼쪽부터 채워진다. */
+  .bingo-wrap { position: relative; width: 100%; }
+  .bingo-grid { margin-top: 0.35rem; display: grid; grid-template-columns: repeat(var(--bingo-cols, 10), 1fr); gap: 0.35rem; }
+  @media (max-width: 900px) { .bingo-grid { grid-template-columns: repeat(5, 1fr); } }
+  .bingo-cell { border: 1.5px solid var(--line); border-radius: 10px; padding: 0.35rem 0.3rem; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 0.15rem; text-align: center; min-height: clamp(56px, 6.4vh, 74px); background: color-mix(in srgb, var(--accent-navy) 4%, var(--bg-elevated)); cursor: pointer; user-select: none; transition: background 0.2s ease, color 0.2s ease, border-color 0.15s ease; }
+  .bingo-cell .bingo-num { font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; color: var(--accent-gold); line-height: 1; }
+  .bingo-cell .bingo-text { font-size: clamp(0.58rem, 0.78vw, 0.74rem); font-weight: 600; line-height: 1.2; }
   .bingo-cell:hover { border-color: var(--accent-gold); }
   .bingo-cell:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
-  .bingo-cell.marked { background: var(--accent-gold); color: #ffffff; font-weight: 700; border-color: var(--accent-gold); }
-  .bingo-cell.bingo-line { animation: bingo-pulse 0.6s ease 2; }
-  .bingo-actions { margin-top: 1.2rem; display: flex; gap: 0.9rem; }
-  .bingo-actions button { font-family: var(--font-mono); font-size: 1.1rem; padding: 0.7rem 1.5rem; border-radius: 28px; border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #ffffff; cursor: pointer; font-weight: 600; }
-  .bingo-actions button.secondary { background: none; color: var(--ink); border-color: var(--line); }
-  .bingo-actions button:disabled { opacity: 0.5; cursor: default; }
-  @keyframes bingo-pulse { 0%, 100% { transform: scale(1); box-shadow: none; } 50% { transform: scale(1.06); box-shadow: 0 0 0 3px var(--accent-red); } }
-  .bingo-toast { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; }
-  .bingo-toast.show { animation: bingo-pop 1.8s ease forwards; }
-  .bingo-toast span { font-family: var(--font-display); font-weight: 900; font-size: clamp(3rem, 10vw, 6rem); color: var(--accent-red); text-shadow: 0 4px 24px rgba(0, 0, 0, 0.28); letter-spacing: 0.04em; }
-  @keyframes bingo-pop { 0% { transform: scale(0.5); opacity: 0; } 15% { transform: scale(1.1); opacity: 1; } 25% { transform: scale(1); } 80% { opacity: 1; } 100% { opacity: 0; } }
-  @media (prefers-reduced-motion: reduce) {
-    .bingo-cell.bingo-line { animation: none; }
-    .bingo-toast.show { animation: none; opacity: 1; }
-  }
+  .bingo-cell.marked { background: var(--accent-gold); color: #ffffff; border-color: var(--accent-gold); }
+  .bingo-cell.marked .bingo-num { color: #ffffff; }
+  .bingo-cell.bingo-line { outline: 2px solid var(--accent-gold); outline-offset: 1px; }
+  .bingo-actions { margin-top: 0.5rem; display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
+
+  /* 이름 호명 — 현재 호명된 이름 크게, 아래에 지금까지 부른 이름 누적 */
+  .bingo-caller { margin-top: 0.3rem; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+  .bingo-caller .bc-current { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 3.2vw, 2.4rem); line-height: 1.1; color: var(--accent-navy-deep); }
+  .bingo-caller .bc-current .bc-group { font-family: var(--font-mono); font-size: 0.4em; font-weight: 700; color: var(--ink-muted); margin-left: 0.5em; }
+  .bingo-caller .bc-called { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: center; max-height: 2rem; overflow-y: auto; }
+  .bingo-caller .bc-called span { font-family: var(--font-mono); font-size: 0.72rem; padding: 0.12rem 0.5rem; border-radius: 20px; border: 1px solid var(--line); color: var(--ink-muted); }
+  .bingo-toast { position: absolute; inset: 0; margin: auto; width: fit-content; height: fit-content; padding: 1.2rem 3rem; border-radius: 20px; background: var(--accent-gold); color: #ffffff; font-family: var(--font-display); font-weight: 800; font-size: clamp(2.6rem, 7vw, 5rem); letter-spacing: 0.04em; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity 0.25s ease; z-index: 5; }
+  .bingo-toast.show { opacity: 1; animation: bingo-pulse 0.6s ease infinite; }
+  @media (prefers-reduced-motion: reduce) { .bingo-toast.show { animation: none; } }
+  @keyframes bingo-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
 
   /* ---------- Networking field menu ---------- */
   .field-grid { margin-top: 0.6rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
@@ -371,6 +453,7 @@
   .field-card { border: 1px solid var(--line); border-radius: 10px; padding: 0.8rem 0.9rem; }
   .field-card .fname { font-weight: 700; margin-bottom: 0.3rem; }
   .field-card .fsub { color: var(--ink-muted); font-size: 0.88rem; }
+  .field-card .ftables { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--accent-gold); font-weight: 700; margin-bottom: 0.25rem; }
 
   /* ---------- Sponsor ---------- */
   .sponsor-card { margin-top: 0.8rem; border: 1px solid var(--line); border-radius: 14px; padding: 1.6rem; display: flex; align-items: center; gap: 1.2rem; background: color-mix(in srgb, var(--accent-gold) 6%, var(--bg-elevated)); }
@@ -410,7 +493,7 @@
   @media (max-width: 640px) {
     .stub { width: 70px; padding: 1rem 0.4rem; }
     .stub .num { font-size: 1.3rem; }
-    .stub .label { font-size: 0.64rem; }
+    .stub .label, .stub .mark { font-size: 0.64rem; }
     .ticket { min-height: calc(100% - 1.4rem); }
   }
 </style>
@@ -437,17 +520,22 @@
 
 const TEAMS = Array.from({ length: 10 }, (_, i) => i + 1);
 
-// 좌석 배치: 무대에서 가까운 줄부터 순서대로 (원형 테이블), 2-3-2-3
-const SEATING_ROWS = [2, 3, 2, 3];
+// 좌석 배치: 무대에서 가까운 줄부터 순서대로 (원형 테이블 12개), 3-3-3-3
+const SEATING_ROWS = [3, 3, 3, 3];
 
-// 상권 5곳 — 주소/사진/스퀘어핏당 가격 미확정 (TBD), 확정 후 교체
+// 상권 5곳 — 스퀘어핏당 가격 미확정 (TBD), 확정 후 교체.
+// photoInside = 상권 대표/내부 사진 (샵·유동인구가 보이는 컷)
+// photoMap    = 구글지도 캡처 — 줌인하지 말고 싱가포르 전체 지도에서 위치가 보이게
 const LOCATIONS = [
-  { no: '①', name: '무스타바 (Mustafa Centre)', pricePerSqft: null, photo: null, photo2: null },
-  { no: '②', name: '마리나베이샌즈 (Marina Bay Sands)', pricePerSqft: null, photo: null, photo2: null },
-  { no: '③', name: '맥스웰 (Maxwell)', pricePerSqft: null, photo: null, photo2: null },
-  { no: '④', name: '하지레인 (Haji Lane)', pricePerSqft: null, photo: null, photo2: null },
-  { no: '⑤', name: '부기스 스트릿 (Bugis Street)', pricePerSqft: null, photo: null, photo2: null },
+  { no: '①', name: '무스타파 (Mustafa Centre)', pricePerSqft: null, photoInside: 'assets/shark_tank/Updated/Mustafa Center.jpeg', photoMap: null },
+  { no: '②', name: '마리나베이샌즈 (Marina Bay Sands)', pricePerSqft: null, photoInside: 'assets/shark_tank/Updated/MBS.jpeg', photoMap: null },
+  { no: '③', name: '맥스웰 (Maxwell)', pricePerSqft: null, photoInside: 'assets/shark_tank/Updated/Maxwell.jpeg', photoMap: null },
+  { no: '④', name: '하지레인 (Haji Lane)', pricePerSqft: null, photoInside: 'assets/shark_tank/Updated/Haji_lane.png', photoMap: null },
+  { no: '⑤', name: '부기스 스트릿 (Bugis Street)', pricePerSqft: null, photoInside: 'assets/shark_tank/Updated/Bugis.jpeg', photoMap: null },
 ];
+
+// 현장조사 5항목 — 샤크탱크 개요 문구와 비교분석표 행 라벨이 이 배열을 공유한다
+const SURVEY_FIELDS = ['주요 고객층', '경쟁업체', '유동인구', '주변 환경', '성공·실패 요인'];
 
 // 임원 소개 — 명단 확정 전 임시 플레이스홀더 (이름/직함/사진 추후 교체)
 const EXECUTIVES = [
@@ -466,7 +554,7 @@ const SPEAKERS = [
 
 const SPEAKER_DETAILS = [
   {
-    name: '이준원 상무', org: 'SGX', topic: '싱가포르 자본시장 소개 및 SGX IPO의 이해', photo: 'assets/lee-junwon-sgx.jpeg',
+    name: '이준원 상무', org: 'SGX', topic: '싱가포르 자본시장 소개 및 SGX IPO의 이해', photo: 'assets/lee-junwon-sgx.jpeg', deck: null,
     career: [
       ['2004 ~ 2005', 'HSBC 및 삼성선물 IT개발팀 근무'],
       ['2005 ~ 2015', '삼성 선물 국제영업팀, 신한금융투자 글로벌파생영업부, 한국투자증권 해외투자영업부'],
@@ -474,7 +562,7 @@ const SPEAKER_DETAILS = [
     ],
   },
   {
-    name: '한재경 대표', org: 'OBBA Group', topic: '직원에서 연매출 200억 기업 대표가 되기까지', photo: 'assets/han-jaekyung-obba.png',
+    name: '한재경 대표', org: 'OBBA Group', topic: '직원에서 연매출 200억 기업 대표가 되기까지', photo: 'assets/han-jaekyung-obba.png', deck: '한재경 대표님 피피티.pptx',
     career: [
       ['2012 ~ 2026', '싱가포르 OBBA 브랜드 창업/운영'],
       ['2024 ~ 2026', '말레이시아, 인도네시아 사업 확장 (연매출 200억)'],
@@ -484,7 +572,7 @@ const SPEAKER_DETAILS = [
     ],
   },
   {
-    name: '장승환 대표', org: 'Gmarket', topic: '시장 변화에 대응하는 스타트업 성공 전략', photo: 'assets/jang-seunghwan-gmarket.jpeg',
+    name: '장승환 대표', org: 'Gmarket', topic: '시장 변화에 대응하는 스타트업 성공 전략', photo: 'assets/jang-seunghwan-gmarket.jpeg', deck: null,
     career: [
       ['2008 ~ 2012', 'Accenture UK 시니어 전략 컨설턴트'],
       ['2012 ~ 2024', 'Lazada 그룹 (공동 창립자, 싱가포르/인도네시아 CEO 역임)'],
@@ -518,13 +606,37 @@ const MIXER_GROUPS = [
   { nos: [14, 15], title: '물류 · 섬유' },
 ].map((g) => ({ ...g, label: `통상 ${g.nos.join('·')}`, cats: g.nos.map(tradeCat) }));
 
-// 믹서 좌석 배치 — 원형 테이블 10개(무대 쪽부터 2-3-2-3)에 통상 1~15번을 균등 분배 (한 테이블 최대 2개)
-const MIXER_TABLES = [
-  [1, 2], [3],
-  [4, 5], [6], [7, 8],
-  [9], [10, 11],
-  [12], [13, 14], [15],
+// 조 편성 — data/차무스 명단_정리.csv 에서 생성 (10개 조 × 7명)
+const TEAM_ROSTER = {
+  1: [{ name: '김예원', org: '필리핀/마닐라' }, { name: '이재영', org: '필리핀/마닐라' }, { name: '이윤상', org: '베트남/호치민' }, { name: '김신명', org: '베트남/호치민' }, { name: '권만재', org: '태국/방콕' }, { name: '이유림', org: '인도네시아/자카르타' }, { name: '장나겸', org: '싱가포르/싱가포르' }],
+  2: [{ name: '구수현', org: '필리핀/마닐라' }, { name: '송영만', org: '필리핀/마닐라' }, { name: '한재성', org: '베트남/호치민' }, { name: '이나래', org: '베트남/호치민' }, { name: '김범준', org: '태국/방콕' }, { name: '신무섭', org: '베트남/하노이' }, { name: '조문경', org: '이집트/카이로' }],
+  3: [{ name: '이준구', org: '필리핀/마닐라' }, { name: '장윤정', org: '필리핀/마닐라' }, { name: '성창현', org: '베트남/호치민' }, { name: '김규범', org: '베트남/호치민' }, { name: '김시후', org: '태국/방콕' }, { name: '김나리', org: '호주/퍼스' }, { name: '왕수정', org: '싱가포르/싱가포르' }],
+  4: [{ name: '박미래', org: '대만/타이베이' }, { name: '강민지', org: '필리핀/마닐라' }, { name: '고준영', org: '베트남/호치민' }, { name: '김준형', org: '베트남/호치민' }, { name: '이희철', org: '태국/방콕' }, { name: '김재민', org: '베트남/하노이' }, { name: '주영란', org: '싱가포르/싱가포르' }],
+  5: [{ name: '이동협', org: '대만/타이베이' }, { name: '조수지', org: '필리핀/마닐라' }, { name: '최서용', org: '베트남/호치민' }, { name: '백경담', org: '베트남/호치민' }, { name: '최재용', org: '베트남/하노이' }, { name: '김가람', org: '인도네시아/자카르타' }, { name: '윤수련', org: '싱가포르/싱가포르' }],
+  6: [{ name: '이요셉', org: '대만/타이베이' }, { name: '김경원', org: '필리핀/마닐라' }, { name: '배승일', org: '베트남/호치민' }, { name: '강건우', org: '베트남/호치민' }, { name: '김기남', org: '베트남/하노이' }, { name: '유희웅', org: '인도네시아/자카르타' }, { name: '이동윤', org: '싱가포르/싱가포르' }],
+  7: [{ name: '유선웅', org: '필리핀/마닐라' }, { name: '임지원', org: '필리핀/마닐라' }, { name: '임정명', org: '베트남/호치민' }, { name: '이시헌', org: '베트남/호치민' }, { name: '박현곤', org: '베트남/하노이' }, { name: '권처원', org: '인도네시아/자카르타' }, { name: '이다은', org: '싱가포르/싱가포르' }],
+  8: [{ name: '이연지', org: '필리핀/마닐라' }, { name: '김성우', org: '베트남/호치민' }, { name: '김우성', org: '베트남/호치민' }, { name: '최은총', org: '베트남/하노이' }, { name: '김유경', org: '캄보디아/프놈펜' }, { name: '전주희', org: '인도네시아/자카르타' }, { name: '이준영', org: '싱가포르/싱가포르' }],
+  9: [{ name: '김은희', org: '필리핀/마닐라' }, { name: '오원빈', org: '베트남/호치민' }, { name: '이준호', org: '베트남/호치민' }, { name: '김경수', org: '베트남/하노이' }, { name: '배송빈', org: '베트남/하노이' }, { name: '이우재', org: '캄보디아/프놈펜' }, { name: '노유희', org: '인도네시아/자카르타' }],
+  10: [{ name: '심다예', org: '필리핀/마닐라' }, { name: '정혜리', org: '두바이/두바이' }, { name: '김석현', org: '베트남/호치민' }, { name: '류승국', org: '베트남/호치민' }, { name: '윤정우', org: '캄보디아/프놈펜' }, { name: '류채영', org: '인도네시아/자카르타' }, { name: '허명강', org: '싱가포르/싱가포르' }],
+};
+
+// 심사 배점 — judge_scoresheet.html 과 동일한 구조 (총 100점)
+const SCORE_SHEET = [
+  { name: '사업 계획서 PT', total: 35, items: [['사업계획 줄거리', 5], ['사업 설명', 10], ['산업과 시장 분석', 10], ['마케팅 계획', 10]] },
+  { name: '심사자 평가', total: 40, items: [['고객에게 분명하고 특출한 가치 제공', 10], ['비즈니스 모델의 현실성과 수익성', 10], ['운영과 성장 계획 및 목표의 현실성', 10], ['사업 실행 팀의 경험·자격·실행능력', 10]] },
+  { name: '프레젠테이션 평가', total: 25, items: [['프레젠테이션의 내용', 5], ['프레젠터의 태도', 10], ['프레젠테이션의 전달력', 10]] },
 ];
+
+// 연회장 테이블 12개 — 1~10번은 참가 10개 조, 11번 싱가포르 스텝, 12번 예비(본부·대표)
+const TABLE_ROLES = {
+  11: '싱가포르 스텝',
+  12: '예비 (본부 · 대표)',
+};
+
+// OKTA Global Connection Challenge — 2 테이블당 1개 그룹 = 6개 그룹, 스텝·예비 테이블도 전원 참여
+const GCC_GROUPS = [
+  [1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12],
+].map((tables, i) => ({ no: i + 1, tables }));
 
 // OKTA Global Connection Challenge — "원하는 분야 네트워킹" 라운드 (13:10–13:40)
 const NETWORKING_FIELDS = [
@@ -536,14 +648,31 @@ const NETWORKING_FIELDS = [
   { no: '⑥', name: '자유주제 (Open Networking)', subs: ['"그냥 사람 많이 만나고 싶어요."'] },
 ];
 
-// OKTA Global Connection Challenge — 빙고 게임 (14:20–15:00), 5x5 = 25칸
-const BINGO_GRID = [
-  ['현재 사업을 운영하는 사람', '2026년 창업을 시작 할 사람', '개인 수출 경험이 있는 사람', '개인 수입 경험이 있는 사람', '이번이 첫 무역스쿨인 사람'],
-  ['F&B 업계 종사자', '제조업 관련 종사자', 'IT·테크 업계 종사자', '유통·물류업 종사자', '마케팅·콘텐츠 관련 종사자'],
-  ['온라인 쇼핑몰 운영 경험자', '해외 법인 설립 경험자', '투자 유치 경험이 있는 사람', '직원을 10명 이상 관리해 본 사람', 'AI를 업무에 활용하는 사람'],
-  ['한국 제품을 해외에서 판매해 본 사람', '새로운 사업 아이템을 찾는 사람', '다른 사람에게 투자할 의향이 있는 사람', '사업 파트너를 찾고 있는 사람', '해외 진출을 준비 중인 사람'],
-  ['나와 전혀 다른 업종의 사람', '나와 공통 관심사가 2개 이상인 사람', '내가 도움을 줄 수 있는 사람', '나에게 도움을 줄 수 있는 사람', '앞으로 다시 연락하고 싶은 사람'],
+// 참가자 전체 명단 — data/차무스 명단_정리.csv 에서 생성 (103명). 빙고 이름 호명에 쓴다
+const PARTICIPANTS = [{ name: '서대원', group: '서포터즈' }, { name: '이동협', group: '5조' }, { name: '이수진', group: '서포터즈' }, { name: '이요셉', group: '6조' }, { name: '박미래', group: '4조' }, { name: '이동원', group: '서포터즈' }, { name: '김왕휘', group: '서포터즈' }, { name: '서피터', group: '서포터즈' }, { name: '김예원', group: '1조' }, { name: '이준구', group: '3조' }, { name: '구수현', group: '2조' }, { name: '장윤정', group: '3조' }, { name: '강민지', group: '4조' }, { name: '조수지', group: '5조' }, { name: '김경원', group: '6조' }, { name: '유선웅', group: '7조' }, { name: '임지원', group: '7조' }, { name: '이연지', group: '8조' }, { name: '김은희', group: '9조' }, { name: '심다예', group: '10조' }, { name: '이재영', group: '1조' }, { name: '송영만', group: '2조' }, { name: '정혜리', group: '10조' }, { name: '이윤상', group: '1조' }, { name: '김신명', group: '1조' }, { name: '한재성', group: '2조' }, { name: '김석현', group: '10조' }, { name: '성창현', group: '3조' }, { name: '김규범', group: '3조' }, { name: '고준영', group: '4조' }, { name: '최서용', group: '5조' }, { name: '배승일', group: '6조' }, { name: '임정명', group: '7조' }, { name: '김성우', group: '8조' }, { name: '오원빈', group: '9조' }, { name: '류승국', group: '10조' }, { name: '김준형', group: '4조' }, { name: '백경담', group: '5조' }, { name: '강건우', group: '6조' }, { name: '이시헌', group: '7조' }, { name: '김우성', group: '8조' }, { name: '이정원', group: '서포터즈' }, { name: '이진희', group: '서포터즈' }, { name: '이준호', group: '9조' }, { name: '하민호', group: '서포터즈' }, { name: '김정준', group: '서포터즈' }, { name: '이나래', group: '2조' }, { name: '권만재', group: '1조' }, { name: '김범준', group: '2조' }, { name: '김시후', group: '3조' }, { name: '이희철', group: '4조' }, { name: '홍수찬', group: '서포터즈' }, { name: '이용선', group: '서포터즈' }, { name: '오창영', group: '서포터즈' }, { name: '이정음', group: '서포터즈' }, { name: '김기남', group: '6조' }, { name: '박현곤', group: '7조' }, { name: '최은총', group: '8조' }, { name: '김경수', group: '9조' }, { name: '배송빈', group: '9조' }, { name: '최재용', group: '5조' }, { name: '김재민', group: '4조' }, { name: '신무섭', group: '2조' }, { name: '이현기', group: '서포터즈' }, { name: '이우재', group: '9조' }, { name: '윤정우', group: '10조' }, { name: '김유경', group: '8조' }, { name: '노병진', group: '서포터즈' }, { name: '송호진', group: '서포터즈' }, { name: '홍범선', group: '서포터즈' }, { name: '이유림', group: '1조' }, { name: '전주희', group: '8조' }, { name: '김가람', group: '5조' }, { name: '노유희', group: '9조' }, { name: '유희웅', group: '6조' }, { name: '류채영', group: '10조' }, { name: '권처원', group: '7조' }, { name: '김용완', group: '지역대표(대양주)' }, { name: '최원준', group: '위원장' }, { name: '최혁', group: '부위원장(북미)' }, { name: '정한별', group: '서포터즈' }, { name: '이동훈', group: '서포터즈' }, { name: '김경란', group: '부위원장(제2통상)' }, { name: '조문경', group: '2조' }, { name: '김나리', group: '3조' }, { name: '장나겸', group: '1조' }, { name: '왕수정', group: '3조' }, { name: '허명강', group: '10조' }, { name: '주영란', group: '4조' }, { name: '이준영', group: '8조' }, { name: '윤수련', group: '5조' }, { name: '이동윤', group: '6조' }, { name: '이다은', group: '7조' }, { name: '이현영', group: '서포터즈' }, { name: '이선준', group: '서포터즈' }, { name: '이주원', group: '서포터즈' }, { name: '천정인', group: '서포터즈' }, { name: '권지은', group: '서포터즈' }, { name: '권노영', group: '서포터즈' }, { name: '임효민', group: '서포터즈' }, { name: '임준오', group: '서포터즈' }, { name: '박지영', group: '부위원장(제2통합)' }, { name: '김용원', group: '지역대표(대양주)' }];
+
+// OKTA Global Connection Challenge — 빙고 게임 (14:20–15:00)
+// 25칸을 10 / 10 / 5 세 줄로 깐다. 번호 1~25가 가로로 순서대로 읽혀서
+// "1번 칸에 누구 이름을 적었는지"를 참가자가 기억할 수 있다.
+// 빙고는 가로 한 줄 완성 (정방형이 아니므로 세로·대각선 줄은 성립하지 않는다).
+const BINGO_ROWS = [10, 10, 5];
+const BINGO_CELLS = [
+  '현재 사업을 운영하는 사람', '2026년 창업을 시작 할 사람', '개인 수출 경험이 있는 사람', '개인 수입 경험이 있는 사람', '이번이 첫 무역스쿨인 사람',
+  'F&B 업계 종사자', '제조업 관련 종사자', 'IT·테크 업계 종사자', '유통·물류업 종사자', '마케팅·콘텐츠 관련 종사자',
+  '온라인 쇼핑몰 운영 경험자', '해외 법인 설립 경험자', '투자 유치 경험이 있는 사람', '직원을 10명 이상 관리해 본 사람', 'AI를 업무에 활용하는 사람',
+  '한국 제품을 해외에서 판매해 본 사람', '새로운 사업 아이템을 찾는 사람', '다른 사람에게 투자할 의향이 있는 사람', '사업 파트너를 찾고 있는 사람', '해외 진출을 준비 중인 사람',
+  '나와 전혀 다른 업종의 사람', '나와 공통 관심사가 2개 이상인 사람', '내가 도움을 줄 수 있는 사람', '나에게 도움을 줄 수 있는 사람', '앞으로 다시 연락하고 싶은 사람',
 ];
+
+// 가로 한 줄 = 빙고. BINGO_ROWS 를 그대로 인덱스 구간으로 바꾼다.
+const BINGO_LINES = (() => {
+  const lines = [];
+  let n = 0;
+  for (const count of BINGO_ROWS) {
+    lines.push(Array.from({ length: count }, () => n++));
+  }
+  return lines;
+})();
 
 // 후원사/찬조 — 현재 확정된 항목 1건
 const SPONSORS = [
@@ -584,7 +713,7 @@ function speakerGrid() {
       <div class="name">${s.name}</div>
       <div class="role">${s.role}</div>
       <div class="topic">${s.topic}</div>
-      <div class="role" style="font-family:var(--font-mono);font-size:0.85rem;">${s.time}</div>
+      <div class="stime">${s.time}</div>
     </div>`).join('')}</div>`;
 }
 
@@ -599,14 +728,27 @@ function locationGrid() {
 }
 
 
+// 사진 삽입 슬롯 — src 가 있으면 배경 블러 + 원본, 없으면 점선 플레이스홀더
+function photoSlot(src, alt, caption) {
+  return src
+    ? `<div class="photo-slot-lg has-img"><img class="photo-bg" src="${src}" alt="" aria-hidden="true"><img src="${src}" alt="${alt}"><span>${caption}</span></div>`
+    : `<div class="photo-slot-lg"><span>${caption} 삽입 영역</span></div>`;
+}
+
 function speakerSlide(i) {
   const s = SPEAKERS[i];
   const d = SPEAKER_DETAILS[i];
   return `
-    <div class="eyebrow">Special Lecture · ${s.time}</div>
+    <div class="eyebrow">Special Lecture · ${s.time} · 강의 약 70분 + Q&amp;A</div>
     <h2>특강 — ${s.name}</h2>
     <div class="speaker-detail-head">
-      <div class="speaker-photo-slot">${d.photo ? `<img src="${d.photo}" alt="${d.name}">` : `<span>강연자 사진<br>삽입 예정</span>`}</div>
+      ${/* 사진을 누르면 로컬 발표자료(pptx)가 열린다. 자료 미도착이면 링크 없이 사진만. */ ''}
+      ${d.deck
+        ? `<a class="speaker-photo-slot has-deck" href="${encodeURI(d.deck)}" title="${d.name} 강연 자료 열기">
+             ${d.photo ? `<img src="${d.photo}" alt="${d.name}">` : `<span>강연자 사진<br>삽입 예정</span>`}
+             <span class="deck-badge">강연 자료 열기</span>
+           </a>`
+        : `<div class="speaker-photo-slot">${d.photo ? `<img src="${d.photo}" alt="${d.name}">` : `<span>강연자 사진<br>삽입 예정</span>`}</div>`}
       <div>
         <span class="speaker-org-badge">${d.org}</span>
         <div class="name">${d.name}</div>
@@ -617,12 +759,11 @@ function speakerSlide(i) {
   `;
 }
 
-// 브레이크 슬라이드 — 상단 라벨은 한글 한 단어만, 없으면 생략
-function breakSlide(label, duration, nextLabel, nextDesc, withCoffee, title) {
+// 브레이크 슬라이드 — 제목(중식/휴식/개인정비)을 큰 글씨 하나로만 찍는다.
+// 예전에는 같은 단어를 갈색 eyebrow + 검은 h2 로 두 번 찍어 겹쳐 보였다.
+function breakSlide(title, duration, nextLabel, nextDesc) {
   return `
-    ${label ? `<div class="eyebrow">${label}</div>` : ''}
-    <h2>${title || '잠시 쉬어갑니다'}</h2>
-    ${withCoffee ? `<div class="coffee-cup"><span class="steam s1"></span><span class="steam s2"></span><span class="steam s3"></span><div class="cup"></div><div class="handle"></div></div>` : `<div class="break-dots"><span></span><span></span><span></span></div>`}
+    <h2>${title}</h2>
     ${duration ? `<div class="duration">${duration}</div>` : ''}
     ${nextLabel ? `<div class="next-up">다음 순서 · <b>${nextLabel}</b><br>${nextDesc}</div>` : ''}
   `;
@@ -643,24 +784,6 @@ function teamSlide(n) {
   `;
 }
 
-// 믹서 좌석 배치도 — 원형 테이블 10개에 통상 번호를 뿌리고, 아래에 번호↔분류 범례를 붙인다
-function mixerSeatMap() {
-  let t = 0;
-  const rows = SEATING_ROWS.map((count) => `<div class="mixer-seat-row">${Array.from({ length: count }, () => {
-    const nos = MIXER_TABLES[t++];
-    return `<div class="mixer-table"><div class="tno">${t}번 테이블</div><div class="tcats">${nos.join('·')}</div></div>`;
-  }).join('')}</div>`).join('');
-  return `
-    <div class="mixer-seat-layout">
-      <div class="mixer-legend">${TRADE_CATS.map((c, i) => `<span><b>${i + 1}</b>${c}</span>`).join('')}</div>
-      <div class="mixer-seat-wrap">
-        <div class="mixer-seat-label">무대</div>
-        <div class="mixer-seat-rows">${rows}</div>
-        <div class="mixer-seat-label">입구</div>
-      </div>
-    </div>
-  `;
-}
 
 /* ===================== 슬라이드 목록 ===================== */
 
@@ -675,23 +798,22 @@ const SLIDES = [
       <div class="stage-label">무대</div>
       <div class="seat-rows">${(() => {
         let n = 0;
-        return SEATING_ROWS.map((count) => `<div class="seat-row">${Array.from({ length: count }, () => `<div class="seat-box">${TEAMS[n++]}</div>`).join('')}</div>`).join('');
+        // 1~10번은 조 번호, 11·12번은 스텝/예비 테이블 — 번호 아래에 역할을 작게 붙인다
+        return SEATING_ROWS.map((count) => `<div class="seat-row">${Array.from({ length: count }, () => {
+          const t = ++n;
+          return `<div class="seat-box${TABLE_ROLES[t] ? ' aux' : ''}"><span class="sno">${t}</span>${TABLE_ROLES[t] ? `<span class="srole">${TABLE_ROLES[t]}</span>` : ''}</div>`;
+        }).join('')}</div>`).join('');
       })()}</div>
       <div class="stage-label">입구</div>
     </div>
   `},
 
-  // 1 참가자 좌석 안내 (소피아 쿡 볼룸) -------------------------------------
-  { tag: 'schedule', title: '참가자 좌석 안내', body: `
-    <img src="assets/참가자_좌석_안내.png" alt="참가자 좌석 안내 — 소피아 쿡 볼룸" style="width:100%;height:100%;object-fit:contain;display:block;background:#f7f3ea;" />
-  `},
-
-  // 2 hero image ------------------------------------------------------------
+  // 1 hero image ------------------------------------------------------------
   { tag: 'hero', title: 'World OKTA Singapore', body: `
-    <img src="assets/hero_singapore_3.png" alt="World OKTA Singapore — 차세대 통합무역 스쿨" style="width:100%;height:100%;object-fit:contain;display:block;background:#0b1220;" />
+    <img src="assets/hero_singapore_3.png" alt="World OKTA Singapore — 차세대 통합무역 스쿨" style="width:100%;height:100%;object-fit:contain;display:block;background:#f0f2f5;" />
   `},
 
-  // 3 전체 일정표 (원본 이미지) -------------------------------------------------
+  // 2 전체 일정표 (원본 이미지) -------------------------------------------------
   { tag: 'schedule', title: '전체 일정표', body: `
     <img src="assets/schedule-final.png" alt="2026 아세안 차세대 글로벌 창업무역스쿨 일정표" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
   `},
@@ -710,28 +832,57 @@ const SLIDES = [
     <div class="video-box"><div class="play"></div><div>OKTA·차세대 소개 영상 (3~5분) 삽입 영역</div></div>
   `},
 
-  { stub: 'DAY 1', body: `
-    <div class="centered-header">
-      <h2>임원 소개</h2>
-      <p class="lede">행사를 이끄는 임원진을 소개합니다.</p>
-    </div>
-    ${executiveGrid()}
-  `},
-
   { stub: 'DAY 1', title: '조장 임명', body: `
     <div class="eyebrow">Opening · 16:00–17:00</div>
     <div class="big-statement"><div class="huge">조장 임명</div></div>
+  `},
+
+  // 팀 구성 — 10개 조 전체 명단 한 장 ----------------------------------------
+  { stub: 'TEAMS', cls: 'dense', title: '팀 구성', body: `
+    <div class="eyebrow">Team Assignment · 16:00–17:00</div>
+    <h2>팀 구성</h2>
+    <div class="roster-grid">${TEAMS.map(n => `
+      <div class="roster-card">
+        <div class="rteam">${n}조</div>
+        <ul class="rmembers">${(TEAM_ROSTER[n] || []).map(m => `<li><span class="rname">${m.name}</span><span class="rorg">${m.org}</span></li>`).join('')}</ul>
+      </div>
+    `).join('')}</div>
   `},
 
   // 10개 조별 자기소개 (개별 슬라이드) -------------------------------------
   ...TEAMS.map(n => ({ stub: 'TEAMS', title: `${n}조 자기소개`, body: teamSlide(n) })),
 
   // 샤크탱크 로케이션 소개 (전체 → 개별 4곳) — 조별 프로그램 설명 시간에 진행 후 바로 장소 추첨
-  { stub: 'SHARK', body: `
+  { stub: 'SHARK', cls: 'dense', body: `
     <div class="eyebrow">조별 프로그램 설명 · 17:00–17:30</div>
     <h2>싱가포르 샤크탱크</h2>
-    <p class="lede">현장조사 항목: 주요 고객층 · 경쟁업체 · 유동인구 · 주변 환경 · 성공·실패 요인</p>
+    <p class="lede">현장조사 항목: ${SURVEY_FIELDS.join(' · ')}</p>
     ${locationGrid()}
+  `},
+
+  // 프로젝트 브리핑 비교분석 — 5개 상권을 현장조사 5항목으로 나란히 비교
+  { stub: 'SHARK', cls: 'dense', body: `
+    <div class="eyebrow">조별 프로그램 설명 · 17:00–17:30</div>
+    <h2>프로젝트 브리핑 — 상권 비교분석</h2>
+    <div class="compare-scroll">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th class="crow-head"></th>
+            ${LOCATIONS.map(l => `<th>
+              <div class="cthumb">${l.photoInside ? `<img src="${l.photoInside}" alt="${l.name}">` : ''}</div>
+              <div class="cname">${l.no} ${l.name.replace(/\s*\(.*\)$/, '')}</div>
+            </th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${SURVEY_FIELDS.map(f => `<tr>
+            <th class="crow-head">${f}</th>
+            ${LOCATIONS.map(() => '<td>TBD</td>').join('')}
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
   `},
 
   // 샤크탱크 시상금 발표 (불꽃놀이 배경) -------------------------------------
@@ -749,27 +900,21 @@ const SLIDES = [
     </div>
   `},
 
-  ...LOCATIONS.map(l => ({ stub: 'SHARK', body: `
+  ...LOCATIONS.map(l => ({ stub: 'SHARK', cls: 'dense', body: `
     <div class="eyebrow">조별 프로그램 설명 · 17:00–17:30</div>
     <h2>${l.no} ${l.name}</h2>
-    <dl class="loc-dl" style="font-size:1rem;margin-top:0.6rem;">
+    <dl class="loc-dl loc-dl-lg">
       <div class="loc-field"><dt>스퀘어핏당 부동산 가격</dt><dd>${l.pricePerSqft || 'TBD (추후 업데이트)'}</dd></div>
     </dl>
     <div class="photo-grid-lg">
-      ${l.photo
-        ? `<div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.photo}" alt="" aria-hidden="true"><img src="${l.photo}" alt="${l.name} 상권 사진"><span>상권 사진</span></div>`
-        : `<div class="photo-slot-lg"><span>상권 사진 삽입 영역</span></div>`}
-      ${l.photo2
-        ? `<div class="photo-slot-lg has-img"><img class="photo-bg" src="${l.photo2}" alt="" aria-hidden="true"><img src="${l.photo2}" alt="${l.name} 상권 사진 2"><span>상권 사진 2</span></div>`
-        : `<div class="photo-slot-lg"><span>상권 사진 2 삽입 영역</span></div>`}
+      ${photoSlot(l.photoInside, `${l.name} 내부`, '내부 사진')}
+      ${photoSlot(l.photoMap, `${l.name} 위치`, '구글지도 · 싱가포르 전체 위치')}
     </div>
   ` })),
 
-  { stub: 'DAY 1', body: `
+  { stub: 'DAY 1', cls: 'dense', body: `
     <div class="eyebrow">장소 추첨 · 17:00–17:30</div>
     <h2>샤크탱크 챌린지 장소 추첨</h2>
-    <p class="lede" style="font-size:1rem;">조 이름표를 끌어 순서를 바꾼 뒤 전체 결과를 확인하세요.</p>
-    <div class="tags">${LOCATIONS.map(l => `<span class="tag">${l.no} ${l.name}</span>`).join('')}</div>
     <div class="ladder-wrap" data-ladder>
       <div class="ladder-track-box">
         <div class="ladder-row" data-ladder-names></div>
@@ -792,92 +937,81 @@ const SLIDES = [
     ['18:00', '석식 (통합무역스쿨, 경제인대회)'], ['21:00', '숙소 이동'],
   ])},
 
-  { tag: 'mixer', stub: 'DAY 2', body: `
-    <div class="eyebrow">OKTA Global Mixer · 09:00–10:00</div>
-    <h2>OKTA Global Mixer</h2>
-    <p class="lede">통상위원회 분류 기준으로 재편성한 6개 그룹으로 자유롭게 섞여 네트워킹합니다.</p>
-    <div class="mixer-wrap" data-mixer>
-      <div class="mixer-left">
-        <div class="mixer-stage">
-          <div class="mixer-orbit" data-mixer-orbit>
-            ${MIXER_GROUPS.map((g, i) => `<div class="mixer-chip-pos" data-mixer-chip style="--r:120px;--pos-angle:${(360 / MIXER_GROUPS.length) * i}deg;"><div class="mixer-chip">${g.nos.join('·')}</div></div>`).join('')}
-          </div>
-        </div>
-        <div class="mixer-actions"><button type="button" data-mixer-go>그룹 편성 시작</button></div>
-      </div>
-      <div class="mixer-groups" data-mixer-groups>
-        <div class="mixer-groups-inner">
-          ${MIXER_GROUPS.map(g => `<div class="mixer-group-card"><div class="gnum">${g.label}</div><div class="gtitle">${g.title}</div>${g.cats.join(' · ')}</div>`).join('')}
-        </div>
-      </div>
-    </div>
-  `},
 
   { stub: 'DAY 2', body: `
     <div class="eyebrow">OKTA Global Mixer · 09:00–10:00</div>
-    <h2>통상 번호대로 모여주세요</h2>
-    <p class="lede">본인 통상위원회 번호가 적힌 테이블로 이동해 주세요.</p>
-    ${mixerSeatMap()}
+    <h2>OKTA Global Mixer</h2>
+  `},
+
+  // 밍글링 1/2 — 통상위원회 번호로 본인 분야를 확인한다
+  { stub: 'DAY 2', cls: 'dense', body: `
+    <div class="eyebrow">네트워킹 밍글링 · 09:00–10:00</div>
+    <h2>본인이 일하고 있는 분야는?</h2>
+    <p class="lede">통상위원회 15개 소분류입니다. 본인 번호를 확인해 주세요.</p>
+    <div class="trade-grid">${TRADE_CATS.map((c, i) => `
+      <div class="trade-card"><span class="tno">${i + 1}</span><span class="tname">${c}</span></div>
+    `).join('')}</div>
+  `},
+
+  // 밍글링 2/2 — 같은 호끼리 6개 그룹으로 모인다 (테이블 없이 서서 진행)
+  { stub: 'DAY 2', cls: 'dense', body: `
+    <div class="eyebrow">네트워킹 밍글링 · 09:00–10:00</div>
+    <h2>같은 호끼리 모여주세요</h2>
+    <p class="lede">6개 그룹입니다. 테이블은 따로 없습니다 — 그룹 근방에 서서 자유롭게 이야기해 주세요.</p>
+    <div class="mixer-groups-grid">${MIXER_GROUPS.map(g => `
+      <div class="mixer-group-card"><div class="gnum">${g.label}</div><div class="gtitle">${g.title}</div>${g.cats.join(' · ')}</div>
+    `).join('')}</div>
   `},
 
   { stub: 'SHARK', body: `
     <div class="eyebrow">현장 방문 · 10:00–12:00</div>
     <h2>싱가포르 샤크탱크 챌린지 — 이동 안내</h2>
     <div class="route-map">
-      <div class="route-stop"><div class="ricon">🏨</div>호텔 로비</div><span class="route-arrow">→</span>
-      <div class="route-stop"><div class="ricon">🚕</div>이동</div><span class="route-arrow">→</span>
-      <div class="route-stop"><div class="ricon">🔍</div>현장조사</div><span class="route-arrow">→</span>
-      <div class="route-stop"><div class="ricon">⏰</div>12:00까지<br>복귀</div>
+      <div class="route-stop"><div class="ricon">HOTEL</div>호텔 로비</div><span class="route-arrow">→</span>
+      <div class="route-stop"><div class="ricon">MOVE</div>이동</div><span class="route-arrow">→</span>
+      <div class="route-stop"><div class="ricon">SURVEY</div>현장조사</div><span class="route-arrow">→</span>
+      <div class="route-stop"><div class="ricon">12:00</div>복귀</div>
     </div>
   `},
 
-  { stub: 'TALK', body: `
+  // 중식이 강연자 소개보다 먼저 온다 (12:00 중식 → 13:00 특강)
+  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', '특강 1', '이준원 (SGX 증권거래소 한국 총괄) — 싱가포르 자본시장 소개 / SGX IPO의 이해') },
+
+  { stub: 'TALK', cls: 'dense', body: `
     <div class="eyebrow">특강 · 13:00–17:30</div>
     <h2>오늘의 강연자</h2>
     ${speakerGrid()}
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', '특강 1', '이준원 (SGX 증권거래소 한국 총괄) — 싱가포르 자본시장 소개 / SGX IPO의 이해', false, '중식') },
+  { stub: 'TALK 1', cls: 'dense', body: speakerSlide(0) },
 
-  { stub: 'TALK 1', body: speakerSlide(0) },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('10분 휴식', '14:30', '특강 2', '한재경 (OBBA Group 대표) — 직원에서 연매출 200억 대표가 되기까지') },
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('', '14:30', '특강 2', '한재경 (OBBA Group 대표) — 직원에서 연매출 200억 대표가 되기까지') },
+  { stub: 'TALK 2', cls: 'dense', body: speakerSlide(1) },
 
-  { stub: 'TALK 2', body: speakerSlide(1) },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('10분 휴식', '16:00', '특강 3', '장승환 (지마켓 대표이사) — 시장 변화에 대응하는 스타트업 성공 전략') },
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('', '16:00', '특강 3', '장승환 (지마켓 대표이사) — 시장 변화에 대응하는 스타트업 성공 전략', true) },
-
-  { stub: 'TALK 3', body: speakerSlide(2) },
+  { stub: 'TALK 3', cls: 'dense', body: speakerSlide(2) },
 
   // ============ DAY 3 (8/15 토) ============
   { tag: 'divider', stub: 'DAY 3', body: dayDivider(3, '2026년 8월 15일 (토)', [
     ['08:00', '조식'], ['09:00', '발표 준비'], ['10:00', '싱가포르 샤크탱크 챌린지 발표'], ['12:00', '중식'],
     ['13:00', 'OKTA Global Connection Challenge'], ['15:00', '행사 전체 순위 발표'], ['16:00', '수료식'],
-    ['17:00', '개인정비'], ['18:00', '연회장 이동'], ['18:30', '차세대 파티'],
+    ['17:00', '개인정비'], ['18:00', '연회장 이동'], ['18:30', '차세대 만찬'],
   ])},
 
   { stub: 'DAY 3', body: `
     <div class="centered-block">
       <div class="eyebrow">Preparation · 09:00–10:00</div>
-      <h2>발표 준비</h2>
-      <ul class="plain-list">
-        <li>노트북, 발표자료 USB·클라우드 백업</li>
-        <li>마이크 테스트</li>
-      </ul>
-      <div class="deadline-badge">⏰ 발표자료 제출 마감 · 09:50</div>
+      <div class="huge">발표 준비</div>
+      <div class="deadline-badge deadline-badge-lg">⏰ 발표자료 제출 마감 · 09:50</div>
     </div>
   `},
 
-  { stub: 'DAY 3', body: `
-    <div class="eyebrow">심사위원</div>
-    <h2>심사위원 소개</h2>
-    <div class="speaker-grid">${JUDGES.map(j => `<div class="speaker-card"><div class="avatar">?</div><div class="name">${j.name}</div><div class="role">${j.org}</div></div>`).join('')}</div>
-  `},
 
-  { tag: 'wheel', stub: 'DAY 3', body: `
+  { tag: 'wheel', cls: 'dense', stub: 'DAY 3', body: `
     <div class="eyebrow">샤크탱크 챌린지 · 09:00–10:00</div>
     <h2>발표 순서 추첨</h2>
-    <p class="lede">휠을 돌려 한 조씩 발표 순서를 무작위로 정합니다.</p>
     <div class="wheel-wrap" data-wheel>
       <div class="wheel-order-box" data-wheel-order-box>
         <div class="wheel-order-inner" data-wheel-order></div>
@@ -902,27 +1036,50 @@ const SLIDES = [
   { stub: 'SHARK', body: `
     <div class="eyebrow">싱가포르 샤크탱크 챌린지 · 10:00–12:00</div>
     <h2>팀별 발표</h2>
-    <p class="lede">마이크(유·무선), 빔프로젝터·스크린, 타이머, 심사표, 심사위원(투자자 역) 좌석이 준비됩니다.</p>
-    <div class="insert-box"><span>이 영역에 <b>조별 발표자료 10팀분</b>을 발표 순서대로 삽입하세요</span></div>
+    <div class="timebox">
+      <div class="timebox-row"><span class="tb-num">8분</span><span class="tb-label">발표</span></div>
+      <div class="timebox-plus">+</div>
+      <div class="timebox-row"><span class="tb-num">2분</span><span class="tb-label">Q&amp;A</span></div>
+    </div>
+    <div class="timebox-note">조당 배정 시간 · Q&amp;A 후 Soft Commitment(관심 투자) → 인터뷰</div>
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', 'OKTA Global Connection Challenge', '번호별로 순차 이동하여 중식 진행 · 13:00 시작') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', 'OKTA Global Connection Challenge', '번호별로 순차 이동하여 중식 진행') },
 
   { stub: 'GCC', body: `
     <div class="eyebrow">Global Connection Challenge · 13:00–13:10</div>
     <h2>OKTA Global Connection Challenge</h2>
-    <ol class="plain-list ordered">
+    <ol class="plain-list ordered gcc-steps">
       <li>13:10–13:40 · 원하는 분야 네트워킹</li>
       <li>13:40–14:10 · 원하는 사람에게 찾아가기</li>
       <li>14:20–15:00 · 빙고 게임</li>
     </ol>
   `},
 
-  { stub: 'GCC', body: `
+  // 빙고 규칙 — GCC 개요 바로 다음. 게임은 GCC 진행 내내 채워도 된다
+  { stub: 'GCC', cls: 'dense', body: `
+    <div class="eyebrow">빙고 게임 안내</div>
+    <h2>OKTA 빙고 — 이렇게 진행합니다</h2>
+    <ol class="plain-list ordered bingo-rules">
+      <li>빙고판 각 칸에는 <b>조건</b>이 적혀 있습니다. 조건에 맞는 사람을 만나면 그 칸에 <b>그 사람 이름</b>을 적으세요.</li>
+      <li>같은 조 조원은 인정되지 않습니다. 한 사람은 <b>한 칸에만</b> 적을 수 있습니다.</li>
+      <li>빙고판은 사람마다 조건 순서가 다릅니다. 옆 사람 것과 비교하지 마세요.</li>
+      <li>마지막에 <b>이름을 호명</b>합니다. 내 칸에 그 이름이 있으면 칸을 표시하세요.</li>
+      <li><b>가로 한 줄</b>을 모두 채우면 빙고입니다.</li>
+    </ol>
+    <p class="lede bingo-rules-note">빙고판은 지금부터 들고 다니세요 — Global Connection Challenge 진행 중 언제든 채우면 됩니다.</p>
+  `},
+
+  { stub: 'GCC', cls: 'dense', body: `
     <div class="eyebrow">원하는 분야 네트워킹 · 13:10–13:40</div>
-    <h2>관심 분야를 골라 이동하세요</h2>
-    <div class="field-grid">${NETWORKING_FIELDS.map(f => `
-      <div class="field-card"><div class="fname">${f.no} ${f.name}</div><div class="fsub">${f.subs.join(' · ')}</div></div>
+    <h2>6개 그룹으로 나눠 진행합니다</h2>
+    <p class="lede">2개 테이블이 1개 그룹입니다. 11번 싱가포르 스텝, 12번 예비 테이블도 모두 함께 참여합니다.</p>
+    <div class="field-grid">${NETWORKING_FIELDS.map((f, i) => `
+      <div class="field-card">
+        <div class="ftables">${GCC_GROUPS[i].tables.map(t => `${t}번`).join(' · ')} 테이블</div>
+        <div class="fname">${f.no} ${f.name}</div>
+        <div class="fsub">${f.subs.join(' · ')}</div>
+      </div>
     `).join('')}</div>
   `},
 
@@ -932,55 +1089,64 @@ const SLIDES = [
     <p class="lede">앞선 세션에서 만난 사람들을 참고해 자유롭게 대화 상대를 찾아가는 시간입니다.</p>
   `},
 
-  { stub: 'GCC', body: `
+  { stub: 'GCC', cls: 'dense', body: `
     <div class="eyebrow">빙고 게임 · 14:20–15:00</div>
     <h2>OKTA 빙고</h2>
-    <p class="lede">같은 조 조원은 인정되지 않습니다. 이름이 불리면 자리에서 일어나 주세요.<br>칸을 클릭해서 표시하세요.</p>
+    <p class="lede">호명된 이름이 내 빙고판에 있으면 그 칸을 표시하세요. <b>가로 한 줄</b>을 채우면 빙고입니다.</p>
+    <div class="bingo-caller" data-bingo-caller>
+      <div class="bc-current" data-bingo-current>—</div>
+      <div class="bc-called" data-bingo-called></div>
+    </div>
     <div class="bingo-wrap" data-bingo>
-      <div class="bingo-grid">${BINGO_GRID.flat().map((c, i) => `<div class="bingo-cell" data-bingo-cell data-bingo-text="${escapeHtml(c)}"><span class="bingo-num">${i + 1}</span></div>`).join('')}</div>
-      <div class="bingo-toast" data-bingo-toast><span>BINGO!</span></div>
+      <div class="bingo-grid" style="--bingo-cols:${Math.max(...BINGO_ROWS)};">${BINGO_CELLS.map((c, i) => `
+        <div class="bingo-cell" data-bingo-cell><span class="bingo-num">${i + 1}</span><span class="bingo-text">${escapeHtml(c)}</span></div>
+      `).join('')}</div>
     </div>
     <div class="bingo-actions">
-      <button type="button" data-bingo-reveal>다음 칸 공개</button>
-      <button type="button" class="secondary" data-bingo-reveal-reset>초기화</button>
+      <button type="button" data-bingo-call>이름 호명</button>
+      <button type="button" class="secondary" data-bingo-undo>한 명 취소</button>
+      <button type="button" class="secondary" data-bingo-reset>초기화</button>
     </div>
+    <div class="bingo-toast" data-bingo-toast>BINGO!</div>
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('휴식', '', '행사 전체 순위 발표', '', true) },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('휴식', '', '행사 전체 순위 발표', '') },
 
-  { stub: 'DAY 3', body: `
+  { stub: 'DAY 3', cls: 'dense', body: `
     <div class="eyebrow">순위 발표 · 15:00–16:00</div>
     <h2>행사 전체 순위 발표</h2>
-    <p class="lede">샤크탱크 챌린지 · Global Connection Challenge를 종합한 행사 전체 순위를 발표합니다. 시상 상금·상품, 순위 발표 PPT, 마이크가 준비됩니다.</p>
-    <div class="rank-table">
-      <div class="rank-row gold"><span class="medal">🥇</span><span class="rank-label">1등</span><span class="team-blank"></span></div>
-      <div class="rank-row silver"><span class="medal">🥈</span><span class="rank-label">2등</span><span class="team-blank"></span></div>
-      <div class="rank-row bronze"><span class="medal">🥉</span><span class="rank-label">3등</span><span class="team-blank"></span></div>
+    <!-- 3등 → 2등 → 1등 순으로 Enter 를 눌러 한 줄씩 공개한다 -->
+    <div class="rank-table" data-rank-reveal>
+      <div class="rank-row gold" data-rank-step="3"><span class="medal">🥇</span><span class="rank-label">1등</span><span class="team-blank"></span></div>
+      <div class="rank-row silver" data-rank-step="2"><span class="medal">🥈</span><span class="rank-label">2등</span><span class="team-blank"></span></div>
+      <div class="rank-row bronze" data-rank-step="1"><span class="medal">🥉</span><span class="rank-label">3등</span><span class="team-blank"></span></div>
     </div>
+    <p class="rank-hint" data-rank-hint>Enter — 3등부터 공개</p>
+  `},
+
+  // 채점표 — 순위 발표 직후, 배점 근거 설명용
+  { stub: 'DAY 3', cls: 'dense', body: `
+    <div class="eyebrow">심사 기준 · 팀프로젝트 심사표</div>
+    <h2>채점표</h2>
+    <div class="score-grid">${SCORE_SHEET.map(cat => `
+      <div class="score-card">
+        <div class="sc-head"><span class="sc-name">${cat.name}</span><span class="sc-total">${cat.total}점</span></div>
+        <ul class="sc-items">${cat.items.map(([item, pt]) => `<li><span>${item}</span><b>${pt}</b></li>`).join('')}</ul>
+      </div>
+    `).join('')}</div>
+    <div class="score-sum">총점 <b>100</b>점</div>
   `},
 
   { stub: 'DAY 3', body: `
     <div class="eyebrow">Closing Ceremony · 16:00–17:00</div>
     <h2>수료식</h2>
-    <p class="lede">수료증, 뱃지, OKTA 깃발, 마이크·음향 장비가 준비되며 식순에 따라 진행됩니다.</p>
   `},
 
-  { stub: 'SPONSOR', body: `
-    <div class="eyebrow">감사의 마음을 전합니다</div>
-    <h2>후원사 소개</h2>
-    ${SPONSORS.map(s => `
-      <div class="sponsor-card">
-        <div class="sponsor-mark">🎁</div>
-        <div><div class="sname">${s.name}</div><div class="sitem">${s.item}</div></div>
-      </div>
-    `).join('')}
-  `},
-
-  { tag: 'break', stub: 'BREAK', body: breakSlide('개인정비', '17:00–18:00', '차세대 파티', '18:00까지 연회장 이동 · 18:30 시작') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('개인정비', '17:00–18:00', '차세대 만찬', '18:00까지 연회장 이동 · 18:30 시작') },
 
   { stub: 'DAY 3', body: `
-    <div class="eyebrow">차세대 파티 · 18:30–21:00</div>
-    <h2>차세대 파티</h2>
+    <div class="eyebrow">차세대 만찬 · 18:30–21:00</div>
+    <h2>차세대 만찬</h2>
   `},
 
   // ============ DAY 4 (8/16 일) ============
@@ -1004,7 +1170,7 @@ const SLIDES = [
 const track = document.getElementById('track');
 SLIDES.forEach((s, i) => {
   const section = document.createElement('section');
-  section.className = 'slide' + (s.tag === 'seating' ? ' seating' : s.tag === 'hero' ? ' hero' : s.tag === 'schedule' ? ' schedule' : s.tag === 'divider' ? ' divider' : s.tag === 'break' ? ' break' : s.tag === 'appendix' ? ' appendix' : '');
+  section.className = 'slide' + (s.tag === 'seating' ? ' seating' : s.tag === 'hero' ? ' hero' : s.tag === 'schedule' ? ' schedule' : s.tag === 'divider' ? ' divider' : s.tag === 'break' ? ' break' : s.tag === 'appendix' ? ' appendix' : '') + (s.cls ? ' ' + s.cls : '');
   if (s.tag === 'seating' || s.tag === 'hero' || s.tag === 'schedule' || s.tag === 'appendix') {
     section.innerHTML = `<div class="ticket">${s.body}</div>`;
   } else {
@@ -1048,7 +1214,7 @@ counter.innerHTML = Array.from(slides).map((section, i) => {
     const nextLabel = section.querySelector('.next-up b');
     title = 'BREAK' + (nextLabel ? ' · ' + nextLabel.textContent.trim() : '');
   } else {
-    const heading = section.querySelector('h1, h2, .thanks');
+    const heading = section.querySelector('h1, h2, .huge, .thanks');
     if (heading) {
       const clone = heading.cloneNode(true);
       clone.querySelectorAll('br').forEach((br) => br.replaceWith(' '));
@@ -1061,7 +1227,10 @@ counter.addEventListener('change', () => go(parseInt(counter.value, 10)));
 
 let idx = 0;
 function go(i) {
+  const prev = idx;
   idx = Math.max(0, Math.min(slides.length - 1, i));
+  // 순위 발표에서 벗어나면 공개 상태를 되돌린다 (다시 들어오면 3등부터)
+  if (prev !== idx) resetRankReveal(slides[prev]);
   track.style.transform = `translateX(-${idx * 100}%)`;
   counter.value = String(idx);
   dots.forEach((d, i2) => d.classList.toggle('active', i2 === idx));
@@ -1077,6 +1246,36 @@ let triggerSeatingFlight = () => {};
 
 let currentSfxAudio = null;
 
+/* ---------------- 순위 발표 — Enter 로 3등 → 2등 → 1등 순차 공개 ----------------
+   data-rank-step 이 작은 순서(3등=1)부터 열린다. 남은 등수가 없으면 false 를
+   돌려줘서 Enter 가 평소대로 흘러가게 둔다. */
+function revealNextRank(section) {
+  if (!section) return false;
+  const table = section.querySelector('[data-rank-reveal]');
+  if (!table) return false;
+  const next = Array.from(table.querySelectorAll('[data-rank-step]'))
+    .filter((row) => !row.classList.contains('revealed'))
+    .sort((a, b) => Number(a.dataset.rankStep) - Number(b.dataset.rankStep))[0];
+  if (!next) return false;
+  next.classList.add('revealed');
+  const hint = section.querySelector('[data-rank-hint]');
+  const left = table.querySelectorAll('[data-rank-step]:not(.revealed)').length;
+  if (hint) {
+    hint.textContent = left ? `Enter — ${left}개 남음` : '';
+    hint.classList.toggle('done', left === 0);
+  }
+  return true;
+}
+
+// 슬라이드를 벗어났다가 돌아오면 처음부터 다시 공개할 수 있게 되돌린다
+function resetRankReveal(section) {
+  const table = section && section.querySelector('[data-rank-reveal]');
+  if (!table) return;
+  table.querySelectorAll('[data-rank-step]').forEach((row) => row.classList.remove('revealed'));
+  const hint = section.querySelector('[data-rank-hint]');
+  if (hint) { hint.textContent = 'Enter — 3등부터 공개'; hint.classList.remove('done'); }
+}
+
 function stopSfx() {
   if (currentSfxAudio) {
     currentSfxAudio.pause();
@@ -1088,6 +1287,8 @@ function stopSfx() {
 document.addEventListener('keydown', (e) => {
   const tag = (e.target && e.target.tagName) || '';
   if (tag === 'SELECT' || tag === 'INPUT' || tag === 'TEXTAREA') return;
+  // 순위 발표 슬라이드가 열려 있고 아직 공개할 등수가 남았으면 Enter 를 여기서 소비한다
+  if (e.key === 'Enter' && revealNextRank(slides[idx])) { e.preventDefault(); return; }
   if (e.key === 'ArrowRight') go(idx + 1);
   if (e.key === 'ArrowLeft') go(idx - 1);
   if (e.key === ' ') { e.preventDefault(); go(idx + 1); }
@@ -1127,8 +1328,8 @@ fsBtn.addEventListener('click', toggleFullscreen);
 /* ===================== 사다리(Ladder) 위젯 — Canvas 기반, 조별 클릭 확인 지원 ===================== */
 
 const LADDER_MARGIN = 40;
-const LADDER_LANE_GAP = 92;
-const LADDER_CANVAS_H = 320;
+const LADDER_LANE_GAP = 130;
+const LADDER_CANVAS_H = 190;
 const LADDER_STEPS = 12;
 const LADDER_PALETTE_VARS = ['--accent-gold', '--accent-navy', '--accent-red', '--accent-green'];
 
@@ -1345,7 +1546,7 @@ function renderLadder(container, keepBoard) {
       return;
     }
     busy = true; updateButtons();
-    pendingToast = '전체 결과가 공개되었습니다';
+    pendingToast = '';
     const now = performance.now();
     TEAMS.forEach((_, i) => {
       const p = paths[i];
@@ -1369,7 +1570,12 @@ function renderLadder(container, keepBoard) {
     const loc = LOCATIONS[data.bottomLocIdx[i]];
     const res = document.createElement('div');
     res.className = 'ladder-chip result'; res.style.left = ladderLaneX(i) + 'px';
-    res.dataset.col = String(i); res.textContent = loc.no; res.title = loc.name;
+    res.dataset.col = String(i);
+    const m = loc.name.match(/^(.+?)\s*\((.+?)\)$/);
+    const kr = m ? m[1] : loc.name;
+    const en = m ? m[2] : '';
+    res.innerHTML = `<span style="display:block">${kr}</span><span class="loc-en">${en}</span>`;
+    res.title = loc.name;
     resultsRow.appendChild(res);
   });
 
@@ -1568,34 +1774,32 @@ document.querySelectorAll('[data-wheel]').forEach((wrap) => {
 
 document.querySelectorAll('[data-bingo]').forEach((wrap) => {
   const cells = Array.from(wrap.querySelectorAll('[data-bingo-cell]'));
-  const toast = wrap.querySelector('[data-bingo-toast]');
-  const revealBtn = wrap.parentElement.querySelector('[data-bingo-reveal]');
-  const revealResetBtn = wrap.parentElement.querySelector('[data-bingo-reveal-reset]');
-  const lines = [];
-  for (let r = 0; r < 5; r++) lines.push(Array.from({ length: 5 }, (_, c) => r * 5 + c));
-  for (let c = 0; c < 5; c++) lines.push(Array.from({ length: 5 }, (_, r) => r * 5 + c));
-  lines.push([0, 6, 12, 18, 24]);
-  lines.push([4, 8, 12, 16, 20]);
+  const panel = wrap.parentElement;
+  const callBtn = panel.querySelector('[data-bingo-call]');
+  const undoBtn = panel.querySelector('[data-bingo-undo]');
+  const resetBtn = panel.querySelector('[data-bingo-reset]');
+  const currentBox = panel.querySelector('[data-bingo-current]');
+  const calledBox = panel.querySelector('[data-bingo-called]');
   const completedLines = new Set();
+  const toast = panel.querySelector('[data-bingo-toast]');
   let toastTimer = null;
-  let unrevealed = [];
 
-  function showBingo() {
-    toast.classList.remove('show');
-    void toast.offsetWidth;
+  function showBingoToast() {
+    if (!toast) return;
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
   }
 
+  // 가로 한 줄만 빙고 — 10/10/5 배열에는 세로·대각선 줄이 성립하지 않는다
   function checkLines() {
-    lines.forEach((line, li) => {
-      const lineCells = line.map((i) => cells[i]);
-      const complete = lineCells.every((c) => c.classList.contains('marked'));
+    BINGO_LINES.forEach((line, li) => {
+      const lineCells = line.map((i) => cells[i]).filter(Boolean);
+      const complete = lineCells.length > 0 && lineCells.every((c) => c.classList.contains('marked'));
       if (complete && !completedLines.has(li)) {
         completedLines.add(li);
         lineCells.forEach((c) => c.classList.add('bingo-line'));
-        showBingo();
+        showBingoToast();
       } else if (!complete && completedLines.has(li)) {
         completedLines.delete(li);
         lineCells.forEach((c) => c.classList.remove('bingo-line'));
@@ -1603,46 +1807,55 @@ document.querySelectorAll('[data-bingo]').forEach((wrap) => {
     });
   }
 
+  // 칸은 처음부터 조건문이 보인다. 클릭하면 바로 마킹 토글.
   cells.forEach((cell) => {
     cell.setAttribute('tabindex', '0');
     cell.setAttribute('role', 'button');
-    const toggle = () => {
-      if (!cell.classList.contains('revealed')) return;
-      cell.classList.toggle('marked'); checkLines();
-    };
+    const toggle = () => { cell.classList.toggle('marked'); checkLines(); };
     cell.addEventListener('click', toggle);
     cell.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
     });
   });
 
-  function resetReveal() {
-    unrevealed = cells.map((_, i) => i);
-    cells.forEach((cell, i) => {
-      cell.classList.remove('revealed', 'marked', 'bingo-line');
-      cell.textContent = '';
-      const num = document.createElement('span');
-      num.className = 'bingo-num';
-      num.textContent = String(i + 1);
-      cell.appendChild(num);
-    });
+  /* ---- 이름 호명 — 참가자 명단에서 중복 없이 한 명씩 뽑는다 ---- */
+  let pool = [];
+  let called = [];
+
+  function renderCaller() {
+    const last = called[called.length - 1];
+    currentBox.innerHTML = last
+      ? `${escapeHtml(last.name)}<span class="bc-group">${escapeHtml(last.group)}</span>`
+      : '—';
+    calledBox.innerHTML = called.slice(0, -1).map((p) => `<span>${escapeHtml(p.name)}</span>`).join('');
+    if (callBtn) callBtn.disabled = pool.length === 0;
+    if (undoBtn) undoBtn.disabled = called.length === 0;
+  }
+
+  function callNext() {
+    if (pool.length === 0) return;
+    called.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+    renderCaller();
+  }
+
+  function undoCall() {
+    if (called.length === 0) return;
+    pool.push(called.pop());
+    renderCaller();
+  }
+
+  function resetAll() {
+    pool = PARTICIPANTS.slice();
+    called = [];
+    cells.forEach((cell) => cell.classList.remove('marked', 'bingo-line'));
     completedLines.clear();
-    if (revealBtn) revealBtn.disabled = false;
+    renderCaller();
   }
 
-  function revealNext() {
-    if (unrevealed.length === 0) return;
-    const pick = Math.floor(Math.random() * unrevealed.length);
-    const idx = unrevealed.splice(pick, 1)[0];
-    const cell = cells[idx];
-    cell.textContent = cell.dataset.bingoText;
-    cell.classList.add('revealed');
-    if (unrevealed.length === 0 && revealBtn) revealBtn.disabled = true;
-  }
-
-  resetReveal();
-  if (revealBtn) revealBtn.addEventListener('click', revealNext);
-  if (revealResetBtn) revealResetBtn.addEventListener('click', resetReveal);
+  resetAll();
+  if (callBtn) callBtn.addEventListener('click', callNext);
+  if (undoBtn) undoBtn.addEventListener('click', undoCall);
+  if (resetBtn) resetBtn.addEventListener('click', resetAll);
 });
 
 /* ===================== Global Mixer 궤도 애니메이션 ===================== */
