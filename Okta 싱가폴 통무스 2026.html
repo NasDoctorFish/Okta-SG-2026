@@ -121,17 +121,17 @@
   .huge { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-huge); line-height: var(--lh-tight); color: var(--ink); text-wrap: balance; }
 
   /* ---------- Seating (slide 1) ---------- */
-  .seating .ticket { flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem 1.5rem; gap: 0.6rem; position: relative; overflow: hidden; background: var(--bg-elevated); }
+  .seating .ticket { flex-direction: column; align-items: center; justify-content: center; text-align: center; margin: 0.6rem 0; padding: 0.5rem 1.5rem 0.8rem; gap: 0.4rem; position: relative; overflow: hidden; background: var(--bg-elevated); }
   .seating .stub { display: none; }
-  .seating h2 { color: var(--ink); }
+  .seating h2 { color: var(--ink); font-size: var(--fs-h2); }
   .seating-fx-canvas, .seating-plane-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; opacity: 0.12; }
   .seating-plane-canvas { z-index: 2; opacity: 1; }
   .seating-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
   /* 좌석 슬라이드에선 도면이 남는 세로 공간을 전부 먹는다 (전체화면에서 커지고 창 모드에선 줄어든다) */
   .seating .ticket:has(.floorplan-frame) { justify-content: flex-start; }
   .seating-content:has(.floorplan-frame) { flex: 1; min-height: 0; width: 100%; }
-  /* 연회장 평면도 — 원본 이미지 그대로(배경 포함, 크롭 없음). 전체가 다 보이도록 contain */
-  .floorplan-frame { flex: 1 1 auto; min-height: 0; aspect-ratio: 1080 / 1920; overflow: hidden; }
+  /* 연회장 평면도 — 원본 이미지 그대로(배경 포함, 크롭 없음). 가로/세로 중 남는 공간을 모두 써서 최대 크기로 표시(contain) */
+  .floorplan-frame { flex: 1 1 auto; min-height: 0; width: 100%; overflow: hidden; }
   .floorplan-img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
   .seating .lede { max-width: 44ch; color: var(--ink-muted); }
 
@@ -237,7 +237,8 @@
   .speaker-photo-slot { flex: none; width: clamp(150px, min(19vw, 21vh), 224px); height: clamp(150px, min(19vw, 21vh), 224px); border-radius: 50%; border: 2px dashed var(--line); background: color-mix(in srgb, var(--accent-navy) 6%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.82rem; text-align: center; overflow: hidden; }
   .speaker-photo-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   /* 발표자료가 들어온 강연자만 사진이 링크가 된다 */
-  a.speaker-photo-slot { text-decoration: none; cursor: pointer; position: relative; border-style: solid; border-color: var(--accent-gold); transition: transform 0.18s ease, box-shadow 0.18s ease; }
+  a.speaker-photo-slot, .speaker-photo-slot.gold-border { border-style: solid; border-color: var(--accent-gold); }
+  a.speaker-photo-slot { text-decoration: none; cursor: pointer; position: relative; transition: transform 0.18s ease, box-shadow 0.18s ease; }
   a.speaker-photo-slot:hover { transform: scale(1.02); box-shadow: var(--shadow); }
   a.speaker-photo-slot:focus-visible { outline: 3px solid var(--accent-gold); outline-offset: 3px; }
 
@@ -337,6 +338,15 @@
   .score-sum { margin-top: 1rem; font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; text-align: center; }
   .score-sum b { color: var(--accent-gold); font-size: 1.6rem; }
 
+  /* 점수표 — 10개 조 전체를 한 화면에 담기 위한 5열 촘촘 버전 */
+  .score-grid.wide { grid-template-columns: repeat(5, 1fr); gap: 0.6rem; margin-top: 0.5rem; }
+  .score-grid.wide .score-card { padding: 0.55rem 0.65rem; border-radius: 10px; }
+  .score-grid.wide .sc-head { padding-bottom: 0.3rem; margin-bottom: 0.3rem; }
+  .score-grid.wide .sc-head .sc-name { font-size: 0.92rem; }
+  .score-grid.wide .sc-head .sc-total { font-size: 0.8rem; }
+  .score-grid.wide .sc-items { gap: 0.2rem; }
+  .score-grid.wide .sc-items li { font-size: 0.74rem; }
+
   /* ---------- Route / movement map ---------- */
   .route-map { margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; min-height: 55%; }
   .route-stop { border: 2px solid var(--accent-navy); border-radius: 18px; padding: 2rem 1.8rem; font-family: var(--font-mono); font-size: 1.3rem; font-weight: 700; background: var(--bg-elevated); text-align: center; color: var(--ink); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 0.6rem; min-width: 170px; }
@@ -402,7 +412,7 @@
   .wheel-wrap.revealed { gap: 2.6rem; }
   .wheel-col { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; flex: none; }
   /* 10개 조가 다 뽑히면 왼쪽 순서 목록이 10줄이 된다 — 그때도 안 잘리는 크기 */
-  .wheel-stage { position: relative; width: min(33vh, 30vw); height: min(33vh, 30vw); min-width: 220px; min-height: 220px; }
+  .wheel-stage { position: relative; width: min(49.5vh, 45vw); height: min(49.5vh, 45vw); min-width: 330px; min-height: 330px; }
   .wheel-disc { width: 100%; height: 100%; border-radius: 50%; transition: transform 4.6s cubic-bezier(0.12, 0.72, 0.15, 1); }
   .wheel-disc canvas { display: block; width: 100%; height: 100%; border-radius: 50%; }
   @media (prefers-reduced-motion: reduce) { .wheel-disc { transition: none; } }
@@ -511,12 +521,13 @@
   .appendix .stub { display: none; }
 
   /* ---------- Hero image slide ---------- */
-  /* 티켓 비율이 원본 이미지와 같아 contain 이 꽉 차므로, 티켓 기준 절대배치 = 이미지 기준 배치가 된다 */
-  .hero .ticket { position: relative; padding: 0; align-items: stretch; justify-content: center; width: auto; height: calc(100% - 2.2rem); max-width: min(1680px, 94vw); aspect-ratio: 2752 / 1536; }
+  /* 풀스크린 배경 — object-fit: cover 로 카드 여백/모서리/그림자 없이 topbar 바로 아래부터 화면을 꽉 채운다.
+     화면 비율이 원본 이미지 비율(2752:1536)과 다르면 상하 또는 좌우가 살짝 잘린다. */
+  .hero .ticket { position: relative; padding: 0; align-items: stretch; justify-content: center; width: 100%; height: 100%; margin: 0; border-radius: 0; box-shadow: none; }
   .hero .stub { display: none; }
-  /* 오른쪽 상단 흰색 워드마크 — 상단을 '차세대 통합무역 스쿨' 글자 윗선(높이의 11.65%)에 맞춘다.
-     멀라이언 갈기 끝이 x=92.2% 지점에서 18.16% 까지 올라온다. 그래서 코너에 딱 붙이면(우측 3.2%)
-     폭을 12.5% 까지 줄여야 하므로, 대신 우측 9% 로 살짝 안쪽에 두어 갈기 정점을 피하고 폭 17% 를 지킨다.
+  /* 오른쪽 상단 흰색 워드마크 — 이미지 원본 기준 상단 11.65% / 우측 9% / 폭 17% 지점에 둬서
+     멀라이언 갈기 끝(우측 3.2%, 상단 18.16%)을 피한다. cover 크롭 때문에 화면비마다 실제 화면 좌표가
+     달라지므로, 아래 값은 크롭이 없을 때의 폴백일 뿐 — positionHeroLogo() 가 리사이즈마다 인라인으로 재계산한다.
      하늘이 밝아(휘도 148) 흰색 대비가 3:1 뿐이라 그림자로 가독성을 보강한다. */
   .hero-logo { position: absolute; top: 11.65%; right: 9%; width: 17%; height: auto; display: block; filter: drop-shadow(0 0.12em 0.3em rgba(0, 0, 0, 0.5)); pointer-events: none; }
 
@@ -579,26 +590,26 @@ const TEAMS = Array.from({ length: 10 }, (_, i) => i + 1);
 // photoInside = 상권 대표/내부 사진 (샵·유동인구가 보이는 컷)
 // photoMap    = 구글지도 캡처 — 줌인하지 말고 싱가포르 전체 지도에서 위치가 보이게
 const LOCATIONS = [
-  { no: '①', name: '무스타파 (Mustafa Centre)', area: '60㎡ (약 646sqft)', rent: 'S$14,200 / 월',
+  { no: '①', name: '무스타파 (Mustafa Centre)', area: '60㎡ (약 646sqft)', rent: 'S$14,200',
     traits: '24시간 쇼핑, 다국적 소비자, 가성비, 생활용품', customers: '현지인, 관광객, 외국인 근로자',
-    pricePerSqft: null, photoInside: 'assets/shark_tank/Updated/Mustafa Center.jpeg', photoMap: null },
-  { no: '②', name: '마리나베이샌즈 (Marina Bay Sands)', area: '50㎡ (약 538sqft)', rent: 'S$29,600 / 월',
+    pricePerSqft: 'S$22 / sqft', photoInside: 'assets/shark_tank/Updated/Mustafa Center.jpeg', photoMap: null },
+  { no: '②', name: '마리나베이샌즈 (Marina Bay Sands)', area: '50㎡ (약 538sqft)', rent: 'S$29,600',
     traits: '럭셔리, 프리미엄, 글로벌 브랜드, 고소득층', customers: '관광객, 비즈니스 고객, 프리미엄 소비층',
-    pricePerSqft: null, photoInside: 'assets/shark_tank/Updated/MBS.jpeg', photoMap: null },
-  { no: '③', name: '맥스웰 (Maxwell)', area: '10㎡ (호커 1칸)', rent: 'S$2,000 / 월',
+    pricePerSqft: 'S$55 / sqft', photoInside: 'assets/shark_tank/Updated/MBS.jpeg', photoMap: null },
+  { no: '③', name: '맥스웰 (Maxwell)', area: '10㎡ (호커 1칸)', rent: 'S$2,000',
     traits: '로컬 맛집, 호커문화, 높은 회전율, 합리적인 가격', customers: '현지인, 직장인, 관광객',
-    pricePerSqft: null, photoInside: 'assets/shark_tank/Updated/Maxwell.jpeg', photoMap: null },
-  { no: '④', name: '하지레인 (Haji Lane)', area: '65㎡ (약 700sqft)', rent: 'S$5,000 / 월',
+    pricePerSqft: 'S$19 / sqft', photoInside: 'assets/shark_tank/Updated/Maxwell.jpeg', photoMap: null },
+  { no: '④', name: '하지레인 (Haji Lane)', area: '65㎡ (약 700sqft)', rent: 'S$5,000',
     traits: '감성 브랜드, SNS, 라이프스타일, 개성 있는 브랜드', customers: 'MZ세대, 관광객, 크리에이터',
-    pricePerSqft: null, photoInside: 'assets/shark_tank/Updated/Haji_lane.png', photoMap: null },
-  { no: '⑤', name: '부기스 스트릿 (Bugis Street)', area: '55㎡ (약 592sqft)', rent: 'S$17,800 / 월',
+    pricePerSqft: 'S$7 / sqft', photoInside: 'assets/shark_tank/Updated/Haji_lane.png', photoMap: null },
+  { no: '⑤', name: '부기스 스트릿 (Bugis Street)', area: '55㎡ (약 592sqft)', rent: 'S$17,800',
     traits: '젊은층, 트렌드, 패션, 관광, 스트리트 쇼핑', customers: '10~30대, 학생, 관광객',
-    pricePerSqft: null, photoInside: 'assets/shark_tank/Updated/Bugis.jpeg', photoMap: null },
+    pricePerSqft: 'S$30 / sqft', photoInside: 'assets/shark_tank/Updated/Bugis.jpeg', photoMap: null },
 ];
 
 // 각 팀에게 제공되는 기본 정보 4가지 (PDF §2) — 비교표의 행 라벨이자 LOCATIONS 의 키
 const BRIEF_FIELDS = [
-  ['점포 면적', 'area'], ['월 임대료', 'rent'], ['상권 특징', 'traits'], ['주요 고객층', 'customers'],
+  ['점포 면적', 'area'], ['월 임대료', 'rent'], ['sqft당<br>월 임대료', 'pricePerSqft'], ['상권 특징', 'traits'], ['주요 고객층', 'customers'],
 ];
 
 // 현장조사 항목 (PDF §3) — 8개
@@ -750,9 +761,16 @@ function podiumTeam(rank, step) {
 // 배치도에는 역할을 따로 쓰지 않고 12개를 전부 같은 원으로만 표시한다.
 
 // OKTA Global Connection Challenge — 2 테이블당 1개 그룹 = 6개 그룹, 스텝·예비 테이블도 전원 참여
+// tables/color 는 assets/Stage/GlobalMixer_지도 배치 안내.png 도면과 1:1로 맞춘 값이다 (MIXER_GROUPS 와 동일 출처).
+// 순서는 도면 왼쪽열 위→아래, 오른쪽열 위→아래를 따른다 — NETWORKING_FIELDS(①~⑥)와 인덱스로 매칭된다.
 const GCC_GROUPS = [
-  [1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12],
-].map((tables, i) => ({ no: i + 1, tables }));
+  { tables: [1, 2],   color: '#bde2ac' },
+  { tables: [4, 5],   color: '#89c7d2' },
+  { tables: [7, 8],   color: '#f29d9c' },
+  { tables: [10, 11], color: '#e6cfec' },
+  { tables: [3, 6],   color: '#f2d7ad' },
+  { tables: [9, 12],  color: '#afe6e7' },
+].map((g, i) => ({ ...g, no: i + 1 }));
 
 // OKTA Global Connection Challenge — "원하는 분야 네트워킹" 라운드 (13:10–13:40)
 const NETWORKING_FIELDS = [
@@ -878,7 +896,7 @@ function speakerSlide(i) {
         ? `<a class="speaker-photo-slot has-deck" href="${encodeURI(d.deck)}" title="${d.name} 강연 자료 열기">
              ${d.photo ? `<img src="${d.photo}" alt="${d.name}">` : `<span>강연자 사진<br>삽입 예정</span>`}
            </a>`
-        : `<div class="speaker-photo-slot">${d.photo ? `<img src="${d.photo}" alt="${d.name}">` : `<span>강연자 사진<br>삽입 예정</span>`}</div>`}
+        : `<div class="speaker-photo-slot gold-border">${d.photo ? `<img src="${d.photo}" alt="${d.name}">` : `<span>강연자 사진<br>삽입 예정</span>`}</div>`}
       <div>
         <span class="speaker-org-badge">${d.org}</span>
         <div class="name">${d.name}</div>
@@ -932,6 +950,18 @@ function mixerLegend(g) {
     </div>`;
 }
 
+// 원하는 분야 네트워킹 — 도면 좌/우 컬럼에 들어가는 분야 범례 한 칸 (색은 GCC_GROUPS, 도면과 1:1)
+function gccFieldCard(f, g) {
+  return `
+    <div class="mm-item">
+      <span class="mm-dot" style="background:${g.color}"></span>
+      <span class="mm-text">
+        <b>${f.no} ${f.name}</b>
+        <small>${g.tables.map(t => `${t}번`).join(' · ')} 테이블 · ${f.subs.join(' · ')}</small>
+      </span>
+    </div>`;
+}
+
 function teamSlide(n) {
   return `
     <div class="eyebrow">Team Introduction</div>
@@ -948,7 +978,6 @@ const SLIDES = [
     <canvas class="seating-fx-canvas" data-seating-fx></canvas>
     <canvas class="seating-plane-canvas" data-seating-plane></canvas>
     <div class="seating-content">
-      <div class="eyebrow">Seating</div>
       <h2>조별 좌석 배치도</h2>
       <div class="floorplan-frame">
         <img class="floorplan-img" src="assets/Stage/첫번째 슬라이드 지도 배치.png" alt="조별 좌석 배치도 — 무대와 입구, 1~12번 테이블 위치">
@@ -958,7 +987,7 @@ const SLIDES = [
 
   // 1 hero image ------------------------------------------------------------
   { tag: 'hero', title: 'World OKTA Singapore', body: `
-    <img src="assets/hero_singapore_3.png" alt="World OKTA Singapore — 차세대 통합무역 스쿨" style="width:100%;height:100%;object-fit:contain;display:block;background:#f0f2f5;" />
+    <img src="assets/hero_singapore_3.png" alt="World OKTA Singapore — 차세대 통합무역 스쿨" style="width:100%;height:100%;object-fit:cover;display:block;" />
     <img class="hero-logo" src="logo/logo_CI_white.png" alt="World-OKTA" />
   `},
 
@@ -982,9 +1011,9 @@ const SLIDES = [
     <div class="video-box"><div class="play"></div><div>OKTA·차세대 소개 영상 (3~5분) 삽입 영역</div></div>
   `},
 
-  { stub: 'DAY 1', title: '싱가포르 지회 임원 소개', body: `
-    <div class="eyebrow">서포터즈 포함 · 15:30–16:00</div>
-    <div class="big-statement"><div class="huge">싱가포르 지회 임원 소개</div></div>
+  { stub: 'DAY 1', title: '스텝 소개', body: `
+    <div class="eyebrow">15:30–16:00</div>
+    <div class="big-statement"><div class="huge">스텝 소개</div></div>
   `},
 
   // 팀 구성 — 10개 조 전체 명단 한 장 ----------------------------------------
@@ -1017,16 +1046,11 @@ const SLIDES = [
     <div class="big-statement"><div class="huge">입교식</div></div>
   `},
 
-  { stub: 'DAY 1', cls: 'dense', title: '축사', body: `
-    <div class="eyebrow">입교식</div>
-    <h2>축사</h2>
-    ${CONGRATS_SPEAKERS.map(mcCard).join('')}
-  `},
   // ===== 샤크탱크 설명 8장 — Singapore Shark Tank Challenge20260805.pdf 목차를 그대로 따른다 =====
   // 섹션 제목만 공식 명칭을 쓰고, 이후 슬라이드는 짧은 표기를 쓴다
   { stub: 'SHARK', title: '싱가포르 샤크탱크 챌린지', body: `
     <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
-    <div class="big-statement"><div class="huge">싱가포르 샤크탱크 챌린지</div></div>
+    <div class="big-statement"><div class="huge">싱가포르<br>샤크탱크 챌린지</div></div>
   `},
 
   // 1) 프로그램 목표 + 팀 구성 (PDF 목표 · §1)
@@ -1037,26 +1061,9 @@ const SLIDES = [
     <div class="prize-badges" style="justify-content:center;margin-top:0.6rem;">
       <span class="prize-badge gold" style="font-size:1.5rem;padding:0.7rem 1.8rem;">목표 투자 유치 · SGD 500,000</span>
     </div>
-    <div class="field-grid" style="margin-top:0.9rem;">
-      <div class="field-card"><div class="fname">10개 팀 · 팀당 약 7명</div><div class="fsub">다국적 지회로 구성</div></div>
+    <div class="field-grid" style="margin-top:0.9rem;text-align:center;">
+      <div class="field-card"><div class="fname">10개 팀 · 팀당 약 9명</div><div class="fsub">다국적 지회로 구성</div></div>
       <div class="field-card"><div class="fname">팀별 역할 분담</div><div class="fsub">시장조사 · 전략 · 발표</div></div>
-    </div>
-  `},
-
-  // 2) 배정 상권 — PDF §2 표(상권 · 주요 특징 · 주요 고객층) 그대로
-  { stub: 'SHARK', cls: 'dense', title: '배정 상권 안내', body: `
-    <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
-    <h2>배정 상권 안내</h2>
-    <p class="lede">각 팀은 싱가포르 대표 상권 중 한 곳을 랜덤으로 배정받습니다.</p>
-    <div class="compare-scroll">
-      <table class="compare-table traits">
-        <thead><tr><th class="crow-head">상권</th><th>주요 특징</th><th>주요 고객층</th></tr></thead>
-        <tbody>${LOCATIONS.map(l => `<tr>
-          <th class="crow-head">${l.no} ${l.name.replace(/\s*\(.*\)$/, '')}</th>
-          <td class="cell-l">${l.traits}</td>
-          <td class="cell-l">${l.customers}</td>
-        </tr>`).join('')}</tbody>
-      </table>
     </div>
   `},
 
@@ -1154,27 +1161,6 @@ const SLIDES = [
     </div>
   `},
 
-
-  { stub: 'DAY 1', cls: 'dense', body: `
-    <div class="eyebrow">22:00–23:00</div>
-    <h2>샤크탱크 챌린지 장소 추첨</h2>
-    <div class="ladder-wrap" data-ladder>
-      <div class="ladder-track-box">
-        <div class="ladder-row" data-ladder-names></div>
-        <canvas data-ladder-canvas></canvas>
-        <div class="ladder-row" data-ladder-results></div>
-      </div>
-      <div class="ladder-actions">
-        <button type="button" data-ladder-next>다음 조 뽑기</button>
-        <button type="button" class="secondary" data-ladder-go>전체 결과 보기</button>
-        <button type="button" class="secondary" data-ladder-reset>다시 뽑기 (R)</button>
-      </div>
-
-      ${/* 전체 공개가 끝나면 장소별로 묶은 결과 요약이 여기에 뜬다 */ ''}
-      <div class="ladder-summary" data-ladder-summary></div>
-    </div>
-  `},
-
   // ============ DAY 2 (8/14 금) ============
   { tag: 'divider', stub: 'DAY 2', body: dayDivider(2, '2026년 8월 14일 (금)', [
     ['08:00', '조식'], ['09:00', 'OKTA Global Mixer'], ['10:00', '싱가포르 샤크탱크 챌린지 현장 방문'], ['12:00', '중식'],
@@ -1253,7 +1239,7 @@ const SLIDES = [
 
   { stub: 'TALK 2', cls: 'dense', body: speakerSlide(1) },
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('10분 휴식', '16:00', '특강 3', '장승환 (지마켓 대표이사)', '시장 변화에 대응하는 스타트업 성공 전략') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('휴식', '16:00', '특강 3', '장승환 (지마켓 대표이사)', '시장 변화에 대응하는 스타트업 성공 전략') },
 
   { stub: 'TALK 3', cls: 'dense', body: speakerSlide(2) },
 
@@ -1261,7 +1247,7 @@ const SLIDES = [
   { tag: 'divider', stub: 'DAY 3', body: dayDivider(3, '2026년 8월 15일 (토)', [
     ['08:00', '조식'], ['09:00', '발표 준비'], ['10:00', '싱가포르 샤크탱크 챌린지 발표'], ['12:00', '중식'],
     ['13:00', 'OKTA Global Connection Challenge'], ['15:00', '행사 전체 순위 발표'], ['16:00', '수료식'],
-    ['17:00', '개인정비'], ['18:00', '연회장 이동'], ['18:30', '차세대 만찬'],
+    ['17:00', '개인정비'], ['18:00', '만찬장 이동'], ['18:30', '차세대 만찬'],
   ])},
 
   { stub: 'DAY 3', body: `
@@ -1269,7 +1255,7 @@ const SLIDES = [
       <div class="eyebrow">Preparation · 09:00–10:00</div>
       <div class="huge">발표 준비</div>
       <div class="deadline-badge deadline-badge-lg">⏰ 발표자료 제출 마감 · 09:50</div>
-      <p class="lede">발표자료(PPT)는 이메일로 제출해 주세요 · 제출 이메일: TBD</p>
+      <p class="lede">발표자료(PPT)는 이메일로 제출해 주세요<br>제출 이메일: knowyoung97@gmail.com</p>
     </div>
   `},
 
@@ -1345,14 +1331,11 @@ const SLIDES = [
   { stub: 'GCC', cls: 'dense', body: `
     <div class="eyebrow">원하는 분야 네트워킹 · 13:10–13:40</div>
     <h2>6개 그룹으로 나눠 진행합니다</h2>
-    <p class="lede">2개 테이블이 1개 그룹입니다. 11번 싱가포르 스텝, 12번 예비 테이블도 모두 함께 참여합니다.</p>
-    <div class="field-grid">${NETWORKING_FIELDS.map((f, i) => `
-      <div class="field-card">
-        <div class="ftables">${GCC_GROUPS[i].tables.map(t => `${t}번`).join(' · ')} 테이블</div>
-        <div class="fname">${f.no} ${f.name}</div>
-        <div class="fsub">${f.subs.join(' · ')}</div>
-      </div>
-    `).join('')}</div>
+    <div class="mixer-map">
+      <div class="mm-side">${NETWORKING_FIELDS.slice(0, 4).map((f, i) => gccFieldCard(f, GCC_GROUPS[i])).join('')}</div>
+      <div class="mm-plan"><img src="assets/Stage/GlobalMixer_지도 배치 안내.png" alt="분야별 색깔 좌석 배치도 — 무대와 1~12번 테이블"></div>
+      <div class="mm-side">${NETWORKING_FIELDS.slice(4).map((f, i) => gccFieldCard(f, GCC_GROUPS[i + 4])).join('')}</div>
+    </div>
   `},
 
   { stub: 'GCC', body: `
@@ -1414,13 +1397,13 @@ const SLIDES = [
     <div class="score-sum">총점 <b>TBD</b></div>
   `},
 
-  // Top 3 조 점수 총합 통계 — 채점표 직후, 순위의 세부 근거를 보여준다 (실제 점수는 현장에서 채움)
-  { stub: 'DAY 3', cls: 'dense', body: `
+  // 점수표 — 10개 조 전체 점수 총합 통계 (채점표 직후, 실제 점수는 현장에서 채움)
+  { stub: 'DAY 3', cls: 'dense', title: '점수표', body: `
     <div class="eyebrow">점수 총합 통계</div>
-    <h2>Top 3 조 점수표</h2>
-    <div class="score-grid">${['🥇 1등', '🥈 2등', '🥉 3등'].map(rank => `
+    <h2>점수표</h2>
+    <div class="score-grid wide">${TEAMS.map(n => `
       <div class="score-card">
-        <div class="sc-head"><span class="sc-name">${rank} · TBD조</span><span class="sc-total">TBD점</span></div>
+        <div class="sc-head"><span class="sc-name">${n}조</span><span class="sc-total">TBD점</span></div>
         <ul class="sc-items">${SCORE_SHEET.map(cat => `<li><span>${cat.name}</span><b>TBD</b></li>`).join('')}</ul>
       </div>
     `).join('')}</div>
@@ -1432,7 +1415,7 @@ const SLIDES = [
     <div class="video-box"><div class="play"></div><div>3일간 하이라이트 영상 삽입 영역</div></div>
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('개인정비', '17:00–18:00', '차세대 만찬', '', '18:00까지 연회장 이동 · 18:30 시작') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('개인정비', '17:00–18:00', '차세대 만찬', '', '18:00까지 만찬장 이동 · 18:30 시작') },
 
   { stub: 'DAY 3', body: `
     <div class="eyebrow">18:30–21:00</div>
@@ -1472,6 +1455,41 @@ SLIDES.forEach((s, i) => {
   }
   track.appendChild(section);
 });
+
+/* Hero 로고 위치 재계산 — .hero .ticket 는 object-fit:cover 로 화면을 꽉 채우므로,
+   화면 비율이 원본 이미지(2752x1536)와 다르면 상하 또는 좌우가 잘린다. 로고를 "이미지 속 같은 지점"
+   (멀라이언 갈기 끝을 피한 자리)에 고정하려면 잘려나간 비율만큼 화면 기준 좌표를 다시 계산해야 한다. */
+function positionHeroLogo() {
+  const ticket = document.querySelector('.hero .ticket');
+  const logo = document.querySelector('.hero-logo');
+  if (!ticket || !logo) return;
+  const { width, height } = ticket.getBoundingClientRect();
+  if (!width || !height) return;
+  const IMG_W = 2752, IMG_H = 1536;
+  const containerAR = width / height;
+  const imageAR = IMG_W / IMG_H;
+  const TARGET_TOP = 11.65, TARGET_RIGHT = 9, TARGET_WIDTH = 17; // 이미지 원본 기준 %
+  let visW = 100, visH = 100, offX = 0, offY = 0; // 화면에 보이는 이미지 비율(%)과 잘려나간 여백(%)
+  if (containerAR > imageAR) {
+    // 화면이 이미지보다 넓다 → 상하가 잘려나간다
+    visH = (imageAR / containerAR) * 100;
+    offY = (100 - visH) / 2;
+  } else {
+    // 화면이 이미지보다 좁다(또는 같다) → 좌우가 잘려나간다
+    visW = (containerAR / imageAR) * 100;
+    offX = (100 - visW) / 2;
+  }
+  // 화면비가 극단적이면(초광각 등) 목표 지점 자체가 크롭 영역 밖으로 밀려날 수 있으므로,
+  // 로고가 화면 밖으로 사라지지 않도록 코너 쪽으로 값을 clamp 한다.
+  logo.style.top = Math.min(Math.max((TARGET_TOP - offY) / visH * 100, 1.5), 35) + '%';
+  logo.style.right = Math.min(Math.max((TARGET_RIGHT - offX) / visW * 100, 1.5), 35) + '%';
+  logo.style.width = Math.min(Math.max(TARGET_WIDTH / visW * 100, 10), 28) + '%';
+}
+window.addEventListener('resize', positionHeroLogo);
+['fullscreenchange', 'webkitfullscreenchange', 'MSFullscreenChange'].forEach((evt) => {
+  document.addEventListener(evt, positionHeroLogo);
+});
+positionHeroLogo();
 
 const slides = document.querySelectorAll('.slide');
 const counter = document.getElementById('counter');
@@ -1558,13 +1576,7 @@ function resetRankReveal(section) {
   table.querySelectorAll('[data-rank-step]').forEach((row) => row.classList.remove('revealed'));
 }
 
-function stopSfx() {
-  if (currentSfxAudio) {
-    currentSfxAudio.pause();
-    currentSfxAudio.currentTime = 0;
-    currentSfxAudio = null;
-  }
-}
+let currentSfxKey = null;
 
 document.addEventListener('keydown', (e) => {
   const tag = (e.target && e.target.tagName) || '';
@@ -1576,7 +1588,6 @@ document.addEventListener('keydown', (e) => {
   if (e.key === ' ') { e.preventDefault(); go(idx + 1); }
   if (e.key === 'f' || e.key === 'F') toggleFullscreen();
   if (e.key === 'r' || e.key === 'R') resetActiveLadder();
-  if (e.key === 's' || e.key === 'S') stopSfx();
   if (e.key === 'p' || e.key === 'P') triggerSeatingFlight();
   // B — 지금 보이는 슬라이드에 빙고 위젯이 있을 때만 BINGO! 오버레이
   if (e.key === 'b' || e.key === 'B') {
@@ -1585,9 +1596,15 @@ document.addEventListener('keydown', (e) => {
   }
   const sfx = SFX_FILES.find((s) => s.key === e.key.toLowerCase());
   if (sfx) {
-    if (currentSfxAudio) { currentSfxAudio.pause(); currentSfxAudio.currentTime = 0; }
-    currentSfxAudio = new Audio(encodeURI(sfx.src));
-    currentSfxAudio.play().catch(() => {});
+    if (currentSfxAudio) { currentSfxAudio.pause(); currentSfxAudio.currentTime = 0; currentSfxAudio = null; }
+    if (currentSfxKey === sfx.key) {
+      currentSfxKey = null;
+    } else {
+      currentSfxAudio = new Audio(encodeURI(sfx.src));
+      currentSfxAudio.addEventListener('ended', () => { currentSfxAudio = null; currentSfxKey = null; });
+      currentSfxAudio.play().catch(() => {});
+      currentSfxKey = sfx.key;
+    }
   }
 });
 go(0);
