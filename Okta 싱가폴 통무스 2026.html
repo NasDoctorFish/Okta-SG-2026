@@ -113,6 +113,7 @@
     border: 1px solid var(--accent-gold); background: var(--accent-gold); color: #ffffff; cursor: pointer; font-weight: 600;
   }
   .ladder-actions button.secondary, .wheel-actions button.secondary, .mixer-actions button.secondary, .bingo-actions button.secondary { background: none; color: var(--ink); border-color: var(--line); }
+  .wheel-actions button { padding: 0.45rem 1.3rem; }
   .ladder-actions button:disabled, .wheel-actions button:disabled, .mixer-actions button:disabled, .bingo-actions button:disabled { opacity: 0.5; cursor: default; }
   .ladder-actions button:focus-visible, .wheel-actions button:focus-visible, .mixer-actions button:focus-visible, .bingo-actions button:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
 
@@ -410,7 +411,7 @@
   /* ---------- Spin wheel widget (left: cumulative order list, right: wheel + latest result) ---------- */
   .wheel-wrap { margin-top: 0.1rem; flex: 1; width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0; transition: gap 0.8s ease; }
   .wheel-wrap.revealed { gap: 2.6rem; }
-  .wheel-col { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; flex: none; }
+  .wheel-col { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; flex: none; }
   /* 10개 조가 다 뽑히면 왼쪽 순서 목록이 10줄이 된다 — 그때도 안 잘리는 크기 */
   .wheel-stage { position: relative; width: min(49.5vh, 45vw); height: min(49.5vh, 45vw); min-width: 330px; min-height: 330px; }
   .wheel-disc { width: 100%; height: 100%; border-radius: 50%; transition: transform 4.6s cubic-bezier(0.12, 0.72, 0.15, 1); }
@@ -419,10 +420,10 @@
   .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-style: solid; border-width: 26px 15px 0 15px; border-color: var(--accent-gold) transparent transparent transparent; z-index: 1; }
   .wheel-actions { display: flex; gap: 0.9rem; }
   /* latest single-draw result box (below the wheel, replaced each draw) */
-  .wheel-latest { min-width: 260px; border: 2px solid var(--accent-gold); border-radius: 16px; padding: 0.5rem 1.4rem; text-align: center; background: color-mix(in srgb, var(--accent-gold) 8%, var(--bg-elevated)); opacity: 0; transform: translateY(6px) scale(0.96); transition: opacity 0.3s ease, transform 0.3s ease; }
+  .wheel-latest { min-width: 260px; border: 2px solid var(--accent-gold); border-radius: 16px; padding: 0.3rem 1.4rem; text-align: center; background: color-mix(in srgb, var(--accent-gold) 8%, var(--bg-elevated)); opacity: 0; transform: translateY(6px) scale(0.96); transition: opacity 0.3s ease, transform 0.3s ease; }
   .wheel-latest.show { opacity: 1; transform: translateY(0) scale(1); }
-  .wheel-latest .wl-rank { font-family: var(--font-mono); font-size: 0.92rem; letter-spacing: 0.05em; color: var(--ink-muted); }
-  .wheel-latest .wl-team { margin-top: 0.15rem; font-family: var(--font-display); font-weight: 800; font-size: 1.9rem; color: var(--accent-gold); }
+  .wheel-latest .wl-rank { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.05em; color: var(--ink-muted); }
+  .wheel-latest .wl-team { margin-top: 0.05rem; font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; color: var(--accent-gold); }
   /* cumulative order list, left of the wheel */
   .wheel-order-box { width: 0; flex: none; overflow: hidden; opacity: 0; transition: width 0.8s ease, opacity 0.5s ease 0.3s; }
   .wheel-order-box.show { width: clamp(260px, 28vw, 360px); opacity: 1; }
@@ -509,6 +510,11 @@
   .field-card .fname { font-weight: 700; margin-bottom: 0.3rem; }
   .field-card .fsub { color: var(--ink-muted); font-size: 0.88rem; }
   .field-card .ftables { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--accent-gold); font-weight: 700; margin-bottom: 0.25rem; }
+  /* 통상 15개 소분류 — 항목당 나열이 길어 촘촘한 버전이 필요하다 */
+  .field-grid.trade { gap: 0.5rem; margin-top: 0.4rem; }
+  .field-grid.trade .field-card { padding: 0.5rem 0.7rem; }
+  .field-grid.trade .fname { margin-bottom: 0.15rem; font-size: 0.95rem; }
+  .field-grid.trade .fsub { font-size: 0.78rem; line-height: 1.35; }
 
   /* ---------- Sponsor ---------- */
   .sponsor-card { margin-top: 0.8rem; border: 1px solid var(--line); border-radius: 14px; padding: 1.6rem; display: flex; align-items: center; gap: 1.2rem; background: color-mix(in srgb, var(--accent-gold) 6%, var(--bg-elevated)); }
@@ -993,7 +999,7 @@ const SLIDES = [
 
   // 2 전체 일정표 (원본 이미지) -------------------------------------------------
   { tag: 'schedule', title: '전체 일정표', body: `
-    <img src="assets/schedule-final.png" alt="2026 동서남아 통합 차세대 글로벌 창업무역스쿨 일정표" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+    <img src="assets/updated_schedule.png" alt="2026 동서남아 통합 차세대 글로벌 창업무역스쿨 일정표" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
   `},
 
   // ============ DAY 1 (8/13 목) ============
@@ -1180,7 +1186,7 @@ const SLIDES = [
   { stub: 'DAY 2', cls: 'dense', body: `
     <div class="eyebrow">네트워킹 밍글링 · 09:00–10:00 · 통상 15개 소분류 — 본인 번호를 확인해 주세요</div>
     <h2>본인이 일하고 있는 분야는? (1~5통상)</h2>
-    <div class="field-grid">${TRADE_CATS.slice(0, 5).map((c, i) => `
+    <div class="field-grid trade">${TRADE_CATS.slice(0, 5).map((c, i) => `
       <div class="field-card"><div class="fname">${i + 1}통상 · ${c}</div><div class="fsub">${TRADE_CATS_DETAIL[i]}</div></div>
     `).join('')}</div>
   `},
@@ -1188,7 +1194,7 @@ const SLIDES = [
   { stub: 'DAY 2', cls: 'dense', body: `
     <div class="eyebrow">네트워킹 밍글링 · 09:00–10:00</div>
     <h2>본인이 일하고 있는 분야는? (6~10통상)</h2>
-    <div class="field-grid">${TRADE_CATS.slice(5, 10).map((c, i) => `
+    <div class="field-grid trade">${TRADE_CATS.slice(5, 10).map((c, i) => `
       <div class="field-card"><div class="fname">${i + 6}통상 · ${c}</div><div class="fsub">${TRADE_CATS_DETAIL[i + 5]}</div></div>
     `).join('')}</div>
   `},
@@ -1196,7 +1202,7 @@ const SLIDES = [
   { stub: 'DAY 2', cls: 'dense', body: `
     <div class="eyebrow">네트워킹 밍글링 · 09:00–10:00</div>
     <h2>본인이 일하고 있는 분야는? (11~15통상)</h2>
-    <div class="field-grid">${TRADE_CATS.slice(10).map((c, i) => `
+    <div class="field-grid trade">${TRADE_CATS.slice(10).map((c, i) => `
       <div class="field-card"><div class="fname">${i + 11}통상 · ${c}</div><div class="fsub">${TRADE_CATS_DETAIL[i + 10]}</div></div>
     `).join('')}</div>
   `},
