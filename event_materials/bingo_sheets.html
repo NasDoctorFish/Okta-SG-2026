@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>OKTA 빙고판 — 2026 동서남아 통합 차세대 글로벌 창업무역스쿨</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif; margin: 0; color: #1d233b; background: #f0f2f5; }
+
+  .toolbar { padding: 1rem 1.2rem; background: #ffffff; border-bottom: 1px solid #d8dce4; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; position: sticky; top: 0; z-index: 10; }
+  .toolbar button { font-size: 1rem; padding: 0.6rem 1.4rem; border-radius: 8px; border: none; background: #002d6c; color: #fff; cursor: pointer; }
+  .toolbar label { font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; }
+  .toolbar input { width: 5rem; padding: 0.4rem 0.5rem; border: 1px solid #b9bfcc; border-radius: 6px; font: inherit; }
+  .toolbar span { color: #5f5f5f; font-size: 0.88rem; }
+
+  /* A4 세로 — 25칸을 5x5 정사각 그리드로 깐다 (가로/세로/대각선 모두 빙고 성립) */
+  .sheet { width: 210mm; height: 297mm; margin: 0 auto 8mm; padding: 10mm 10mm; background: #fff; display: flex; flex-direction: column; page-break-after: always; }
+  .sheet:last-child { page-break-after: auto; }
+
+  .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; border-bottom: 2px solid #002d6c; padding-bottom: 2.5mm; margin-bottom: 3mm; }
+  .head h1 { font-size: 5.2mm; margin: 0; letter-spacing: -0.01em; }
+  .head .sub { font-size: 2.9mm; color: #5f5f5f; margin-top: 0.8mm; }
+  .head .owner { font-size: 3mm; display: flex; align-items: flex-end; gap: 2mm; white-space: nowrap; }
+  .head .owner .line { display: inline-block; width: 38mm; border-bottom: 1px solid #999; }
+
+  .rules { font-size: 2.75mm; color: #444; line-height: 1.5; margin-bottom: 3mm; }
+  .rules b { color: #b45309; }
+
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr); gap: 2.4mm; flex: 1; }
+  .cell { border: 0.4mm solid #1d233b; border-radius: 2mm; padding: 2mm; display: flex; flex-direction: column; align-items: center; gap: 1.2mm; min-width: 0; }
+  .cell .no { font-family: ui-monospace, "SF Mono", monospace; font-size: 4.2mm; font-weight: 700; color: #b45309; line-height: 1; }
+  .cell .cond { font-size: 4.05mm; font-weight: 600; line-height: 1.28; text-align: center; word-break: keep-all; white-space: pre-line; flex: 1; display: flex; align-items: center; }
+  /* 만난 사람 이름을 적는 줄 */
+  .cell .name { width: 100%; border-bottom: 0.35mm solid #999; height: 5.5mm; margin-top: auto; }
+
+  @media print {
+    .toolbar { display: none; }
+    body { background: #fff; }
+    .sheet { margin: 0; box-shadow: none; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+  @media screen {
+    .sheet { box-shadow: 0 2px 14px rgba(0,0,0,0.12); margin-top: 8mm; }
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <label>인원수 <input type="number" id="count" value="110" min="1" max="300"></label>
+    <button id="regen" type="button">빙고판 생성</button>
+    <button id="print" type="button">인쇄</button>
+    <span>참가자마다 조건 순서가 섞인 빙고판이 1인 1장(A4 세로, 5×5)으로 나옵니다. 번호 1~25 위치는 모든 판에서 동일합니다.</span>
+  </div>
+  <div id="sheets"></div>
+
+<script>
+// 덱(Okta 싱가폴 통무스 2026.html)의 BINGO_CELLS 와 동일한 25개 조건.
+// 덱 쪽을 고치면 여기도 같이 고쳐야 한다.
+const BINGO_CELLS = [
+  '현재 사업을\n운영하는 사람', '2026년 창업을\n시작 할 사람', '개인 수출 경험이\n있는 사람', '개인 수입 경험이\n있는 사람', '이번이 첫\n무역스쿨인 사람',
+  'F&B 업계 종사자', '제조업 관련 종사자', 'IT·테크 업계 종사자', '유통·물류업 종사자', '마케팅·콘텐츠\n관련 종사자',
+  '온라인 쇼핑몰\n운영 경험자', '해외 법인 설립 경험자', '투자 유치 경험이\n있는 사람', '직원을 10명 이상\n관리해 본 사람', 'AI를 업무에\n활용하는 사람',
+  '한국 제품을 해외에서\n판매해 본 사람', '새로운 사업 아이템을\n찾는 사람', '다른 사람에게 투자할\n의향이 있는 사람', '사업 파트너를 찾고\n있는 사람', '해외 진출을\n준비 중인 사람',
+  '나와 전혀 다른\n업종의 사람', '나와 공통 관심사가 2개\n이상인 사람', '내가 도움을 줄\n수 있는 사람', '나에게 도움을 줄\n수 있는 사람', '앞으로 다시 연락하고\n싶은 사람',
+];
+
+const escapeHtml = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// Fisher–Yates — 판마다 조건 순서를 섞는다 (번호 자리는 그대로)
+function shuffled(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function sheet(n) {
+  const cells = shuffled(BINGO_CELLS);
+  return `
+    <div class="sheet">
+      <div class="head">
+        <div>
+          <h1>OKTA 빙고 — Global Connection Challenge</h1>
+          <div class="sub">2026 동서남아 통합 차세대 글로벌 창업무역스쿨 · Singapore · 8/15(토) 14:20–15:00</div>
+        </div>
+        <div class="owner">이름 <span class="line"></span> 조 <span class="line" style="width:16mm;"></span></div>
+      </div>
+      <div class="rules">
+        조건에 맞는 사람을 만나면 그 칸에 <b>그 사람 이름</b>을 적으세요 · 같은 조 조원은 인정되지 않습니다 ·
+        한 사람은 <b>한 칸에만</b> 적을 수 있습니다 · 호명된 이름이 내 판에 있으면 그 칸을 표시하고,
+        <b>가로·세로·대각선</b> 중 한 줄을 모두 채우면 빙고입니다.
+      </div>
+      <div class="grid">
+        ${cells.map((c, i) => `
+          <div class="cell">
+            <span class="no">${i + 1}</span>
+            <span class="cond">${escapeHtml(c)}</span>
+            <span class="name"></span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function render() {
+  const n = Math.max(1, Math.min(300, parseInt(document.getElementById('count').value, 10) || 1));
+  document.getElementById('sheets').innerHTML = Array.from({ length: n }, (_, i) => sheet(i)).join('');
+}
+
+document.getElementById('regen').addEventListener('click', render);
+document.getElementById('print').addEventListener('click', () => window.print());
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>심사 평가서 — 2026 동서남아 통합 차세대 글로벌 창업무역스쿨</title>
+<style>
+  :root { --navy: #002d6c; --gold: #1d4ed8; --line: #1d233b; }
+  * { box-sizing: border-box; }
+  body { font-family: "Noto Sans KR", "Malgun Gothic", sans-serif; margin: 0; padding: 0; color: #1d233b; }
+  .toolbar { padding: 1rem; background: #f0f2f5; display: flex; align-items: center; gap: 1rem; }
+  .toolbar button { font-size: 1rem; padding: 0.6rem 1.4rem; border-radius: 8px; border: none; background: var(--navy); color: #fff; cursor: pointer; }
+  .toolbar span { color: #5f5f5f; font-size: 0.9rem; }
+  .sheet { width: 210mm; min-height: 297mm; margin: 0 auto; padding: 14mm 12mm; background: #fff; }
+  h1 { font-size: 1.35rem; margin: 0 0 0.3rem; text-align: center; letter-spacing: -0.01em; }
+  .sub { text-align: center; color: #5f5f5f; font-size: 0.85rem; margin-bottom: 1rem; }
+  .meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; margin-bottom: 1rem; }
+  .meta div { border: 1px solid var(--line); border-radius: 6px; padding: 0.5rem 0.7rem; }
+  .meta label { display: block; font-size: 0.72rem; color: #5f5f5f; margin-bottom: 0.3rem; }
+  .meta .blank { height: 1.1rem; border-bottom: 1px dashed #999; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th, td { border: 1px solid var(--line); padding: 0.45rem 0.5rem; vertical-align: top; }
+  thead th { background: var(--navy); color: #fff; text-align: center; font-weight: 600; }
+  td.cat { writing-mode: vertical-rl; text-align: center; font-weight: 700; background: #eef1f8; white-space: nowrap; }
+  td.item { font-weight: 600; }
+  td.item .desc { font-weight: 400; color: #5f5f5f; font-size: 0.76rem; margin-top: 0.15rem; }
+  td.pt { text-align: center; font-variant-numeric: tabular-nums; width: 3.2rem; }
+  td.score { width: 4.2rem; }
+  td.score .box { height: 1.6rem; border: 1px solid #ccc; border-radius: 4px; }
+  td.note .box { height: 1.6rem; border-bottom: 1px dashed #999; }
+  tfoot td { font-weight: 700; text-align: center; background: #eef1f8; }
+  @media print {
+    .toolbar { display: none; }
+    .sheet { width: auto; min-height: auto; padding: 8mm 10mm; }
+    @page { size: A4 portrait; margin: 8mm; }
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <button onclick="window.print()">인쇄</button>
+    <span>인쇄 대화상자에서 매수 15로 설정해서 출력하세요. (심사위원 15명 × 1장)</span>
+  </div>
+  <div class="sheet">
+    <h1>차세대 글로벌 창업무역스쿨 사업계획 발표 심사 평가서</h1>
+    <p class="sub">2026 동서남아 통합 차세대 글로벌 창업무역스쿨 · Singapore</p>
+    <div class="meta">
+      <div><label>심사위원 소속</label><div class="blank"></div></div>
+      <div><label>심사위원 성명</label><div class="blank"></div></div>
+      <div><label>발표팀</label><div class="blank"></div></div>
+      <div><label>심사날짜</label><div class="blank"></div></div>
+    </div>
+    <table>
+      <thead>
+        <tr><th style="width:1.6rem;">구분</th><th>항목</th><th>배점</th><th>부여 점수</th><th>개선사항 및 노트</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cat" rowspan="4">사업 계획서 PT<br>(35)</td>
+          <td class="item">사업계획 줄거리<div class="desc">사업의 중요점을 요약 · 줄거리만 읽어도 계획을 이해 가능해야 함</div></td>
+          <td class="pt">5</td><td class="score"><div class="box"></div></td><td class="note"><div class="box"></div></td>
+        </tr>
+        <tr>
+          <td class="item">사업 설명<div class="desc">기업의 아이템/서비스, 비전과 목표 · 기업의 수익모델</div></td>
+          <td class="pt">10</td><td class="score"><div class="box"></div></td><td class="note"><div class="box"></div></td>
+        </tr>
+        <tr>
+          <td class="item">산업과 시장 분석<div class="desc">타겟 시장과 시장성 조사 · 제한과 경쟁에서의 특별한 성공 요소</div></td>
+          <td class="pt">10</td><td class="score"><div class="box"></div></td><td class="note"><div class="box"></div></td>
+        </tr>
+        <tr>
+          <td class="item">마케팅 계획<div class="desc">목표, 포지션, 아이템/서비스, 유통, 가격, 홍보, 세일 계획과 실적단계 설명</div></td>
+          <td class="pt">10</td><td class="score"><div class="box"></div></td><td class="note"><div class="box"></div></td>
+        </tr>
+
+        <tr>
+          <td class="cat" rowspan="4">심사자 평가<br>(40)</td>
+          <td class="item">고객에게 분명하고 특출한 가치 제공</td>
+          <td class="pt">10</td><td class="score"><div class="box"></div></td><td class="note"><div class="box"></div></td>
+        </tr>
+        <tr>
+          <td class="item">비즈니스 모델의 현실성과 수익성의 견고성</td>
+          <td class="pt">10</td><td class="score"><div class="box"></div></td><td class="note"><div class="box"></div></td>
+        </tr>
+        <tr>
+          <td class="item">운영과 성장 계획 및 목표의 현실성</td>
+          <td class="pt">10</td><td class="score"><div class="box"></div></td><td class="note"><div class="box"></div></td>
+        </tr>
+        <tr>
+          <td class="item">사업 실행 팀의 경험, 자격과 실행능력</td>
+          <td class="pt">10</td><td class="score"><div class="box"></div></td><td class="note"><div class="box"></div></td>
+        </tr>
+
+        <tr>
+          <td class="cat" rowspan="3">프레젠테이션 평가<br>(25)</td>
+          <td class="item">프레젠테이션의 내용<div class="desc">준비의 성실성, 서론·본론 전개, 결론의 종합력</div></td>
+          <td class="pt">5</td><td class="score"><div class="box"></div></td><td class="note"><div class="box"></div></td>
+        </tr>
+        <tr>
+          <td class="item">프레젠터의 태도<div class="desc">eye contact, 자세, 효과적인 제스처, 표정 연출</div></td>
+          <td class="pt">10</td><td class="score"><div class="box"></div></td><td class="note"><div class="box"></div></td>
+        </tr>
+        <tr>
+          <td class="item">프레젠테이션의 전달력<div class="desc">전략적 보이스연출, 청중호응 질문유도, 자신감</div></td>
+          <td class="pt">10</td><td class="score"><div class="box"></div></td><td class="note"><div class="box"></div></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="2">총계</td><td>100</td><td><div class="box" style="border:1px solid var(--line);"></div></td><td></td></tr>
+      </tfoot>
+    </table>
+  </div>
+</body>
+</html>

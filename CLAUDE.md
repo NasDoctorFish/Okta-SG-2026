@@ -19,7 +19,7 @@ There is no `package.json`, no build tool, no linter, and no automated test suit
 
 - Use a headless browser (Playwright/Chromium) to load the file, jump to the relevant slide via the `#counter` `<select>` (dispatch a `change` event after setting `.value`), and screenshot it. This project has caught real bugs this way that pure code review missed (e.g., a `width:0` flex child whose long Korean text wrapped and inflated the container to 1500px tall, pushing content off-screen — invisible in a code diff, obvious in a screenshot).
 - Sanity-check the embedded JS syntax with `node --check` after extracting the `<script>` block, before doing a full visual pass.
-- Deck navigation for manual testing: **←/→** prev/next slide, **Space** = next, **F** = fullscreen, **R** = reset the currently-visible ladder draw, **S** = stop any playing sound effect, **1–6** = play the mapped sound effects (see `SFX_FILES`).
+- Deck navigation for manual testing: **←/→** prev/next slide, **Space** = next, **F** = fullscreen, **R** = reset the currently-visible ladder draw, **S** = stop any playing sound effect, **1–6** = short stinger sound effects, **J/K/L/N/U/M/W/T/D/G** = mood-tagged background music cues (see `SFX_FILES`).
 
 ## Architecture
 
@@ -27,7 +27,7 @@ Everything lives in one HTML file, structured top to bottom as:
 
 1. **`<style>`** — CSS custom properties for theme colors/fonts at the top (`:root`, with a `prefers-color-scheme: dark` override), then component styles per widget/slide-type.
 2. **Data arrays** (`TEAMS`, `LOCATIONS`, `SPEAKERS`/`SPEAKER_DETAILS`, `JUDGES`, `MIXER_GROUPS`, `NETWORKING_FIELDS`, `BINGO_GRID`, `SPONSORS`, `SFX_FILES`) — all deck content is data-driven from these constants, not hand-written per-slide markup.
-3. **Slide renderer helpers** (`timeline()`, `speakerGrid()`, `locationGrid()`, `speakerSlide()`, `breakSlide()`, `dayDivider()`, `teamSlide()`, `judgeCard()`) — small template functions that turn the data arrays into slide HTML fragments.
+3. **Slide renderer helpers** (`timeline()`, `speakerGrid()`, `locationGrid()`, `speakerSlide()`, `breakSlide()`, `dayDivider()`, `teamSlide()`, `mcCard()`) — small template functions that turn the data arrays into slide HTML fragments. `mcCard()` renders the shared "read before they come up" intro card (photo slot + name + role) used by both the judges-intro and congratulatory-remarks slides.
 4. **`const SLIDES = [...]`** — the single source of truth for deck content and order. Each entry is `{ tag?, stub?, title?, body }`; `body` is a template-literal HTML string built from the helpers above. Reordering/adding/removing slides means editing this array, not scattered DOM.
 5. **Rendering & navigation** — `SLIDES` is mapped into `.slide` sections once at load, `go(i)` drives the horizontal `translateX` carousel, and the `#counter` `<select>` + prev/next buttons + keyboard handler all call into `go()`.
 6. **Interactive widgets**, each self-initializing via `document.querySelectorAll('[data-x]').forEach(...)` at the bottom of the script — they only need their expected `data-*` container present in a slide's `body` to work:
@@ -35,7 +35,7 @@ Everything lives in one HTML file, structured top to bottom as:
    - **스핀 휠 (spin wheel)** — Canvas-drawn wheel for drawing presentation order one team at a time; layout is a collapsed-width left "cumulative order list" that animates open next to the wheel on the first draw, plus a single "latest result" callout box below the wheel that's replaced (not accumulated) each draw.
    - **Global Mixer** — CSS animated orbit/spin reveal that regroups into a fixed 2-row×3-column results grid, with the wheel sliding aside via an animated `gap`/`width` transition (not `flex-direction` toggling, which can't be animated).
    - **빙고 (bingo)** — click-to-mark grid; a line completes (and fires the BINGO toast) on any of the 5 rows, 5 columns, or 2 diagonals.
-   - Sound effects (`SFX_FILES`) are wired to number keys and play/stop via a single shared `Audio` instance (`currentSfxAudio`), not per-widget audio.
+   - Sound effects (`SFX_FILES`) are wired to keyboard shortcuts (digits = short stingers, letters = background music cues) and play/stop via a single shared `Audio` instance (`currentSfxAudio`), not per-widget audio.
 
 ### A recurring layout trap to know about
 

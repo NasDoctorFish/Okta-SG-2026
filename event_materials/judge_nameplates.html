@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>심사위원 이름표 — 2026 동서남아 통합 차세대 글로벌 창업무역스쿨</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif; margin: 0; color: #1d233b; background: #f0f2f5; }
+
+  .toolbar { padding: 1rem 1.2rem; background: #fff; border-bottom: 1px solid #d8dce4; display: flex; flex-direction: column; gap: 0.8rem; position: sticky; top: 0; z-index: 10; }
+  .toolbar .row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .toolbar button { font-size: 0.95rem; padding: 0.5rem 1.1rem; border-radius: 8px; border: none; background: #002d6c; color: #fff; cursor: pointer; }
+  .toolbar button.ghost { background: #fff; color: #002d6c; border: 1px solid #b9bfcc; }
+  .toolbar button.del { background: #fff; color: #b45309; border: 1px solid #e2c9a3; padding: 0.45rem 0.7rem; }
+  .toolbar input { padding: 0.45rem 0.6rem; border: 1px solid #b9bfcc; border-radius: 6px; font: inherit; }
+  .toolbar input.name { width: 11rem; }
+  .toolbar input.title { width: 20rem; }
+  .toolbar .idx { font-family: ui-monospace, "SF Mono", monospace; font-size: 0.85rem; color: #5f5f5f; width: 2.2rem; }
+  .toolbar .hint { color: #5f5f5f; font-size: 0.88rem; max-width: 90ch; line-height: 1.55; }
+
+  /* A4 세로 1장 = 이름표 1개 (삼각기둥).
+     가로 접는선(FOLD) 2곳을 접어 삼각 단면을 만들고, 맨 아래 풀칠 탭을
+     panel A 뒷면에 붙이면 210mm 길이 × 89mm 높이의 삼각기둥으로 선다.
+
+       A (89mm) — 정방향 인쇄       ← 세우면 한쪽 관람면
+       ─ FOLD ─
+       B (89mm) — 바닥면, 빈칸
+       ─ FOLD ─
+       C (89mm) — 180° 회전 인쇄    ← 반대쪽 관람면
+       ─ FOLD ─
+       TAB (30mm) — 풀칠
+
+     B를 테이블에 놓으면 A는 위쪽 fold1이, C는 아래쪽 fold2가 바닥 변이 되므로
+     C만 180° 회전해야 양쪽에서 모두 똑바로 읽힌다. 모든 텍스트는 가로쓰기. */
+  .sheet { width: 210mm; height: 297mm; margin: 0 auto; background: #fff; page-break-after: always; display: flex; flex-direction: column; position: relative; }
+  .sheet:last-child { page-break-after: auto; }
+
+  .panel { height: 89mm; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6mm 10mm; overflow: hidden; }
+  /* 반대쪽 관람면 — 접었을 때 정방향으로 보이도록 180° 회전 */
+  .panel.flip { transform: rotate(180deg); }
+  /* 바닥면 — 테이블에 닿아 보이지 않는 면 */
+  .panel.base { justify-content: center; }
+  .panel.base .basetag { font-family: ui-monospace, "SF Mono", monospace; font-size: 3.6mm; letter-spacing: 0.25em; color: #c8cdd8; }
+
+  .panel .eyebrow { font-size: 7mm; font-weight: 700; letter-spacing: 0.45em; color: #002d6c; text-indent: 0.45em; line-height: 1.1; }
+  .panel .name { font-weight: 800; letter-spacing: 0.1em; text-indent: 0.1em; line-height: 1.15; white-space: nowrap; color: #1d233b; margin: 3mm 0 2.5mm; }
+  /* 이름 미기입 시 손글씨용 밑줄 칸 */
+  .panel .nameline { width: 150mm; height: 30mm; border-bottom: 1.2mm solid #002d6c; margin: 3mm 0 2.5mm; }
+  .panel .jobtitle { font-size: 6mm; font-weight: 600; color: #002d6c; letter-spacing: 0.02em; text-align: center; word-break: keep-all; line-height: 1.3; }
+  .panel .titleline { width: 110mm; height: 8mm; border-bottom: 0.7mm solid #9aa1b1; }
+  .panel .foot { margin-top: 3.5mm; font-family: ui-monospace, "SF Mono", monospace; font-size: 3.5mm; letter-spacing: 0.1em; color: #5f5f5f; }
+
+  /* 풀칠 탭 — panel C 뒤로 접어 panel A 뒷면 안쪽에 붙인다 */
+  .tab { height: 30mm; display: flex; align-items: center; justify-content: center; background: repeating-linear-gradient(45deg, #eef1f6, #eef1f6 2mm, #dfe3ea 2mm, #dfe3ea 4mm); }
+  .tab span { font-family: ui-monospace, "SF Mono", monospace; font-size: 3.2mm; letter-spacing: 0.25em; color: #5f5f5f; }
+
+  /* 접는 선 — 89 / 178 / 267mm */
+  .foldline { position: absolute; left: 0; right: 0; border-top: 0.4mm dashed #9aa1b1; }
+  .foldtag { position: absolute; left: 50%; transform: translateX(-50%); background: #fff; padding: 0 2mm; font-family: ui-monospace, "SF Mono", monospace; font-size: 3mm; color: #9aa1b1; letter-spacing: 0.2em; }
+
+  @media print {
+    .toolbar { display: none; }
+    body { background: #fff; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+  @media screen {
+    .sheet { box-shadow: 0 2px 14px rgba(0, 0, 0, 0.12); margin-top: 8mm; margin-bottom: 8mm; }
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <div id="rows"></div>
+    <div class="row">
+      <button id="add" class="ghost" type="button">+ 심사위원 추가</button>
+      <button id="print" type="button">인쇄</button>
+    </div>
+    <span class="hint">
+      A4 <b>세로</b> 1장 = 이름표 1개. 가로 점선(<b>FOLD</b>) 3곳을 접어 삼각 단면을 만들고,
+      맨 아래 <b>풀칠 탭</b>을 첫 번째 면 뒷면에 붙이면 210×89mm <b>삼각기둥</b>으로 섭니다.
+      가운데 면이 <b>바닥면</b>(빈칸)이고, 위·아래 두 면에만 이름이 인쇄됩니다 —
+      아래 면은 180° 회전되어 있어 세웠을 때 앞뒤 양쪽에서 똑바로 읽힙니다.
+      이름 칸을 비워두면 손글씨용 밑줄로 인쇄됩니다. 두꺼운 종이(200g 이상) 권장.
+    </span>
+  </div>
+  <div id="sheets"></div>
+
+<script>
+// 심사위원 명단 — 확정 전에는 빈 값으로 두면 손글씨 밑줄로 인쇄된다
+let JUDGES = [
+  { name: '', title: '' },
+  { name: '', title: '' },
+  { name: '', title: '' },
+];
+
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// 긴 이름이 210mm 폭(좌우 여백 제외 190mm)을 넘지 않도록 글자 수에 따라 축소
+function nameSize(name) {
+  const len = [...name.trim()].length;
+  if (len <= 3) return 34;
+  if (len <= 4) return 30;
+  if (len <= 5) return 26;
+  if (len <= 7) return 20;
+  if (len <= 10) return 15;
+  return 12;
+}
+
+function facePanel(judge, flip) {
+  const name = judge.name.trim();
+  const title = judge.title.trim();
+  const nameEl = name
+    ? `<div class="name" style="font-size:${nameSize(name)}mm">${esc(name)}</div>`
+    : `<div class="nameline"></div>`;
+  const titleEl = title
+    ? `<div class="jobtitle">${esc(title)}</div>`
+    : `<div class="titleline"></div>`;
+  return `
+    <div class="panel${flip ? ' flip' : ''}">
+      <div class="eyebrow">심사위원</div>
+      ${nameEl}
+      ${titleEl}
+      <div class="foot">2026 동서남아 통합 차세대 글로벌 창업무역스쿨 · SINGAPORE</div>
+    </div>`;
+}
+
+function plate(judge) {
+  return `
+    <div class="sheet">
+      ${facePanel(judge, false)}
+      <div class="panel base"><span class="basetag">바닥면 — 테이블에 닿는 면</span></div>
+      ${facePanel(judge, true)}
+      <div class="tab"><span>풀칠하는 곳 GLUE</span></div>
+      <div class="foldline" style="top:89mm"></div>
+      <div class="foldtag" style="top:87mm">FOLD</div>
+      <div class="foldline" style="top:178mm"></div>
+      <div class="foldtag" style="top:176mm">FOLD</div>
+      <div class="foldline" style="top:267mm"></div>
+      <div class="foldtag" style="top:265mm">FOLD</div>
+    </div>`;
+}
+
+function renderRows() {
+  document.getElementById('rows').innerHTML = JUDGES.map((j, i) => `
+    <div class="row">
+      <span class="idx">${i + 1}</span>
+      <input class="name" data-i="${i}" data-k="name" placeholder="이름 (비우면 손글씨 칸)" value="${esc(j.name)}">
+      <input class="title" data-i="${i}" data-k="title" placeholder="직함 (예: OO컴퍼니 대표이사)" value="${esc(j.title)}">
+      <button class="del" data-del="${i}" type="button">삭제</button>
+    </div>`).join('');
+}
+
+function renderSheets() {
+  document.getElementById('sheets').innerHTML = JUDGES.map(plate).join('');
+}
+
+document.getElementById('rows').addEventListener('input', (e) => {
+  const el = e.target;
+  if (!el.dataset.k) return;
+  JUDGES[+el.dataset.i][el.dataset.k] = el.value;
+  renderSheets();
+});
+
+document.getElementById('rows').addEventListener('click', (e) => {
+  const del = e.target.dataset.del;
+  if (del === undefined) return;
+  if (JUDGES.length <= 1) return;
+  JUDGES.splice(+del, 1);
+  renderRows();
+  renderSheets();
+});
+
+document.getElementById('add').addEventListener('click', () => {
+  JUDGES.push({ name: '', title: '' });
+  renderRows();
+  renderSheets();
+});
+
+document.getElementById('print').addEventListener('click', () => window.print());
+
+renderRows();
+renderSheets();
+</script>
+</body>
+</html>
