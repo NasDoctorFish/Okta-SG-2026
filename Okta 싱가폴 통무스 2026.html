@@ -95,6 +95,7 @@
   .slide.dense .cabin h2 { margin-bottom: 0.1rem; }
   .slide.dense .cabin h2::after { margin: 0.25rem auto; }
   .slide.dense .cabin .eyebrow { margin-bottom: 0.05rem; }
+  .slide.centered-text .cabin { text-align: center; }
   .slide.dense .lede { margin: 0.2rem 0 0; }
 
   .centered-header { text-align: center; }
@@ -128,13 +129,22 @@
   .seating-fx-canvas, .seating-plane-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; opacity: 0.12; }
   .seating-plane-canvas { z-index: 2; opacity: 1; }
   .seating-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
-  /* 좌석 슬라이드에선 도면이 남는 세로 공간을 전부 먹는다 (전체화면에서 커지고 창 모드에선 줄어든다) */
-  .seating .ticket:has(.floorplan-frame) { justify-content: flex-start; }
-  .seating-content:has(.floorplan-frame) { flex: 1; min-height: 0; width: 100%; }
+  .seating .lede { max-width: 44ch; color: var(--ink-muted); }
+
+  /* ---------- 좌석 배치도(p.1) 전용 레이아웃 — 제목은 오른쪽 세로 레일, 사진은 남는 공간을 위쪽까지 꽉 채운다 ---------- */
+  .seating .ticket:has(.floorplan-frame) { flex-direction: row; align-items: stretch; justify-content: flex-start; padding: 0; margin: 0.3rem 0; gap: 0; }
+  .seating-content:has(.floorplan-frame) { flex: 1; min-height: 0; width: auto; align-items: stretch; gap: 0; padding: 0.6rem; }
   /* 연회장 평면도 — 원본 이미지 그대로(배경 포함, 크롭 없음). 가로/세로 중 남는 공간을 모두 써서 최대 크기로 표시(contain) */
   .floorplan-frame { flex: 1 1 auto; min-height: 0; width: 100%; overflow: hidden; }
   .floorplan-img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
-  .seating .lede { max-width: 44ch; color: var(--ink-muted); }
+
+  .seating-rail { flex: none; width: 100px; padding: 1.4rem 0.8rem; display: flex; align-items: center; justify-content: center; text-align: center; background: linear-gradient(180deg, var(--accent-navy), var(--accent-navy-deep)); color: #eef1f6; position: relative; z-index: 1; }
+  .seating-rail::before {
+    content: ""; position: absolute; top: 0; left: -9px; width: 18px; height: 100%;
+    background-image: radial-gradient(circle 9px at 9px 0, transparent 9px, var(--notch) 9.5px), radial-gradient(circle 9px at 9px 100%, transparent 9px, var(--notch) 9.5px), repeating-linear-gradient(180deg, var(--bg-elevated) 0 10px, transparent 10px 20px);
+    background-size: 18px 100%, 18px 100%, 2px 20px; background-repeat: no-repeat, no-repeat, repeat-y; background-position: left, left, calc(50% - 1px) 4px;
+  }
+  .seating-rail-title { writing-mode: vertical-rl; font-family: var(--font-mono); font-size: 1rem; font-weight: 700; letter-spacing: 0.2em; color: #eef1f6; }
 
   /* ---------- Overview (Day1/2/3 summary) ---------- */
   .overview-grid { margin-top: 0.4rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; width: 100%; }
@@ -184,16 +194,6 @@
   .award-desc { font-size: 0.88rem; color: var(--ink-muted); }
   /* 어느 범위의 시상인지 구분하는 작은 꼬리표 (샤크탱크 한정 / 행사 전체) */
   .scope-tag { margin-left: 0.4rem; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; color: var(--accent-navy); background: color-mix(in srgb, var(--accent-navy) 12%, transparent); border-radius: 20px; padding: 0.12rem 0.5rem; vertical-align: middle; }
-  /* 투자 집계 · 시상 슬라이드만 글씨를 키운다 (.field-card 를 쓰는 다른 슬라이드는 건드리지 않는다) */
-  .field-grid.tally { gap: 1.2rem; align-items: start; }
-  .field-grid.tally .field-card { padding: 1.4rem 1.6rem; }
-  .field-grid.tally .fname { font-size: 1.65rem; margin-bottom: 0.6rem; }
-  .field-grid.tally .fsub { font-size: 1.15rem; line-height: var(--lh-body); }
-  .field-grid.tally .plain-list { font-size: 1.3rem; line-height: 1.85; margin-top: 0.7rem; }
-  .field-grid.tally .award-row { margin-top: 1rem; }
-  .field-grid.tally .award-name { font-size: 1.45rem; }
-  .field-grid.tally .award-desc { font-size: 1.12rem; margin-top: 0.15rem; }
-  .field-grid.tally .scope-tag { font-size: 0.82rem; padding: 0.18rem 0.6rem; }
 
   /* ---------- Timeline ---------- */
   .timeline { margin-top: 0.3rem; display: flex; flex-direction: column; }
@@ -327,26 +327,27 @@
   @media (max-width: 700px) { .rank-podium { grid-template-columns: 1fr; align-items: stretch; } .podium-card.gold, .podium-card.silver, .podium-card.bronze { min-height: 0; } }
 
   /* ---------- 채점표 ---------- */
-  .score-grid { margin-top: 1rem; width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .score-grid { margin-top: 1.1rem; width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; align-items: stretch; }
   @media (max-width: 900px) { .score-grid { grid-template-columns: 1fr; } }
-  .score-card { border: 1.5px solid var(--line); border-radius: 14px; padding: 1rem 1.1rem; background: var(--bg-elevated); }
-  .sc-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; padding-bottom: 0.5rem; margin-bottom: 0.5rem; border-bottom: 2px solid var(--accent-navy); }
-  .sc-head .sc-name { font-weight: 700; font-size: 1.1rem; }
-  .sc-head .sc-total { font-family: var(--font-mono); font-weight: 700; color: var(--accent-gold); }
-  .sc-items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
-  .sc-items li { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; font-size: 0.95rem; line-height: var(--lh-tight); }
+  .score-card { border: 1.5px solid var(--line); border-radius: 16px; padding: 1.3rem 1.4rem; background: var(--bg-elevated); display: flex; flex-direction: column; }
+  .sc-head { display: flex; flex-wrap: nowrap; align-items: baseline; justify-content: space-between; gap: 0.3rem 0.6rem; padding-bottom: 0.6rem; margin-bottom: 0.6rem; border-bottom: 2px solid var(--accent-navy); }
+  .sc-head .sc-name { font-weight: 700; font-size: 1.5rem; white-space: nowrap; }
+  .sc-head .sc-total { font-family: var(--font-mono); font-weight: 700; color: var(--accent-gold); font-size: 1.25rem; }
+  .sc-items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; justify-content: center; }
+  .sc-items li { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; font-size: 1.15rem; line-height: 1.35; }
   .sc-items li b { font-family: var(--font-mono); color: var(--accent-navy); flex: none; }
-  .score-sum { margin-top: 1rem; font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; text-align: center; }
-  .score-sum b { color: var(--accent-gold); font-size: 1.6rem; }
+  .score-sum { margin-top: 1.2rem; font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; text-align: center; }
+  .score-sum b { color: var(--accent-gold); font-size: 1.8rem; }
 
-  /* 점수표 — 10개 조 전체를 한 화면에 담기 위한 5열 촘촘 버전 */
-  .score-grid.wide { grid-template-columns: repeat(5, 1fr); gap: 0.6rem; margin-top: 0.5rem; }
-  .score-grid.wide .score-card { padding: 0.55rem 0.65rem; border-radius: 10px; }
-  .score-grid.wide .sc-head { padding-bottom: 0.3rem; margin-bottom: 0.3rem; }
-  .score-grid.wide .sc-head .sc-name { font-size: 0.92rem; }
-  .score-grid.wide .sc-head .sc-total { font-size: 0.8rem; }
-  .score-grid.wide .sc-items { gap: 0.2rem; }
-  .score-grid.wide .sc-items li { font-size: 0.74rem; }
+  /* 점수표 — 10개 조를 3·3·4 세 줄로 나눠 한 화면에 담는 버전 */
+  .score-rows { display: flex; flex-direction: column; gap: 0.35rem; width: 100%; margin-top: 0.15rem; margin-bottom: 0.2rem; }
+  .score-row { display: grid; grid-template-columns: repeat(var(--cols), 1fr); gap: 0.5rem; }
+  .score-rows .score-card { padding: 0.4rem 0.65rem; border-radius: 10px; }
+  .score-rows .sc-head { padding-bottom: 0.18rem; margin-bottom: 0.18rem; }
+  .score-rows .sc-head .sc-name { font-size: 1.05rem; }
+  .score-rows .sc-head .sc-total { font-size: 0.88rem; }
+  .score-rows .sc-items { gap: 0.12rem; }
+  .score-rows .sc-items li { font-size: 0.8rem; white-space: nowrap; }
 
   /* ---------- Route / movement map ---------- */
   .route-map { margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; min-height: 55%; }
@@ -368,17 +369,21 @@
   .plain-list.ordered { padding-left: 1.3rem; }
 
   /* ---------- Day divider ---------- */
+  /* Day/날짜는 왼쪽 스텁(.stub)으로 옮겨 표시한다 — .daynum/.datestr는 내비게이션 드롭다운 라벨 추출용으로만
+     DOM에 남겨두고 화면에서는 숨겨, 타임라인이 카드 전체 세로 공간을 쓰며 멀리서도 읽히게 크게 표시한다. */
   .divider .ticket { align-items: stretch; }
   .divider .cabin { display: flex; flex-direction: column; justify-content: center; gap: 0.7rem; padding-block: clamp(0.8rem, 1.6vw, 1.2rem); }
-  .divider .daynum { font-family: var(--font-mono); font-size: clamp(2.8rem, 7.2vw, 4.2rem); font-weight: 700; color: var(--accent-gold); line-height: 1; }
-  .divider .datestr { font-family: var(--font-mono); font-size: 1.12rem; color: var(--ink-muted); letter-spacing: 0.04em; }
-  .divider .mini-agenda { margin-top: 0.2rem; }
-  .divider .mini-agenda .row { grid-template-columns: 3.6rem 1fr; padding: 0.3rem 0; }
+  .divider .daynum, .divider .datestr { display: none; }
+  .divider .mini-agenda { margin-top: 0; }
+  .divider .mini-agenda .row { grid-template-columns: 5.6rem 1fr; padding: 0.55rem 0; }
+  .divider .mini-agenda time { font-size: 1.57rem; }
+  .divider .mini-agenda .desc { font-size: 1.4rem; }
+  .divider .mini-agenda .desc small { font-size: 1.1rem; }
 
   /* ---------- Break slide ---------- */
   /* stretch 유지 — center 로 두면 왼쪽 파란 스텁이 내용 높이로 줄어들어 'OKTA'/'BREAK' 가 붙어 보인다 */
   .break .ticket { align-items: stretch; justify-content: center; text-align: center; }
-  .break .cabin { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 0; }
+  .break .cabin { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; height: 100%; min-height: 0; }
   .break h2 { font-size: var(--fs-h2-lg); line-height: var(--lh-tight); color: var(--ink); }
   .break .duration { font-family: var(--font-mono); font-size: min(clamp(3.4rem, 9.5vw, 5.2rem), 120px); font-weight: 700; color: var(--accent-navy); letter-spacing: 0.02em; }
   .break .next-up { margin-top: 0.3rem; padding-top: 0.9rem; border-top: 1px solid var(--line); font-size: 1.8rem; line-height: 1.5; color: var(--ink-muted); }
@@ -492,11 +497,11 @@
   .bingo-actions { margin-top: 0.5rem; display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
 
   /* 이름 호명 — 현재 호명된 이름 크게, 아래에 지금까지 부른 이름 누적 */
-  .bingo-caller { margin-top: 0.3rem; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+  .bingo-caller { margin-top: 0.3rem; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 1.4rem; }
   .bingo-caller .bc-current { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 4.8vw, 3.6rem); line-height: 1.1; color: var(--accent-navy-deep); }
   .bingo-caller .bc-current .bc-group { font-family: var(--font-mono); font-size: 0.4em; font-weight: 700; color: var(--ink-muted); margin-left: 0.5em; }
-  .bingo-caller .bc-called { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; max-height: 9rem; overflow-y: auto; }
-  .bingo-caller .bc-called span { font-family: var(--font-mono); font-size: 1.22rem; padding: 0.2rem 0.7rem; border-radius: 20px; border: 1px solid var(--line); color: var(--ink-muted); }
+  .bingo-caller .bc-called { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; max-height: 11rem; overflow-y: auto; }
+  .bingo-caller .bc-called span { font-family: var(--font-mono); font-size: 1.55rem; padding: 0.3rem 0.9rem; border-radius: 20px; border: 1px solid var(--line); color: var(--ink-muted); }
   .bingo-toast { position: absolute; inset: 0; margin: auto; width: fit-content; height: fit-content; padding: 1.2rem 3rem; border-radius: 20px; background: var(--accent-gold); color: #ffffff; font-family: var(--font-display); font-weight: 800; font-size: min(clamp(2.6rem, 7vw, 5rem), 120px); letter-spacing: 0.04em; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity 0.25s ease; z-index: 5; }
   .bingo-toast.show { opacity: 1; animation: bingo-pulse 0.6s ease infinite; }
   @media (prefers-reduced-motion: reduce) { .bingo-toast.show { animation: none; } }
@@ -535,11 +540,11 @@
      멀라이언 갈기 끝(우측 3.2%, 상단 18.16%)을 피한다. cover 크롭 때문에 화면비마다 실제 화면 좌표가
      달라지므로, 아래 값은 크롭이 없을 때의 폴백일 뿐 — positionHeroLogo() 가 리사이즈마다 인라인으로 재계산한다.
      하늘이 밝아(휘도 148) 흰색 대비가 3:1 뿐이라 그림자로 가독성을 보강한다. */
-  .hero-logo { position: absolute; top: 11.65%; right: 9%; width: 17%; height: auto; display: block; filter: drop-shadow(0 0.12em 0.3em rgba(0, 0, 0, 0.5)); pointer-events: none; }
+  .hero-logo { position: absolute; top: 1.2%; right: 9%; width: 17%; height: auto; display: block; filter: drop-shadow(0 0.12em 0.3em rgba(0, 0, 0, 0.5)); pointer-events: none; }
 
   /* ---------- 일정표 원본 이미지 슬라이드 ---------- */
   /* 일정표는 원본 그대로 보여야 하므로 모서리를 둥글리지 않는다 */
-  .schedule .ticket { padding: 0; align-items: stretch; justify-content: center; width: auto; height: calc(100% - 2.2rem); max-width: min(1680px, 94vw); aspect-ratio: 1418 / 1416; background: #fff; border-radius: 0; }
+  .schedule .ticket { padding: 15px 0; align-items: stretch; justify-content: center; width: auto; height: calc(100% - 2.2rem); max-width: min(1680px, 94vw); aspect-ratio: 1418 / 1416; background: #fff; border-radius: 0; }
   .schedule .stub { display: none; }
   .video-box { aspect-ratio: 16/9; max-width: 400px; max-height: 24vh; border-radius: 12px; border: 1px dashed var(--line); background: color-mix(in srgb, var(--accent-navy) 8%, var(--bg-elevated)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.7rem; color: var(--ink-muted); margin-top: 0.5rem; }
   .play { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--accent-gold); display: flex; align-items: center; justify-content: center; }
@@ -562,6 +567,8 @@
     .stub { width: 70px; padding: 1rem 0.4rem; }
     .stub .num { font-size: 1.3rem; }
     .stub .label, .stub .mark { font-size: 0.64rem; }
+    .seating-rail { width: 70px; padding: 1rem 0.4rem; }
+    .seating-rail-title { font-size: 0.8rem; }
     .ticket { min-height: calc(100% - 1.4rem); }
   }
 </style>
@@ -651,7 +658,7 @@ const SPEAKERS = [
 
 const SPEAKER_DETAILS = [
   {
-    name: '이준원 상무', org: 'SGX', topic: '싱가포르 자본시장 소개 및 SGX IPO의 이해', photo: 'assets/lee-junwon-sgx.jpeg', deck: null,
+    name: '이준원 상무', org: 'SGX', topic: '싱가포르 자본시장 소개 및 SGX IPO의 이해', photo: 'assets/lee-junwon-sgx.jpeg', deck: '강연자_슬라이드/이준원 상무님.pdf',
     career: [
       ['2004 ~ 2005', 'HSBC 및 삼성선물 IT개발팀 근무'],
       ['2005 ~ 2015', '삼성 선물 국제영업팀, 신한금융투자 글로벌파생영업부, 한국투자증권 해외투자영업부'],
@@ -659,7 +666,7 @@ const SPEAKER_DETAILS = [
     ],
   },
   {
-    name: '한재경 대표', org: 'OBBA Group', topic: '직원에서 연매출 200억 기업 대표가 되기까지', photo: 'assets/han-jaekyung-obba.png', deck: '한재경 대표님 피피티.pptx',
+    name: '한재경 대표', org: 'OBBA Group', topic: '직원에서 연매출 200억 기업 대표가 되기까지', photo: 'assets/han-jaekyung-obba.png', deck: '강연자_슬라이드/한재경 대표님 피피티.pptx',
     career: [
       ['2012 ~ 2026', '싱가포르 OBBA 브랜드 창업/운영'],
       ['2024 ~ 2026', '말레이시아, 인도네시아 사업 확장 (연매출 200억)'],
@@ -746,10 +753,9 @@ const TEAM_ROSTER = {
 
 // 심사 배점 — 4개 항목으로 전면 개편. 세부 배점은 천정인 님 제공 예정 (TBD)
 const SCORE_SHEET = [
-  { name: '샤크탱크 챌린지', total: null, items: [['현장조사 · 사업계획 발표', 'TBD']] },
-  { name: '제시간 착석', total: null, items: [['각 세션 시작 전 착석 완료', 'TBD']] },
-  { name: '베스트 포토', total: null, items: [['현장 사진 업로드 · 우수작 선정', 'TBD']] },
-  { name: 'OKTA 빙고', total: null, items: [['빙고 완성 (미완성 시 감점 — 천정인 담당)', 'TBD']] },
+  { name: '제시간 착석', total: 10, items: [['각 세션 시작 전 착석 완료', 10]] },
+  { name: '샤크탱크 챌린지', total: 70, items: [['현장조사 · 사업계획 발표', 70]] },
+  { name: 'OKTA 빙고', total: 20, items: [['빙고 완성', 20]] },
 ];
 
 // 행사 전체 순위 — 채점이 끝나야 정해지므로 행사 당일 발표 직전에 이 세 줄만 채운다.
@@ -944,14 +950,13 @@ function dayDivider(num, dateStr, items) {
   `;
 }
 
-// 통상 색깔 범례 한 칸 — 색 견본 + 통상 번호 + 실제 테이블 번호
+// 통상 색깔 범례 한 칸 — 색 견본 + 통상 번호
 function mixerLegend(g) {
   return `
     <div class="mm-item">
       <span class="mm-dot" style="background:${g.color}"></span>
       <span class="mm-text">
         <b>${g.label}</b>
-        <small>${g.tables.map(t => `${t}번 테이블`).join(' · ')}</small>
       </span>
     </div>`;
 }
@@ -981,36 +986,41 @@ function teamSlide(n) {
 const SLIDES = [
   // 0 seating -------------------------------------------------------------
   { tag: 'seating', body: `
-    <canvas class="seating-fx-canvas" data-seating-fx></canvas>
+    <canvas class="seating-fx-canvas" data-seating-fx data-no-flight></canvas>
     <canvas class="seating-plane-canvas" data-seating-plane></canvas>
     <div class="seating-content">
-      <h2>조별 좌석 배치도</h2>
       <div class="floorplan-frame">
         <img class="floorplan-img" src="assets/Stage/첫번째 슬라이드 지도 배치.png" alt="조별 좌석 배치도 — 무대와 입구, 1~12번 테이블 위치">
       </div>
     </div>
+    <div class="seating-rail"><span class="seating-rail-title">조별 좌석 배치도</span></div>
   `},
 
   // 1 hero image ------------------------------------------------------------
   { tag: 'hero', title: 'World OKTA Singapore', body: `
-    <img src="assets/hero_singapore_3.png" alt="World OKTA Singapore — 차세대 통합무역 스쿨" style="width:100%;height:100%;object-fit:cover;display:block;" />
+    <img src="assets/행사_포스터_3페이지.png" alt="2026 동서남아 통합 글로벌 창업무역스쿨 — World OKTA Singapore" style="width:100%;height:100%;object-fit:cover;display:block;" />
     <img class="hero-logo" src="logo/logo_CI_white.png" alt="World-OKTA" />
   `},
 
-  // 2 전체 일정표 (원본 이미지) -------------------------------------------------
+  // 2.5 귀빈소개 ------------------------------------------------------------
+  { title: '귀빈소개', body: `
+    <div class="big-statement"><div class="huge">귀빈소개</div></div>
+  `},
+
+  // 3 전체 일정표 (원본 이미지) -------------------------------------------------
   { tag: 'schedule', title: '전체 일정표', body: `
-    <img src="assets/updated_schedule.png" alt="2026 동서남아 통합 차세대 글로벌 창업무역스쿨 일정표" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+    <img src="assets/일정표 추출본.png" alt="2026 동서남아 통합 차세대 글로벌 창업무역스쿨 일정표" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
   `},
 
   // ============ DAY 1 (8/13 목) ============
-  { tag: 'divider', stub: 'DAY 1', body: dayDivider(1, '2026년 8월 13일 (목)', [
-    ['13:00', '참가자 접수'], ['15:00', 'OKTA 아이덴티티'], ['15:30', '임원 / 서포터즈 소개'],
+  { tag: 'divider', stub: 'DAY 1 · 8.13', body: dayDivider(1, '2026년 8월 13일 (목)', [
+    ['13:00', '참가자 접수'], ['15:00', 'OKTA 아이덴티티'], ['15:30', '임원 / 싱가포르 스텝 소개'],
     ['16:00', '조장 임명 · 조별 자기소개 · 조이름 만들기'], ['17:30', '만찬장 이동'],
-    ['18:00', '입교식'], ['19:00', '석식 (통합무역스쿨, 경제인대회)'], ['21:00', '숙소 이동'],
+    ['18:00', '입교식'], ['19:00', '만찬 (통합무역스쿨, 경제인대회)'], ['21:00', '숙소 이동'],
     ['22:00', '조별 프로그램 설명 · 장소 추첨'],
   ])},
 
-  { stub: 'DAY 1', body: `
+  { stub: 'DAY 1', cls: 'centered-text', body: `
     <div class="eyebrow">Identity · 15:00–16:00</div>
     <h2>OKTA 아이덴티티</h2>
     <p class="lede">OKTA(세계한인무역협회)는 전 세계 한인 경제인들을 연결하는 글로벌 네트워크로, 차세대 한인 기업가 양성을 위한 다양한 프로그램을 운영하고 있습니다.</p>
@@ -1045,6 +1055,11 @@ const SLIDES = [
   // 10개 조별 자기소개 (개별 슬라이드) -------------------------------------
   ...TEAMS.map(n => ({ stub: 'TEAMS', title: `${n}조 자기소개`, body: teamSlide(n) })),
 
+  // 만찬장 이동 (17:30–18:00)
+  { stub: 'DAY 1', body: `
+    <div class="eyebrow">17:30–18:00</div>
+    <div class="big-statement"><div class="huge">만찬장 이동</div></div>
+  `},
 
   // 입교식 (18:00–19:00) — 축사
   { stub: 'DAY 1', body: `
@@ -1052,29 +1067,63 @@ const SLIDES = [
     <div class="big-statement"><div class="huge">입교식</div></div>
   `},
 
+  // 프로그램 설명 — 샤크탱크 섹션 진입 전 표지
+  { stub: 'Program', title: '프로그램 설명', body: `
+    <div class="big-statement"><div class="huge">프로그램 설명</div></div>
+  `},
+
+  // 채점표 — 원래 DAY 3 순위 발표 직후 슬라이드였으나, 프로그램 설명 바로 뒤로 이동
+  { stub: 'Program', cls: 'dense', body: `
+    <div class="eyebrow">심사 기준 · 팀프로젝트 심사표</div>
+    <h2 style="font-size: var(--fs-h2-lg);">채점표</h2>
+    <div class="score-grid">${SCORE_SHEET.map(cat => `
+      <div class="score-card">
+        <div class="sc-head"><span class="sc-name">${cat.name}</span><span class="sc-total">${cat.total ?? 'TBD'}점</span></div>
+        <ul class="sc-items">${cat.items.map(([item]) => `<li><span>${item}</span></li>`).join('')}</ul>
+      </div>
+    `).join('')}</div>
+    <div class="score-sum">총점 <b>100점</b></div>
+  `},
+
+  // 전체 시상금 안내 (불꽃놀이 배경) — 샤크탱크만이 아니라 3일 전체 활동 점수 기준. 프로그램 설명 바로 뒤로 이동
+  { tag: 'seating', stub: 'Program', body: `
+    <canvas class="seating-fx-canvas" data-seating-fx data-no-flight></canvas>
+    <canvas class="seating-plane-canvas" data-seating-plane></canvas>
+    <div class="seating-content">
+      <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
+      <h2>전체 시상금 <span class="scope-tag">행사 전체</span></h2>
+      <p class="lede">샤크탱크 챌린지 · 조별 출석률 · 조별 사진 · 기타 활동 점수를 합산해 순위를 가립니다.</p>
+      <div class="prize-badges prize-badges-lg">
+        <span class="prize-badge gold"><span class="medal">🥇</span>1등 S$1000</span>
+        <span class="prize-badge silver"><span class="medal">🥈</span>2등 S$500</span>
+        <span class="prize-badge bronze"><span class="medal">🥉</span>3등 S$300</span>
+      </div>
+    </div>
+  `},
+
   // ===== 샤크탱크 설명 8장 — Singapore Shark Tank Challenge20260805.pdf 목차를 그대로 따른다 =====
   // 섹션 제목만 공식 명칭을 쓰고, 이후 슬라이드는 짧은 표기를 쓴다
-  { stub: 'SHARK', title: '싱가포르 샤크탱크 챌린지', body: `
+  { stub: 'Program', title: '싱가포르 샤크탱크 챌린지', body: `
     <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
     <div class="big-statement"><div class="huge">싱가포르<br>샤크탱크 챌린지</div></div>
   `},
 
   // 1) 프로그램 목표 + 팀 구성 (PDF 목표 · §1)
-  { stub: 'SHARK', cls: 'dense', title: '프로그램 목표 · 팀 구성', body: `
+  { stub: 'Program', title: '프로그램 목표 · 팀 구성', body: `
     <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
     <h2>프로그램 목표 · 팀 구성</h2>
-    <p class="lede">싱가포르 실제 상권을 분석해 가장 적합한 <b>한국 제품 · 한국 브랜드</b>를 고르고, 시장 진출 전략을 세워 투자자에게 제안합니다.</p>
     <div class="prize-badges" style="justify-content:center;margin-top:0.6rem;">
-      <span class="prize-badge gold" style="font-size:1.5rem;padding:0.7rem 1.8rem;">목표 투자 유치 · SGD 500,000</span>
+      <span class="prize-badge gold" style="font-size:2.4rem;padding:1.1rem 2.9rem;">목표 투자 유치 · SGD 500,000</span>
     </div>
-    <div class="field-grid" style="margin-top:0.9rem;text-align:center;">
-      <div class="field-card"><div class="fname">10개 팀 · 팀당 약 9명</div><div class="fsub">다국적 지회로 구성</div></div>
-      <div class="field-card"><div class="fname">팀별 역할 분담</div><div class="fsub">시장조사 · 전략 · 발표</div></div>
+    <p class="lede" style="font-size:1.8rem;margin-top:0.9rem;">싱가포르 실제 상권을 분석해 가장 적합한 <b>한국 제품 · 한국 브랜드</b>를 고르고, 시장 진출 전략을 세워 투자자에게 제안합니다.</p>
+    <div class="field-grid" style="margin-top:0.9rem;text-align:center;width:fit-content;margin-left:auto;margin-right:auto;">
+      <div class="field-card" style="padding:1.3rem 1.5rem;"><div class="fname" style="font-size:1.5rem;">10개 팀 · 팀당 약 9명</div><div class="fsub" style="font-size:1.1rem;">다국적 지회로 구성</div></div>
+      <div class="field-card" style="padding:1.3rem 1.5rem;"><div class="fname" style="font-size:1.5rem;">팀별 역할 분담</div><div class="fsub" style="font-size:1.1rem;">시장조사 · 전략 · 발표</div></div>
     </div>
   `},
 
   // 3) 제공 정보 4가지 (PDF §2 후반) — 점포 면적 · 월 임대료 · 상권 특징 · 주요 고객층
-  { stub: 'SHARK', cls: 'dense', title: '제공 정보 — 상권 비교', body: `
+  { stub: 'Program', cls: 'dense', title: '제공 정보 — 상권 비교', body: `
     <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
     <h2>제공 정보 — 상권 비교</h2>
     <div class="compare-scroll">
@@ -1096,31 +1145,31 @@ const SLIDES = [
         </tbody>
       </table>
     </div>
-    <p class="lede" style="margin-top:0.5rem;">사업 분야는 자유 — ${BIZ_FIELDS.join(' · ')} 등. 단, <b>한국 제품 · 한국 브랜드 기반</b>이어야 합니다.</p>
+    <p class="lede" style="margin-top:0.5rem;text-align:left;align-self:stretch;">사업 분야는 자유 — ${BIZ_FIELDS.join(' · ')} 등. 단, <b>한국 제품 · 한국 브랜드 기반</b>이어야 합니다.</p>
   `},
 
   // 4) 현장조사 (PDF §3)
-  { stub: 'SHARK', cls: 'dense', title: '현장조사', body: `
+  { stub: 'Program', cls: 'dense', title: '현장조사', body: `
     <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
     <h2>현장조사 · 10:00–12:00</h2>
     <p class="lede">배정받은 상권을 직접 방문해 조사합니다. 현장에서 촬영한 사진과 조사 내용은 발표 자료에 활용합니다.</p>
-    <div class="field-grid">${SURVEY_FIELDS.map((f, i) => `
-      <div class="field-card"><div class="fname">${i + 1}. ${f}</div></div>
+    <div class="field-grid" style="gap:1rem;">${SURVEY_FIELDS.map((f, i) => `
+      <div class="field-card" style="padding:1.3rem 1.5rem;"><div class="fname" style="font-size:1.35rem;">${i + 1}. ${f}</div></div>
     `).join('')}</div>
   `},
 
   // 5) 사업계획 수립 (PDF §4)
-  { stub: 'SHARK', cls: 'dense', title: '사업계획 수립', body: `
+  { stub: 'Program', cls: 'dense', title: '사업계획 수립', body: `
     <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
     <h2>사업계획 수립</h2>
     <p class="lede">현장조사를 바탕으로 사업계획을 세우고, 발표에 아래 10가지를 반드시 포함합니다.</p>
-    <div class="field-grid" style="gap:0.55rem;">${PLAN_ITEMS.map((f, i) => `
-      <div class="field-card" style="padding:0.6rem 0.9rem;"><div class="fname">${i + 1}. ${f}</div></div>
+    <div class="field-grid" style="gap:0.72rem;">${PLAN_ITEMS.map((f, i) => `
+      <div class="field-card" style="padding:0.9rem 1.15rem;"><div class="fname" style="font-size:1.12rem;">${i + 1}. ${f}</div></div>
     `).join('')}</div>
   `},
 
   // 6) 샤크탱크 발표 (PDF §5) — DAY3 '팀별 발표' 슬라이드와 같은 구성
-  { stub: 'SHARK', title: '샤크탱크 발표', body: `
+  { stub: 'Program', title: '샤크탱크 발표', body: `
     <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
     <h2>샤크탱크 발표</h2>
     <div class="timebox">
@@ -1129,81 +1178,60 @@ const SLIDES = [
       <div class="timebox-row"><span class="tb-num">2분</span><span class="tb-label">투자자 Q&amp;A</span></div>
     </div>
     <p class="lede" style="margin-top:0.8rem;text-align:center;">모든 팀이 동일하게 <b>SGD 500,000</b> Seed Investment 유치를 목표로 발표합니다.</p>
+    <p class="lede" style="margin-top:0.4rem;text-align:center;font-size:0.85rem;color:var(--ink-muted);">※ 발표 화면 비율 미정 — 12:9 / 14:9 등, 추후 업데이트 예정</p>
   `},
 
-  // 7) 투자 집계 · 시상 (PDF §8 · §9) — 여기 시상은 샤크탱크 한정, 뒤의 '전체 시상금'과 별개다
-  { stub: 'SHARK', cls: 'dense', title: '투자 집계 · 시상', body: `
-    <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
-    <h2>투자 집계 · 시상</h2>
-    <div class="field-grid tally">
-      <div class="field-card">
-        <div class="fname">투자 집계</div>
-        <div class="fsub">모든 심사위원의 투자금을 집계합니다.</div>
-        <ul class="plain-list" style="margin-top:0.5rem;">
-          <li>팀별 총 투자 유치 금액</li>
-          <li>가장 많은 투자금을 유치한 팀</li>
-        </ul>
+  // 7) 투자 집계 (PDF §8 · §9) — 시상 박스는 제거, 뒤의 '전체 시상금' 슬라이드에서 다룬다
+  { stub: 'Program', title: '프로그램 심사표', body: `
+    <div style="display:flex;width:100%;">
+      <div style="flex:0 0 50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 1.5rem;">
+        <div class="eyebrow">심사표 · 22:00–23:00</div>
+        <h2>프로그램 심사표</h2>
+        <div class="field-card" style="padding:2rem 2.4rem;margin-top:0.5rem;">
+          <ul class="plain-list" style="font-size:1.4rem;line-height:1.8;white-space:nowrap;">
+            <li>가장 많은 투자금을 유치한 팀</li>
+            <li>가장 높은 평가 점수를 받은 팀</li>
+          </ul>
+        </div>
       </div>
-      <div class="field-card">
-        <div class="fname">시상 <span class="scope-tag">샤크탱크 한정</span></div>
-        <div class="award-row"><span class="award-name">🏆 Grand Prize</span><span class="award-desc">심사평가 최고점</span></div>
-        <div class="award-row"><span class="award-name">💰 Investor's Choice Award</span><span class="award-desc">가장 많은 투자금을 유치한 팀</span></div>
-      </div>
-    </div>
-  `},
-  // 전체 시상금 안내 (불꽃놀이 배경) — 샤크탱크만이 아니라 3일 전체 활동 점수 기준 -------------
-  { tag: 'seating', stub: 'SHARK', body: `
-    <canvas class="seating-fx-canvas" data-seating-fx data-no-flight></canvas>
-    <canvas class="seating-plane-canvas" data-seating-plane></canvas>
-    <div class="seating-content">
-      <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
-      <h2>전체 시상금 <span class="scope-tag">행사 전체</span></h2>
-      <p class="lede">샤크탱크 챌린지 · 조별 출석률 · 조별 사진 · 기타 활동 점수를 합산해 순위를 가립니다.</p>
-      <div class="prize-badges prize-badges-lg">
-        <span class="prize-badge gold"><span class="medal">🥇</span>1등 S$1000</span>
-        <span class="prize-badge silver"><span class="medal">🥈</span>2등 S$500</span>
-        <span class="prize-badge bronze"><span class="medal">🥉</span>3등 S$300</span>
+      <div style="flex:0 0 50%;display:flex;align-items:center;justify-content:center;padding:0 1.5rem;">
+        <div class="video-box" style="aspect-ratio:210/297;max-width:100%;max-height:60vh;width:auto;margin-top:0;">
+          <div>A4 이미지 삽입 영역</div>
+        </div>
       </div>
     </div>
   `},
 
   // ============ DAY 2 (8/14 금) ============
-  { tag: 'divider', stub: 'DAY 2', body: dayDivider(2, '2026년 8월 14일 (금)', [
+  { tag: 'divider', stub: 'DAY 2 · 8.14', body: dayDivider(2, '2026년 8월 14일 (금)', [
     ['08:00', '조식'], ['09:00', 'OKTA Global Mixer'], ['10:00', '싱가포르 샤크탱크 챌린지 현장 방문'], ['12:00', '중식'],
     ['13:00', '특강 1 · 이준원 (SGX 증권거래소 한국 총괄)'], ['14:30', '특강 2 · 한재경 (OBBA Group 대표)'],
     ['16:00', '특강 3 · 장승환 (지마켓 대표이사)'], ['17:30', '만찬장 이동'],
-    ['18:00', '석식 (통합무역스쿨, 경제인대회)'], ['21:00', '숙소 이동'],
+    ['18:00', '만찬 (통합무역스쿨, 경제인대회)'], ['21:00', '숙소 이동'],
   ])},
 
 
   { stub: 'DAY 2', body: `
     <div class="eyebrow">09:00–10:00</div>
-    <h2>OKTA Global Mixer</h2>
+    <h2 style="font-size: calc(var(--fs-h2) * 1.4);">OKTA Global Mixer</h2>
   `},
 
   // 밍글링 1/2 — 통상 번호로 본인 분야를 확인한다.
-  // 15개를 5개씩 세 슬라이드로 나눈다 — 8개씩 두 장으로 깔면 전체화면에서 아래가 잘린다.
-  { stub: 'DAY 2', cls: 'dense', body: `
+  // 15개를 8+7 두 슬라이드로 나눈다. 2컬럼으로는 8개가 세로로 넘치므로(과거 이슈),
+  // 행 수를 줄이려고 4컬럼으로 깐다 — 카드가 좁아지는 대신 세로 줄 수가 절반이 된다.
+  { stub: 'DAY 2', body: `
     <div class="eyebrow">네트워킹 밍글링 · 09:00–10:00 · 통상 15개 소분류 — 본인 번호를 확인해 주세요</div>
-    <h2>본인이 일하고 있는 분야는? (1~5통상)</h2>
-    <div class="field-grid trade">${TRADE_CATS.slice(0, 5).map((c, i) => `
-      <div class="field-card"><div class="fname">${i + 1}통상 · ${c}</div><div class="fsub">${TRADE_CATS_DETAIL[i]}</div></div>
+    <h2>본인이 일하고 있는 분야는? (1~8통상)</h2>
+    <div class="field-grid trade" style="grid-template-columns:repeat(4,1fr);gap:0.6rem;">${TRADE_CATS.slice(0, 8).map((c, i) => `
+      <div class="field-card" style="padding:0.65rem 0.85rem;"><div class="fname" style="font-size:1.05rem;">${i + 1}통상 · ${c}</div><div class="fsub" style="font-size:0.85rem;">${TRADE_CATS_DETAIL[i]}</div></div>
     `).join('')}</div>
   `},
 
-  { stub: 'DAY 2', cls: 'dense', body: `
+  { stub: 'DAY 2', body: `
     <div class="eyebrow">네트워킹 밍글링 · 09:00–10:00</div>
-    <h2>본인이 일하고 있는 분야는? (6~10통상)</h2>
-    <div class="field-grid trade">${TRADE_CATS.slice(5, 10).map((c, i) => `
-      <div class="field-card"><div class="fname">${i + 6}통상 · ${c}</div><div class="fsub">${TRADE_CATS_DETAIL[i + 5]}</div></div>
-    `).join('')}</div>
-  `},
-
-  { stub: 'DAY 2', cls: 'dense', body: `
-    <div class="eyebrow">네트워킹 밍글링 · 09:00–10:00</div>
-    <h2>본인이 일하고 있는 분야는? (11~15통상)</h2>
-    <div class="field-grid trade">${TRADE_CATS.slice(10).map((c, i) => `
-      <div class="field-card"><div class="fname">${i + 11}통상 · ${c}</div><div class="fsub">${TRADE_CATS_DETAIL[i + 10]}</div></div>
+    <h2>본인이 일하고 있는 분야는? (9~15통상)</h2>
+    <div class="field-grid trade" style="grid-template-columns:repeat(4,1fr);gap:0.6rem;">${TRADE_CATS.slice(8).map((c, i) => `
+      <div class="field-card" style="padding:0.65rem 0.85rem;"><div class="fname" style="font-size:1.05rem;">${i + 9}통상 · ${c}</div><div class="fsub" style="font-size:0.85rem;">${TRADE_CATS_DETAIL[i + 8]}</div></div>
     `).join('')}</div>
   `},
 
@@ -1219,52 +1247,61 @@ const SLIDES = [
     </div>
   `},
 
-  { stub: 'SHARK', body: `
+  { stub: 'Program', body: `
     <div class="eyebrow">현장 방문 · 10:00–12:00</div>
     <h2>싱가포르 샤크탱크 챌린지 — 이동 안내</h2>
-    <div class="route-map">
+    <div class="route-map" style="min-height:0;margin-top:1.8rem;">
       <div class="route-stop"><div class="ricon">HOTEL</div>호텔 볼룸</div><span class="route-arrow">→</span>
       <div class="route-stop"><div class="ricon">MOVE</div>이동</div><span class="route-arrow">→</span>
       <div class="route-stop"><div class="ricon">SURVEY</div>현장조사</div><span class="route-arrow">→</span>
       <div class="route-stop"><div class="ricon">12:00</div>복귀</div>
     </div>
+    <div class="field-grid" style="margin-top:0.6rem;text-align:center;grid-template-columns:repeat(5,1fr);width:fit-content;margin-left:auto;margin-right:auto;">${LOCATIONS.map(l => {
+      const guide = { '무스타파': '권지은', '마리나베이샌즈': '이현영', '맥스웰': '천정인', '하지레인': '이선준', '부기스 스트릿': '권노영' };
+      const short = l.name.replace(/\s*\(.*\)$/, '');
+      return `
+      <div class="field-card" style="padding:0.4rem 0.4rem;">
+        <div class="cthumb" style="width:clamp(68px,10.2vw,109px);margin-bottom:0.15rem;">${l.photoInside ? `<img src="${l.photoInside}" alt="${short}">` : ''}</div>
+        <div class="fname" style="font-size:0.78rem;">${short}</div>
+        <div class="fsub" style="font-size:0.68rem;">담당: ${guide[short] || 'TBD'}</div>
+      </div>
+    `;
+    }).join('')}</div>
   `},
 
   // 중식이 강연자 소개보다 먼저 온다 (12:00 중식 → 13:00 특강)
-  { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', '특강 1', '이준원 (SGX 증권거래소 한국 총괄)', '싱가포르 자본시장 소개 / SGX IPO의 이해') },
+  { tag: 'break', stub: 'BREAK', body: `<div style="padding-top:60px">${breakSlide('중식', '12:00–13:00', '특강 1', '이준원 (SGX 증권거래소 한국 총괄)', '싱가포르 자본시장 소개 / SGX IPO의 이해')}</div>` },
 
   { stub: 'TALK', cls: 'dense', body: `
-    <div class="eyebrow">특강 · 13:00–17:30</div>
-    <h2>오늘의 강연자</h2>
-    ${speakerGrid()}
+    <div style="padding-top:60px">
+      <div class="eyebrow">특강 · 13:00–17:30</div>
+      <h2>오늘의 강연자</h2>
+      ${speakerGrid()}
+    </div>
   `},
 
   { stub: 'TALK 1', cls: 'dense', body: speakerSlide(0) },
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('휴식', '14:30', '특강 2', '한재경 (OBBA Group 대표)', '직원에서 연매출 200억 대표가 되기까지') },
+  { tag: 'break', stub: 'BREAK', body: `<div style="padding-top:60px">${breakSlide('휴식', '14:30', '특강 2', '한재경 (OBBA Group 대표)', '직원에서 연매출 200억 대표가 되기까지')}</div>` },
 
   { stub: 'TALK 2', cls: 'dense', body: speakerSlide(1) },
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('휴식', '16:00', '특강 3', '장승환 (지마켓 대표이사)', '시장 변화에 대응하는 스타트업 성공 전략') },
+  { tag: 'break', stub: 'BREAK', body: `<div style="padding-top:60px">${breakSlide('휴식', '16:00', '특강 3', '장승환 (지마켓 대표이사)', '시장 변화에 대응하는 스타트업 성공 전략')}</div>` },
 
   { stub: 'TALK 3', cls: 'dense', body: speakerSlide(2) },
 
+  // 만찬장 이동 (17:30–18:00)
+  { stub: 'DAY 2', body: `
+    <div class="eyebrow">17:30–18:00</div>
+    <div class="big-statement"><div class="huge">만찬장 이동</div></div>
+  `},
+
   // ============ DAY 3 (8/15 토) ============
-  { tag: 'divider', stub: 'DAY 3', body: dayDivider(3, '2026년 8월 15일 (토)', [
+  { tag: 'divider', stub: 'DAY 3 · 8.15', body: dayDivider(3, '2026년 8월 15일 (토)', [
     ['08:00', '조식'], ['09:00', '발표 준비'], ['10:00', '싱가포르 샤크탱크 챌린지 발표'], ['12:00', '중식'],
     ['13:00', 'OKTA Global Connection Challenge'], ['15:00', '행사 전체 순위 발표'], ['16:00', '수료식'],
     ['17:00', '개인정비'], ['18:00', '만찬장 이동'], ['18:30', '차세대 만찬'],
   ])},
-
-  { stub: 'DAY 3', body: `
-    <div class="centered-block">
-      <div class="eyebrow">Preparation · 09:00–10:00</div>
-      <div class="huge">발표 준비</div>
-      <div class="deadline-badge deadline-badge-lg">⏰ 발표자료 제출 마감 · 09:50</div>
-      <p class="lede">발표자료(PPT)는 이메일로 제출해 주세요<br>제출 이메일: knowyoung97@gmail.com</p>
-    </div>
-  `},
-
 
   { tag: 'wheel', cls: 'dense', stub: 'DAY 3', body: `
     <div class="eyebrow">샤크탱크 챌린지 · 09:00–10:00</div>
@@ -1290,20 +1327,29 @@ const SLIDES = [
     </div>
   `},
 
-  // 심사위원 소개 — 팀별 발표 직전. 제목만 띄우고 MC 가 구두로 소개한다.
-  { stub: 'SHARK', title: '심사위원 소개', body: `
+  { stub: 'Program', body: `
     <div class="eyebrow">싱가포르 샤크탱크 챌린지 · 10:00–12:00</div>
-    <div class="big-statement"><div class="huge">심사위원 소개</div></div>
-  `},
-
-  { stub: 'SHARK', body: `
-    <div class="eyebrow">싱가포르 샤크탱크 챌린지 · 10:00–12:00</div>
-    <h2>팀별 발표</h2>
+    <h2>발표 시간</h2>
     <div class="timebox">
       <div class="timebox-row"><span class="tb-num">8분</span><span class="tb-label">발표</span></div>
       <div class="timebox-plus">+</div>
       <div class="timebox-row"><span class="tb-num">2분</span><span class="tb-label">Q&amp;A</span></div>
     </div>
+  `},
+
+  { stub: 'DAY 3', body: `
+    <div class="centered-block">
+      <div class="eyebrow">Preparation · 09:00–10:00</div>
+      <div class="huge">발표 준비</div>
+      <div class="deadline-badge deadline-badge-lg">⏰ 발표자료 제출 마감 · 09:50</div>
+      <p class="lede" style="font-size:1.6rem;">발표자료(PPT)는 이메일로 제출해 주세요<br>제출 이메일: 2026_okta_sg@gmail.com</p>
+    </div>
+  `},
+
+  // 심사위원 소개 — 팀별 발표 직전. 제목만 띄우고 MC 가 구두로 소개한다.
+  { stub: 'Program', title: '심사위원 소개', body: `
+    <div class="eyebrow">싱가포르 샤크탱크 챌린지 · 10:00–12:00</div>
+    <div class="big-statement"><div class="huge">심사위원 소개</div></div>
   `},
 
   { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', 'OKTA Global Connection Challenge', '', '번호별로 순차 이동하여 중식 진행') },
@@ -1319,24 +1365,30 @@ const SLIDES = [
   `},
 
   // 빙고 규칙 — GCC 개요 바로 다음. 게임은 GCC 진행 내내 채워도 된다
-  { stub: 'GCC', cls: 'dense', body: `
+  { stub: 'GCC', body: `
     <div class="eyebrow">게임 안내</div>
     <h2>OKTA 빙고 — 이렇게 진행합니다</h2>
     <div class="bingo-rules-block">
     <ol class="plain-list ordered bingo-rules">
       <li>빙고판 각 칸에는 <b>조건</b>이 적혀 있습니다.<br>조건에 맞는 사람을 만나면 그 칸에 <b>그 사람 이름</b>을 적으세요.</li>
-      <li>같은 조 조원은 인정되지 않습니다. 한 사람은 <b>한 칸에만</b> 적을 수 있습니다.</li>
+      <li><b>같은 조 조원</b>은 인정되지 않습니다. 한 사람은 <b>한 칸에만</b> 적을 수 있습니다.</li>
       <li>빙고판은 사람마다 조건 순서가 다릅니다. 옆 사람 것과 비교하지 마세요.</li>
       <li>마지막에 <b>이름을 호명</b>합니다. 내 칸에 그 이름이 있으면 칸을 표시하세요.</li>
-      <li><b>가로 한 줄</b>을 모두 채우면 빙고입니다.</li>
+      <li><b>가로·세로·대각선</b> 중 한 줄을 채우면 빙고입니다.</li>
     </ol>
     <p class="lede bingo-rules-note">빙고판은 지금부터 들고 다니세요<br>Global Connection Challenge 진행 중 언제든 채우면 됩니다.</p>
     </div>
   `},
 
+  // 빙고판 예시 미리보기 — 참가자가 실제로 받는 종이 빙고판이 어떻게 생겼는지 화면으로 보여준다.
+  // 실제 배부판은 사람마다 조건 순서가 섞여 있음 (bingo_sheets.html 참고) — 이 슬라이드는 예시일 뿐.
+  { tag: 'schedule', stub: 'GCC', title: '빙고판 예시', body: `
+    <img src="assets/Bingo/bingo_sheet_sample.png" alt="OKTA 빙고 — Global Connection Challenge 빙고판 예시 (5×5, 25개 조건)" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
   { stub: 'GCC', cls: 'dense', body: `
     <div class="eyebrow">원하는 분야 네트워킹 · 13:10–13:40</div>
-    <h2>6개 그룹으로 나눠 진행합니다</h2>
+    <h2>OKTA Global Connection Challenge</h2>
     <div class="mixer-map">
       <div class="mm-side">${NETWORKING_FIELDS.slice(0, 4).map((f, i) => gccFieldCard(f, GCC_GROUPS[i])).join('')}</div>
       <div class="mm-plan"><img src="assets/Stage/GlobalMixer_지도 배치 안내.png" alt="분야별 색깔 좌석 배치도 — 무대와 1~12번 테이블"></div>
@@ -1346,7 +1398,7 @@ const SLIDES = [
 
   { stub: 'GCC', body: `
     <div class="eyebrow">원하는 사람에게 찾아가기 · 13:40–14:10</div>
-    <h2>먼저 다가가 보세요</h2>
+    <h2 style="font-size: var(--fs-h2-lg);">먼저 다가가 보세요</h2>
     <p class="lede">앞선 세션에서 만난 사람들을 참고해 자유롭게 대화 상대를 찾아가는 시간입니다.</p>
   `},
 
@@ -1390,47 +1442,56 @@ const SLIDES = [
     </div>
   `},
 
-  // 채점표 — 순위 발표 직후, 배점 근거 설명용
-  { stub: 'DAY 3', cls: 'dense', body: `
-    <div class="eyebrow">심사 기준 · 팀프로젝트 심사표</div>
-    <h2>채점표</h2>
-    <div class="score-grid">${SCORE_SHEET.map(cat => `
-      <div class="score-card">
-        <div class="sc-head"><span class="sc-name">${cat.name}</span><span class="sc-total">${cat.total ?? 'TBD'}점</span></div>
-        <ul class="sc-items">${cat.items.map(([item, pt]) => `<li><span>${item}</span><b>${pt}</b></li>`).join('')}</ul>
-      </div>
-    `).join('')}</div>
-    <div class="score-sum">총점 <b>TBD</b></div>
-  `},
 
   // 점수표 — 10개 조 전체 점수 총합 통계 (채점표 직후, 실제 점수는 현장에서 채움)
   { stub: 'DAY 3', cls: 'dense', title: '점수표', body: `
     <div class="eyebrow">점수 총합 통계</div>
     <h2>점수표</h2>
-    <div class="score-grid wide">${TEAMS.map(n => `
-      <div class="score-card">
-        <div class="sc-head"><span class="sc-name">${n}조</span><span class="sc-total">TBD점</span></div>
-        <ul class="sc-items">${SCORE_SHEET.map(cat => `<li><span>${cat.name}</span><b>TBD</b></li>`).join('')}</ul>
-      </div>
+    <div class="score-rows">${[TEAMS.slice(0, 3), TEAMS.slice(3, 6), TEAMS.slice(6, 10)].map(row => `
+      <div class="score-row" style="--cols:${row.length};">${row.map(n => `
+        <div class="score-card">
+          <div class="sc-head"><span class="sc-name">${n}조</span><span class="sc-total">TBD점</span></div>
+          <ul class="sc-items">${SCORE_SHEET.map(cat => `<li><span>${cat.name}</span><b>TBD</b></li>`).join('')}</ul>
+        </div>
+      `).join('')}</div>
     `).join('')}</div>
   `},
 
   { stub: 'DAY 3', body: `
     <div class="eyebrow">Closing Ceremony · 16:00–17:00</div>
-    <h2>수료식</h2>
-    <div class="video-box"><div class="play"></div><div>3일간 하이라이트 영상 삽입 영역</div></div>
+    <h2 style="font-size: var(--fs-h2-lg);">수료식</h2>
+  `},
+
+  { stub: 'DAY 3', title: '내외빈 소개', body: `
+    <div class="big-statement"><div class="huge">내외빈 소개</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '폐회사 말씀', body: `
+    <div class="big-statement"><div class="huge">폐회사 말씀</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '총평', body: `
+    <div class="big-statement"><div class="huge">총평</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '축사', body: `
+    <div class="big-statement"><div class="huge">축사</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '수료증 및 옥타 배지 증정식', body: `
+    <div class="big-statement"><div class="huge">수료증 및<br> 옥타 배지 증정식</div></div>
   `},
 
   { tag: 'break', stub: 'BREAK', body: breakSlide('개인정비', '17:00–18:00', '차세대 만찬', '', '18:00까지 만찬장 이동 · 18:30 시작') },
 
   { stub: 'DAY 3', body: `
     <div class="eyebrow">18:30–21:00</div>
-    <h2>차세대 만찬</h2>
+    <h2 style="font-size: var(--fs-h2-lg);">차세대 만찬</h2>
   `},
 
   // ============ DAY 4 (8/16 일) ============
-  { tag: 'divider', stub: 'DAY 4', body: dayDivider(4, '2026년 8월 16일 (일)', [
-    ['08:00', '조식'], ['', '조식 후 개별귀국'],
+  { tag: 'divider', stub: 'DAY 4 · 8.16', body: dayDivider(4, '2026년 8월 16일 (일)', [
+    ['08:00', '조식'], ['09:00', '조식 후 개별귀국'],
   ])},
 
   // info / notion link ------------------------------------------------------
@@ -1438,7 +1499,6 @@ const SLIDES = [
   { tag: 'appendix', body: `
     <div class="eyebrow">행사 사진 · 영상 모음</div>
     <h2>함께한 순간들</h2>
-    <div class="video-box"><div class="play"></div><div>3일간 하이라이트 영상 · 사진 슬라이드쇼 삽입 영역</div></div>
     <div class="huge" style="margin-top:1.3rem;">감사합니다</div>
     <p class="lede">다음에 또 봐요!</p>
   `},
@@ -1463,18 +1523,22 @@ SLIDES.forEach((s, i) => {
 });
 
 /* Hero 로고 위치 재계산 — .hero .ticket 는 object-fit:cover 로 화면을 꽉 채우므로,
-   화면 비율이 원본 이미지(2752x1536)와 다르면 상하 또는 좌우가 잘린다. 로고를 "이미지 속 같은 지점"
-   (멀라이언 갈기 끝을 피한 자리)에 고정하려면 잘려나간 비율만큼 화면 기준 좌표를 다시 계산해야 한다. */
+   화면 비율이 원본 이미지(2592x1664)와 다르면 상하 또는 좌우가 잘린다. 로고를 포스터 제목 텍스트
+   위 빈 하늘(원본 기준 상단 0~12.5%)에 고정하되, 화면이 넓어져 크롭이 커지면 그 빈 공간 자체가
+   줄어드므로 로고 폭을 함께 줄여서 제목과 절대 겹치지 않게 한다. */
 function positionHeroLogo() {
   const ticket = document.querySelector('.hero .ticket');
   const logo = document.querySelector('.hero-logo');
   if (!ticket || !logo) return;
   const { width, height } = ticket.getBoundingClientRect();
   if (!width || !height) return;
-  const IMG_W = 2752, IMG_H = 1536;
+  const IMG_W = 2592, IMG_H = 1664;
+  const LOGO_ASPECT = 1337 / 322; // width / height
+  const TITLE_TOP = 12.5; // 제목 텍스트가 시작되는 지점 (이미지 원본 기준 %)
+  const TOP_MARGIN = 1.2; // 크롭 경계에서 살짝 띄우는 여백 (컨테이너 기준 %)
+  const TARGET_RIGHT = 9, TARGET_WIDTH = 17; // 이미지 원본 기준 %
   const containerAR = width / height;
   const imageAR = IMG_W / IMG_H;
-  const TARGET_TOP = 11.65, TARGET_RIGHT = 9, TARGET_WIDTH = 17; // 이미지 원본 기준 %
   let visW = 100, visH = 100, offX = 0, offY = 0; // 화면에 보이는 이미지 비율(%)과 잘려나간 여백(%)
   if (containerAR > imageAR) {
     // 화면이 이미지보다 넓다 → 상하가 잘려나간다
@@ -1485,11 +1549,16 @@ function positionHeroLogo() {
     visW = (containerAR / imageAR) * 100;
     offX = (100 - visW) / 2;
   }
-  // 화면비가 극단적이면(초광각 등) 목표 지점 자체가 크롭 영역 밖으로 밀려날 수 있으므로,
-  // 로고가 화면 밖으로 사라지지 않도록 코너 쪽으로 값을 clamp 한다.
-  logo.style.top = Math.min(Math.max((TARGET_TOP - offY) / visH * 100, 1.5), 35) + '%';
+  const availContainerFrac = Math.max((TITLE_TOP - offY) / visH * 100 - TOP_MARGIN, 0);
+  let widthPct = Math.min(Math.max(TARGET_WIDTH / visW * 100, 8), 28);
+  const heightPct = widthPct * containerAR / LOGO_ASPECT; // width%(컨테이너 너비 기준) → height%(컨테이너 높이 기준) 환산
+  if (heightPct > availContainerFrac) {
+    // 제목 위 빈 공간보다 로고가 크면, 그 공간에 딱 맞도록 폭을 줄인다 (최소 8%는 유지)
+    widthPct = Math.max(availContainerFrac * LOGO_ASPECT / containerAR, 8);
+  }
+  logo.style.top = TOP_MARGIN + '%';
   logo.style.right = Math.min(Math.max((TARGET_RIGHT - offX) / visW * 100, 1.5), 35) + '%';
-  logo.style.width = Math.min(Math.max(TARGET_WIDTH / visW * 100, 10), 28) + '%';
+  logo.style.width = widthPct + '%';
 }
 window.addEventListener('resize', positionHeroLogo);
 ['fullscreenchange', 'webkitfullscreenchange', 'MSFullscreenChange'].forEach((evt) => {
@@ -2099,6 +2168,8 @@ document.querySelectorAll('[data-wheel]').forEach((wrap) => {
   }
 
   function finishDraw(winnerIdx) {
+    // 룰렛 도는 효과음 — 결과 확정되면 정지 (S 키·다른 효과음 키와 동일한 공유 Audio 인스턴스 사용)
+    if (currentSfxAudio) { currentSfxAudio.pause(); currentSfxAudio.currentTime = 0; currentSfxAudio = null; currentSfxKey = null; }
     const team = pool[winnerIdx];
     pool.splice(winnerIdx, 1);
     order.push(team);
@@ -2119,6 +2190,16 @@ document.querySelectorAll('[data-wheel]').forEach((wrap) => {
   goBtn.addEventListener('click', () => {
     if (spinning || pool.length === 0) return;
     spinning = true; updateButtons();
+    // 룰렛 도는 효과음 재생 — TODO: 전용 사운드 없어서 3번 키(따라따라따라다) 임시 재사용 중, 나중에 교체 예정
+    // 공유 Audio 인스턴스로 재생해 S 키로도 정지 가능
+    if (currentSfxAudio) { currentSfxAudio.pause(); currentSfxAudio.currentTime = 0; currentSfxAudio = null; }
+    const wheelSfx = SFX_FILES.find((s) => s.key === '3');
+    if (wheelSfx) {
+      currentSfxAudio = new Audio(encodeURI(wheelSfx.src));
+      currentSfxAudio.addEventListener('ended', () => { currentSfxAudio = null; currentSfxKey = null; });
+      currentSfxAudio.play().catch(() => {});
+      currentSfxKey = wheelSfx.key;
+    }
     const n = pool.length;
     const winnerIdx = Math.floor(Math.random() * n);
     const seg = 360 / n;
