@@ -1761,6 +1761,8 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') go(idx + 1);
   if (e.key === 'ArrowLeft') go(idx - 1);
   if (e.key === ' ') { e.preventDefault(); go(idx + 1); }
+  if (e.key === 'PageDown') { e.preventDefault(); go(idx + 1); }
+  if (e.key === 'PageUp') { e.preventDefault(); go(idx - 1); }
   if (e.key === 'f' || e.key === 'F' || e.key === 'ㄹ') toggleFullscreen();
   if (e.key === 'r' || e.key === 'R') resetActiveLadder();
   if (e.key === 'p' || e.key === 'P') triggerSeatingFlight();
