@@ -647,7 +647,7 @@ const SURVEY_FIELDS = [
 // 사업계획 발표 필수 포함 항목 (PDF §4) — 10개
 const PLAN_ITEMS = [
   '선정한 한국 제품 또는 브랜드', '선정 이유', '시장 분석', '비즈니스 모델', '경쟁 우위',
-  '마케팅 전략', '재무 계획', '투자금 활용 계획 (Fund Allocation)', '3년 이내 ASEAN 확장 전략',
+  '마케팅 전략', '재무 계획', '3년 이내 ASEAN 확장 전략',
   '투자 요청 (SGD 500,000)',
 ];
 
@@ -1196,7 +1196,7 @@ const SLIDES = [
   { stub: 'Program', cls: 'dense', title: '사업계획 수립', body: `
     <div class="eyebrow">조별 프로그램 설명 · 22:00–23:00</div>
     <h2>사업계획 수립</h2>
-    <p class="lede">현장조사를 바탕으로 사업계획을 세우고, 발표에 아래 10가지를 반드시 포함합니다.</p>
+    <p class="lede">현장조사를 바탕으로 사업계획을 세우고, 발표에 아래 9가지를 반드시 포함합니다.</p>
     <div class="field-grid" style="gap:0.5rem;margin-top:0.4rem;">${PLAN_ITEMS.map((f, i) => `
       <div class="field-card" style="padding:0.62rem 0.9rem;"><div class="fname" style="font-size:0.98rem;">${i + 1}. ${f}</div></div>
     `).join('')}</div>
@@ -1217,7 +1217,7 @@ const SLIDES = [
 
   // 7) 투자 집계 (PDF §8 · §9) — 시상 박스는 제거, 뒤의 '전체 시상금' 슬라이드에서 다룬다
   { stub: 'Program', title: '프로그램 심사표', body: `
-    <div style="display:flex;width:100%;height:80vh;">
+    <div style="display:flex;width:100%;height:100%;">
       <div style="flex:0 0 38%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 1.5rem;">
         <div class="eyebrow">심사표 · 22:00–23:00</div>
         <h2>프로그램 심사표</h2>
@@ -1229,7 +1229,7 @@ const SLIDES = [
         </div>
       </div>
       <div style="flex:0 0 62%;display:flex;align-items:center;justify-content:center;padding:15px 1.5rem;">
-        <img src="assets/샤크탱크 심사표.png" alt="프로그램 심사표" style="aspect-ratio:210/297;max-width:100%;max-height:100%;height:100%;width:auto;object-fit:contain;border-radius:8px;box-shadow:var(--shadow);">
+        <img src="assets/샤크탱크 심사표.png" alt="프로그램 심사표" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:8px;box-shadow:var(--shadow);">
       </div>
     </div>
   `},
@@ -1373,7 +1373,7 @@ const SLIDES = [
   // ============ DAY 3 (8/15 토) ============
   { tag: 'divider', stub: 'DAY 3 · 8.15', body: dayDivider(3, '2026년 8월 15일 (토)', [
     ['08:00', '조식'], ['09:00', '발표 준비'], ['10:00', '싱가포르 샤크탱크 챌린지 발표'], ['12:00', '중식'],
-    ['13:00', 'OKTA Global Connection Challenge'], ['15:00', '행사 전체 순위 발표'], ['16:00', '수료식'],
+    ['13:00', 'OKTA Global Connection Challenge'], ['16:00', '수료식'],
     ['17:00', '개인정비'], ['18:00', '만찬장 이동'], ['18:30', '차세대 만찬'],
   ])},
 
@@ -1494,11 +1494,50 @@ const SLIDES = [
     <div class="bingo-toast" data-bingo-toast>BINGO!</div>
   `},
 
-  { tag: 'break', stub: 'BREAK', body: breakSlide('휴식', '15:00', '행사 전체 순위 발표', '', '') },
+  { tag: 'break', stub: 'BREAK', body: breakSlide('휴식', '15:00', '수료식', '', '') },
 
-  { stub: 'DAY 3', cls: 'dense', body: `
-    <div class="eyebrow">15:00–16:00</div>
-    <h2>행사 전체 순위 발표</h2>
+  { stub: 'DAY 3', title: '수료식', body: `
+    <div class="eyebrow">Closing Ceremony · 15:00–17:00</div>
+    <div class="big-statement"><div class="huge">수료식</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '개회선언', body: `
+    <div class="big-statement"><div class="huge">개회선언</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '주요 내외빈 소개', body: `
+    <div class="big-statement"><div class="huge">주요 내외빈 소개</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '폐회사', body: `
+    <div class="big-statement"><div class="huge">폐회사</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '총평', body: `
+    <div class="big-statement"><div class="huge">총평</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '수료식 영상', body: `
+    <div style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;">
+      <video class="video-box" style="max-width:90%;max-height:82vh;" src="assets/수료식_영상_1.2_고화질.mp4" controls preload="none"></video>
+    </div>
+  `},
+
+  { stub: 'DAY 3', title: '격려사', body: `
+    <div class="big-statement"><div class="huge">격려사</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '축사', body: `
+    <div class="big-statement"><div class="huge">축사</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '수료증 발급', body: `
+    <div class="big-statement"><div class="huge">수료증 발급</div></div>
+  `},
+
+  { stub: 'DAY 3', cls: 'dense', title: '시상식', body: `
+    <div class="eyebrow">행사 전체 순위 발표</div>
+    <h2>시상식</h2>
     ${/* 시상대 3칸은 처음부터 다 보인다. Enter 를 누르면 3등 → 2등 → 1등 순으로 조 이름만 채워진다. */ ''}
     <div class="rank-podium" data-rank-reveal>
       <div class="podium-card silver">
@@ -1516,8 +1555,7 @@ const SLIDES = [
     </div>
   `},
 
-
-  // 점수표 — 10개 조 전체 점수 총합 통계 (채점표 직후, 실제 점수는 현장에서 채움)
+  // 점수표 — 10개 조 전체 점수 총합 통계 (시상식 직후, 실제 점수는 현장에서 채움)
   { stub: 'DAY 3', cls: 'dense', title: '점수표', body: `
     <div class="eyebrow">점수 총합 통계</div>
     <h2>점수표</h2>
@@ -1531,29 +1569,16 @@ const SLIDES = [
     `).join('')}</div>
   `},
 
-  { stub: 'DAY 3', body: `
-    <div class="eyebrow">Closing Ceremony · 16:00–17:00</div>
-    <h2 style="font-size: var(--fs-h2-lg);">수료식</h2>
+  { stub: 'DAY 3', title: '폐식 선언', body: `
+    <div class="big-statement"><div class="huge">폐식 선언</div></div>
   `},
 
-  { stub: 'DAY 3', title: '내외빈 소개', body: `
-    <div class="big-statement"><div class="huge">내외빈 소개</div></div>
+  { stub: 'DAY 3', title: '단체 기념촬영 안내', body: `
+    <div class="big-statement"><div class="huge">단체 기념촬영 안내</div></div>
   `},
 
-  { stub: 'DAY 3', title: '폐회사 말씀', body: `
-    <div class="big-statement"><div class="huge">폐회사 말씀</div></div>
-  `},
-
-  { stub: 'DAY 3', title: '총평', body: `
-    <div class="big-statement"><div class="huge">총평</div></div>
-  `},
-
-  { stub: 'DAY 3', title: '축사', body: `
-    <div class="big-statement"><div class="huge">축사</div></div>
-  `},
-
-  { stub: 'DAY 3', title: '수료증 및 옥타 배지 증정식', body: `
-    <div class="big-statement"><div class="huge">수료증 및<br> 옥타 배지 증정식</div></div>
+  { stub: 'DAY 3', title: '각 지회별 사진 촬영', body: `
+    <div class="big-statement"><div class="huge">각 지회별 사진 촬영</div></div>
   `},
 
   { tag: 'break', stub: 'BREAK', body: breakSlide('개인정비', '17:00–18:00', '차세대 만찬', '', '18:00까지 만찬장 이동 · 18:30 시작') },
