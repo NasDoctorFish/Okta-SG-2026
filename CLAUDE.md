@@ -6,10 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Event materials for **2026 아세안 차세대 글로벌 창업무역스쿨 (Global Startup Trade School), Singapore**, 2026-08-13 ~ 2026-08-15 (2026-08-16 is individual departure only, no session). The main deliverable is a single-file HTML/JS slide deck used live by the MC/emcee at the event:
 
-- `Okta 싱가폴 통무스 2026.html` — the deck. No framework, no build step: plain `<style>`/`<script>` embedded directly in the HTML file.
+- `index.html` — the deck (named `index.html`, not the event's Korean name, so GitHub Pages auto-serves it from the repo root). No framework, no build step: plain `<style>`/`<script>` embedded directly in the HTML file.
 - `assets/`, `logo/`, `soundeffects/` — images/photos/logos/audio referenced by the deck via relative paths (not all inlined as base64 — some images are embedded inline, most are loaded from these folders).
 - `IMPORTANT.md`, `UPDATE.md` — original event-planning source notes (hotel logistics checklist, Shark Tank judge mic setup, bingo game origin, etc.) that informed the deck's content. Treat these as background reference, not something to keep in sync.
 - Large/generated files are intentionally excluded from git — see `.gitignore` (raw video/audio folders, the original planning zip, the legacy pptx sample, and any `Okta 싱가폴 통무스 2026.backup-*.html` snapshot).
+
+## Note on renamed files (2026-08-12)
+
+CLAUDE.md text elsewhere in this file (written before 2026-08-12) may still say `Okta 싱가폴 통무스 2026.html` — that file was intentionally renamed to `index.html` for GitHub Pages. Same for any reference to `assets/Stage/3일차 좌석배치도.png` as the '번호끼리 모여주세요' slide image — it now uses `assets/Stage/첫번째 슬라이드 지도 배치.png` instead.
 
 There is no `package.json`, no build tool, no linter, and no automated test suite — this is a static file meant to be opened directly in a browser.
 
