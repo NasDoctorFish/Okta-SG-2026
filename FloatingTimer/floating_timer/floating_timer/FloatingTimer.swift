@@ -57,7 +57,7 @@ struct TimerView: View {
             VStack(spacing: 14) {
                 if activeDuration != nil {
                     Text(timeString(remaining))
-                        .font(.system(size: 46, weight: .bold, design: .rounded))
+                        .font(.system(size: 69, weight: .bold, design: .rounded))
                         .foregroundColor(isFinished ? .red : .white)
                         .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2)
                         .scaleEffect(isFinished && pulse ? 1.12 : 1.0)
@@ -91,6 +91,17 @@ struct TimerView: View {
         .frame(minWidth: 220, minHeight: 120)
         .background(Color.white.opacity(0.001))
         .onHover { hovering in isHovering = hovering }
+        .overlay(alignment: .topLeading) {
+            if isHovering && activeDuration == nil {
+                Button(action: quit) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 20))
+                        .foregroundColor(.white.opacity(0.85))
+                }
+                .buttonStyle(.plain)
+                .padding(8)
+            }
+        }
     }
 
     private func start(_ seconds: Int) {
@@ -109,6 +120,10 @@ struct TimerView: View {
                 timer?.invalidate()
             }
         }
+    }
+
+    private func quit() {
+        NSApplication.shared.terminate(nil)
     }
 
     private func reset() {
