@@ -67,8 +67,7 @@
 
   /* ---------- Deck ---------- */
   .deck { flex: 1; position: relative; overflow: hidden; }
-  .track { display: flex; width: 100%; height: 100%; transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1); }
-  @media (prefers-reduced-motion: reduce) { .track { transition: none; } }
+  .track { display: flex; width: 100%; height: 100%; }
   .slide { flex: 0 0 100%; height: 100%; overflow-y: auto; display: flex; justify-content: center; }
   .ticket { position: relative; width: min(1680px, 94vw); margin: clamp(1rem, 2.6vh, 2.2rem) 0; background: var(--bg-elevated); border-radius: 18px; box-shadow: var(--shadow); display: flex; min-height: calc(100% - 2.2rem); overflow: hidden; }
   .schedule { align-items: stretch; overflow: hidden; }
@@ -155,14 +154,14 @@
   .overview-grid .timeline .desc { font-size: 0.82rem; line-height: 1.35; }
 
   /* ---------- 팀 구성 (10개 조 명단 한 장) ---------- */
-  .roster-grid { margin-top: 0.6rem; width: 100%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; }
+  .roster-grid { margin-top: 0.4rem; width: 100%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
   @media (max-width: 1100px) { .roster-grid { grid-template-columns: repeat(3, 1fr); } }
-  .roster-card { border: 1.5px solid var(--line); border-radius: 12px; padding: 0.45rem 0.55rem; background: var(--bg-elevated); min-width: 0; }
-  .roster-card .rteam { font-family: var(--font-mono); font-weight: 700; font-size: 1rem; color: var(--accent-gold); margin-bottom: 0.25rem; }
-  .rmembers { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.1rem; }
-  .rmembers li { display: flex; align-items: baseline; gap: 0.35rem; line-height: 1.18; min-width: 0; }
-  .rmembers .rname { font-size: 0.84rem; font-weight: 600; flex: none; }
-  .rmembers .rorg { font-size: 0.62rem; color: var(--ink-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .roster-card { border: 1.5px solid var(--line); border-radius: 12px; padding: 0.3rem 0.45rem; background: var(--bg-elevated); min-width: 0; }
+  .roster-card .rteam { font-family: var(--font-mono); font-weight: 700; font-size: 0.88rem; color: var(--accent-gold); margin-bottom: 0.15rem; }
+  .rmembers { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.02rem; }
+  .rmembers li { display: flex; align-items: baseline; gap: 0.3rem; line-height: 1.05; min-width: 0; }
+  .rmembers .rname { font-size: 0.72rem; font-weight: 600; flex: none; }
+  .rmembers .rorg { font-size: 0.52rem; color: var(--ink-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 
   /* ---------- 상권 비교분석표 (Mac 사양 비교 스타일) ---------- */
   .compare-scroll { margin-top: 0.9rem; width: 100%; overflow-x: auto; }
@@ -521,6 +520,16 @@
   .field-grid.trade .fname { margin-bottom: 0.15rem; font-size: 0.95rem; }
   .field-grid.trade .fsub { font-size: 0.78rem; line-height: 1.35; }
 
+  /* 확대 콜아웃 — 원본 이미지 일부를 얇은 회색 테두리로 표시하고, 커넥터 라인으로 옆의 확대 사본과 연결한다 */
+  .zoom-callout { position: relative; display: flex; align-items: center; justify-content: center; gap: 2rem; width: 100%; height: 100%; }
+  .zoom-callout-original { position: relative; display: inline-block; line-height: 0; flex: none; }
+  .zoom-callout-original img { display: block; max-width: 100%; max-height: 60vh; width: auto; height: auto; border-radius: 8px; box-shadow: var(--shadow); }
+  .zoom-callout-highlight { position: absolute; border: 2px solid #3a3a3a; border-radius: 3px; pointer-events: none; }
+  .zoom-callout-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  .zoom-callout-lines line { stroke: #3a3a3a; stroke-width: 1.5; }
+  .zoom-callout-enlarged { flex: none; background: #fff; border: 1px solid #3a3a3a; border-radius: 8px; box-shadow: 0 12px 30px -14px rgba(29, 35, 59, 0.4); padding: 0.6rem; }
+  .zoom-callout-enlarged img { display: block; max-height: 58vh; width: auto; border-radius: 3px; }
+
   /* ---------- Sponsor ---------- */
   .sponsor-card { margin-top: 0.8rem; border: 1px solid var(--line); border-radius: 14px; padding: 1.6rem; display: flex; align-items: center; gap: 1.2rem; background: color-mix(in srgb, var(--accent-gold) 6%, var(--bg-elevated)); }
   .sponsor-mark { flex: none; width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--accent-gold); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
@@ -712,7 +721,7 @@ const CONGRATS_SPEAKERS = [
 
 // 통상 15개 소분류 — 배열 순서가 곧 통상 번호(1~15)
 const TRADE_CATS = [
-  '리빙&뷰티', '건강식품·미용용품', '식음료·요식업', '호텔·여행', '전기·전자',
+  '리빙&뷰티', '건강식품·<br>미용용품', '식음료·요식업', '호텔·여행', '전기·전자',
   '전자상거래', '4차산업·컨텐츠·플랫폼', '화학·자원', '건축·재활용', '기계·공구',
   '금융·법률·부동산', '교육·문화·리크루팅', '전시사업', '물류', '섬유·섬유제품',
 ];
@@ -750,18 +759,32 @@ const MIXER_GROUPS = [
   { nos: [11, 12, 13], title: '전문서비스',         tables: [9, 12],  color: '#f2d7ad', side: 'right' },
 ].map((g) => ({ ...g, label: g.nos.map(n => `${n}통상`).join(' · '), cats: g.nos.map(tradeCat) }));
 
-// 조 편성 — data/차무스 명단_정리.csv 에서 생성 (10개 조 × 7명)
+// 조 편성 — data/조별 그룹핑_통무스_2026.xlsx + data/싱가포르제외조편성(Aug 11th).json 에서 생성 (10개 조 × 7명, 1조·7조는 그리드 밖 인원 포함)
 const TEAM_ROSTER = {
-  1: [{ name: '김예원', org: '필리핀/마닐라' }, { name: '이재영', org: '필리핀/마닐라' }, { name: '이윤상', org: '베트남/호치민' }, { name: '김신명', org: '베트남/호치민' }, { name: '권만재', org: '태국/방콕' }, { name: '이유림', org: '인도네시아/자카르타' }, { name: '장나겸', org: '싱가포르/싱가포르' }, { name: '임진호', org: '베트남/하노이' }],
-  2: [{ name: '구수현', org: '필리핀/마닐라' }, { name: '송영만', org: '필리핀/마닐라' }, { name: '한재성', org: '베트남/호치민' }, { name: '이나래', org: '베트남/호치민' }, { name: '신무섭', org: '베트남/하노이' }, { name: '조문경', org: '이집트/카이로' }, { name: '이재원', org: '싱가포르/싱가포르' }],
-  3: [{ name: '이준구', org: '필리핀/마닐라' }, { name: '장윤정', org: '필리핀/마닐라' }, { name: '성창현', org: '베트남/호치민' }, { name: '김규범', org: '베트남/호치민' }, { name: '김시후', org: '태국/방콕' }, { name: '김나리', org: '호주/퍼스' }, { name: '왕수정', org: '싱가포르/싱가포르' }],
-  4: [{ name: '박미래', org: '대만/타이베이' }, { name: '강민지', org: '필리핀/마닐라' }, { name: '고준영', org: '베트남/호치민' }, { name: '김준형', org: '베트남/호치민' }, { name: '이희철', org: '태국/방콕' }, { name: '김재민', org: '베트남/하노이' }, { name: '주영란', org: '싱가포르/싱가포르' }],
-  5: [{ name: '이동협', org: '대만/타이베이' }, { name: '조수지', org: '필리핀/마닐라' }, { name: '최서용', org: '베트남/호치민' }, { name: '백경담', org: '베트남/호치민' }, { name: '최재용', org: '베트남/하노이' }, { name: '김가람', org: '인도네시아/자카르타' }, { name: '윤수련', org: '싱가포르/싱가포르' }],
-  6: [{ name: '이요셉', org: '대만/타이베이' }, { name: '김경원', org: '필리핀/마닐라' }, { name: '배승일', org: '베트남/호치민' }, { name: '강건우', org: '베트남/호치민' }, { name: '김기남', org: '베트남/하노이' }, { name: '유희웅', org: '인도네시아/자카르타' }, { name: '이동윤', org: '싱가포르/싱가포르' }],
-  7: [{ name: '유선웅', org: '필리핀/마닐라' }, { name: '임지원', org: '필리핀/마닐라' }, { name: '임정명', org: '베트남/호치민' }, { name: '이시헌', org: '베트남/호치민' }, { name: '김범준', org: '태국/방콕' }, { name: '박현곤', org: '베트남/하노이' }, { name: '권처원', org: '인도네시아/자카르타' }, { name: '이다은', org: '싱가포르/싱가포르' }],
-  8: [{ name: '이연지', org: '필리핀/마닐라' }, { name: '김성우', org: '베트남/호치민' }, { name: '김우성', org: '베트남/호치민' }, { name: '최은총', org: '베트남/하노이' }, { name: '김유경', org: '캄보디아/프놈펜' }, { name: '전주희', org: '인도네시아/자카르타' }, { name: '이준영', org: '싱가포르/싱가포르' }],
-  9: [{ name: '김은희', org: '필리핀/마닐라' }, { name: '오원빈', org: '베트남/호치민' }, { name: '이준호', org: '베트남/호치민' }, { name: '김경수', org: '베트남/하노이' }, { name: '배송빈', org: '베트남/하노이' }, { name: '이우재', org: '캄보디아/프놈펜' }, { name: '노유희', org: '인도네시아/자카르타' }],
-  10: [{ name: '심다예', org: '필리핀/마닐라' }, { name: '정해리', org: '두바이/두바이' }, { name: '김석현', org: '베트남/호치민' }, { name: '류승국', org: '베트남/호치민' }, { name: '윤정우', org: '캄보디아/프놈펜' }, { name: '류채영', org: '인도네시아/자카르타' }, { name: '허명강', org: '싱가포르/싱가포르' }, { name: '이용휘', org: '인도/뉴델리' }],
+  1: [{ name: '이윤상', org: '베트남/호치민' }, { name: '이재영', org: '필리핀/마닐라' }, { name: '김예원', org: '필리핀/마닐라' }, { name: '이유림', org: '인도네시아/자카르타' }, { name: '권만재', org: '태국/방콕' }, { name: '임진호', org: '베트남/하노이' }, { name: '장나겸', org: '싱가포르/싱가포르' }, { name: '김신명', org: '베트남/호치민' }],
+  2: [{ name: '한재성', org: '베트남/호치민' }, { name: '이나래', org: '베트남/호치민' }, { name: '구수현', org: '필리핀/마닐라' }, { name: '신무섭', org: '베트남/하노이' }, { name: '송영만', org: '필리핀/마닐라' }, { name: '조문경', org: '이집트/카이로' }, { name: '이재원', org: '싱가포르/싱가포르' }],
+  3: [{ name: '성창현', org: '베트남/호치민' }, { name: '김규범', org: '베트남/호치민' }, { name: '장윤정', org: '필리핀/마닐라' }, { name: '이준구', org: '필리핀/마닐라' }, { name: '김시후', org: '태국/방콕' }, { name: '김나리', org: '호주/퍼스' }, { name: '왕수정', org: '싱가포르/싱가포르' }],
+  4: [{ name: '고준영', org: '베트남/호치민' }, { name: '김준형', org: '베트남/호치민' }, { name: '강민지', org: '필리핀/마닐라' }, { name: '이희철', org: '태국/방콕' }, { name: '김재민', org: '베트남/하노이' }, { name: '박미래', org: '대만/타이베이' }, { name: '주영란', org: '싱가포르/싱가포르' }],
+  5: [{ name: '최서용', org: '베트남/호치민' }, { name: '백경담', org: '베트남/호치민' }, { name: '조수지', org: '필리핀/마닐라' }, { name: '김가람', org: '인도네시아/자카르타' }, { name: '최재용', org: '베트남/하노이' }, { name: '이동협', org: '대만/타이베이' }, { name: '윤수련', org: '싱가포르/싱가포르' }],
+  6: [{ name: '배승일', org: '베트남/호치민' }, { name: '강건우', org: '베트남/호치민' }, { name: '김경원', org: '필리핀/마닐라' }, { name: '유희웅', org: '인도네시아/자카르타' }, { name: '김기남', org: '베트남/하노이' }, { name: '이요셉', org: '대만/타이베이' }, { name: '이동윤', org: '싱가포르/싱가포르' }],
+  7: [{ name: '이시헌', org: '베트남/호치민' }, { name: '임지원', org: '필리핀/마닐라' }, { name: '유선웅', org: '필리핀/마닐라' }, { name: '권처원', org: '인도네시아/자카르타' }, { name: '김범준', org: '태국/방콕' }, { name: '박현곤', org: '베트남/하노이' }, { name: '이다은', org: '싱가포르/싱가포르' }, { name: '임정명', org: '베트남/호치민' }],
+  8: [{ name: '김성우', org: '베트남/호치민' }, { name: '김우성', org: '베트남/호치민' }, { name: '이연지', org: '필리핀/마닐라' }, { name: '전주희', org: '인도네시아/자카르타' }, { name: '최은총', org: '베트남/하노이' }, { name: '김유경', org: '캄보디아/프놈펜' }, { name: '이준영', org: '싱가포르/싱가포르' }],
+  9: [{ name: '오원빈', org: '베트남/호치민' }, { name: '이준호', org: '베트남/호치민' }, { name: '김은희', org: '필리핀/마닐라' }, { name: '노유희', org: '인도네시아/자카르타' }, { name: '김경수', org: '베트남/하노이' }, { name: '배송빈', org: '베트남/하노이' }, { name: '이우재', org: '캄보디아/프놈펜' }],
+  10: [{ name: '류승국', org: '베트남/호치민' }, { name: '김석현', org: '베트남/호치민' }, { name: '심다예', org: '필리핀/마닐라' }, { name: '류채영', org: '인도네시아/자카르타' }, { name: '정해리', org: '두바이/두바이' }, { name: '이용휘', org: '인도/뉴델리' }, { name: '윤정우', org: '캄보디아/프놈펜' }],
+};
+
+// 조별 서포터즈(해외 서포터) — data/조별 그룹핑_통무스_2026.xlsx 에서 생성, '팀 구성' 슬라이드에서 이름 + '서포터즈'만 표시 (국가 미표시)
+const TEAM_SUPPORTERS = {
+  1: ['홍범선', '이현기'],
+  2: ['노병진', '이정원'],
+  3: ['이용선', '송호진'],
+  4: ['이진희', '김왕휘'],
+  5: ['이동원', '김경란'],
+  6: ['하민호', '이현영'],
+  7: ['홍수찬', '이수진'],
+  8: ['이정음', '정한별'],
+  9: ['김정준', '서대원'],
+  10: ['서피터', '오창영'],
 };
 
 // 심사 배점 — 4개 항목으로 전면 개편. 세부 배점은 천정인 님 제공 예정 (TBD)
@@ -776,10 +799,28 @@ const SCORE_SHEET = [
 // 비워두면 Enter 를 눌렀을 때 실제 조 이름 대신 회색 자리표시 텍스트(○○조)가 뜬다.
 const RANK_RESULTS = { 1: null, 2: null, 3: null };
 const RANK_PLACEHOLDER = '○○조';
-// 시상대 조 이름 한 칸 — 값이 없으면 placeholder 클래스를 붙여 회색으로 뜨게 한다
-function podiumTeam(rank, step) {
+
+// 조별 점수 총합 — 채점이 끝나야 정해지므로 행사 당일 '점수표' 슬라이드 띄우기 전에 여기만 채운다.
+// 값을 채우면 '점수표' 슬라이드가 자동으로 점수 내림차순 정렬된다. 비워두면(null) TBD로 표시되고 원래 조 순서를 유지한다.
+const TEAM_SCORES = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null, 10: null };
+// 시상대 조 이름 한 칸 — 값이 없으면 placeholder 클래스를 붙여 회색으로 뜨게 한다. 이미 공개된 상태로 바로 보인다.
+function podiumTeam(rank) {
   const name = RANK_RESULTS[rank];
-  return `<span class="podium-team" data-rank-step="${step}"><span class="tname${name ? '' : ' placeholder'}">${name || RANK_PLACEHOLDER}</span></span>`;
+  return `<span class="podium-team revealed"><span class="tname${name ? '' : ' placeholder'}">${name || RANK_PLACEHOLDER}</span></span>`;
+}
+
+// 순위 개별 발표 슬라이드 (3등 → 2등 → 1등 순으로 한 장씩) — 메달·순위·조 이름만 크게
+function rankRevealSlide(rank, medal, label, cls) {
+  return `
+    <div class="podium-card ${cls}" style="max-width:800px;margin:0 auto;padding:3.2rem 3.6rem;flex-direction:row;justify-content:center;gap:2.8rem;">
+      <span style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;flex:none;">
+        <span class="medal" style="font-size:7rem;">${medal}</span>
+        <span class="rank-label" style="font-size:3rem;">${label}</span>
+      </span>
+      <span class="podium-team revealed" style="min-height:0;border-bottom:none;width:auto;">
+        <span class="tname${RANK_RESULTS[rank] ? '' : ' placeholder'}" style="font-size:4.6rem;">${RANK_RESULTS[rank] || RANK_PLACEHOLDER}</span>
+      </span>
+    </div>`;
 }
 
 // 연회장 테이블 12개 — 1~10번은 참가 10개 조, 11번 싱가포르 스텝, 12번 예비(본부·대표).
@@ -807,8 +848,8 @@ const NETWORKING_FIELDS = [
   { no: '⑥', name: '자유주제 (Open Networking)', subs: ['"그냥 사람 많이 만나고 싶어요."'] },
 ];
 
-// 참가자 전체 명단 — data/싱가포르제외조편성(Aug 11th).json(싱가포르 서포터즈 제외) + 그리드 밖 3명(김신명·임정명·김용원, 차무스 명단_정리.csv) (98명). 빙고 이름 호명에 쓴다
-const PARTICIPANTS = [{ name: '박지영', group: '부위원장(제2통합)' }, { name: '김용완', group: '지역대표(대양주)' }, { name: '최혁', group: '부위원장(북미)' }, { name: '최원준', group: '위원장' }, { name: '이동훈', group: '서포터즈' }, { name: '이정원', group: '서포터즈' }, { name: '이용선', group: '서포터즈' }, { name: '이진희', group: '서포터즈' }, { name: '김경란', group: '서포터즈' }, { name: '하민호', group: '서포터즈' }, { name: '이수진', group: '서포터즈' }, { name: '이정음', group: '서포터즈' }, { name: '김정준', group: '서포터즈' }, { name: '서피터', group: '서포터즈' }, { name: '이현기', group: '서포터즈' }, { name: '노병진', group: '서포터즈' }, { name: '송호진', group: '서포터즈' }, { name: '김왕휘', group: '서포터즈' }, { name: '이동원', group: '서포터즈' }, { name: '홍범선', group: '서포터즈' }, { name: '홍수찬', group: '서포터즈' }, { name: '정한별', group: '서포터즈' }, { name: '서대원', group: '서포터즈' }, { name: '오창영', group: '서포터즈' }, { name: '이윤상', group: '1조' }, { name: '한재성', group: '2조' }, { name: '성창현', group: '3조' }, { name: '고준영', group: '4조' }, { name: '최서용', group: '5조' }, { name: '배승일', group: '6조' }, { name: '김성우', group: '8조' }, { name: '오원빈', group: '9조' }, { name: '류승국', group: '10조' }, { name: '김규범', group: '3조' }, { name: '김준형', group: '4조' }, { name: '백경담', group: '5조' }, { name: '강건우', group: '6조' }, { name: '이시헌', group: '7조' }, { name: '김우성', group: '8조' }, { name: '이준호', group: '9조' }, { name: '김석현', group: '10조' }, { name: '이재영', group: '1조' }, { name: '이나래', group: '2조' }, { name: '김예원', group: '1조' }, { name: '구수현', group: '2조' }, { name: '장윤정', group: '3조' }, { name: '강민지', group: '4조' }, { name: '조수지', group: '5조' }, { name: '김경원', group: '6조' }, { name: '임지원', group: '7조' }, { name: '이연지', group: '8조' }, { name: '김은희', group: '9조' }, { name: '심다예', group: '10조' }, { name: '이준구', group: '3조' }, { name: '유선웅', group: '7조' }, { name: '이유림', group: '1조' }, { name: '전주희', group: '8조' }, { name: '노유희', group: '9조' }, { name: '류채영', group: '10조' }, { name: '김가람', group: '5조' }, { name: '유희웅', group: '6조' }, { name: '권처원', group: '7조' }, { name: '정해리', group: '10조' }, { name: '권만재', group: '1조' }, { name: '김시후', group: '3조' }, { name: '이희철', group: '4조' }, { name: '김범준', group: '7조' }, { name: '임진호', group: '1조' }, { name: '신무섭', group: '2조' }, { name: '김재민', group: '4조' }, { name: '최재용', group: '5조' }, { name: '김기남', group: '6조' }, { name: '박현곤', group: '7조' }, { name: '최은총', group: '8조' }, { name: '김경수', group: '9조' }, { name: '배송빈', group: '9조' }, { name: '송영만', group: '2조' }, { name: '이용휘', group: '10조' }, { name: '이우재', group: '9조' }, { name: '윤정우', group: '10조' }, { name: '김유경', group: '8조' }, { name: '박미래', group: '4조' }, { name: '이동협', group: '5조' }, { name: '이요셉', group: '6조' }, { name: '조문경', group: '2조' }, { name: '김나리', group: '3조' }, { name: '장나겸', group: '1조' }, { name: '왕수정', group: '3조' }, { name: '주영란', group: '4조' }, { name: '윤수련', group: '5조' }, { name: '이동윤', group: '6조' }, { name: '이다은', group: '7조' }, { name: '이재원', group: '2조' }, { name: '이준영', group: '8조' }, { name: '허명강', group: '10조' }, { name: '김신명', group: '1조' }, { name: '임정명', group: '7조' }, { name: '김용원', group: '지역대표(대양주)' }];
+// 참가자 전체 명단 — data/싱가포르제외조편성(Aug 11th).json(싱가포르 서포터즈 제외) + 그리드 밖 3명(김신명·임정명·김용원, 차무스 명단_정리.csv) (97명). 빙고 이름 호명에 쓴다
+const PARTICIPANTS = [{ name: '박지영', group: '부위원장(제2통합)' }, { name: '김용완', group: '지역대표(대양주)' }, { name: '최혁', group: '부위원장(북미)' }, { name: '최원준', group: '위원장' }, { name: '홍범선', group: '서포터즈' }, { name: '이현기', group: '서포터즈' }, { name: '이윤상', group: '1조' }, { name: '이재영', group: '1조' }, { name: '김예원', group: '1조' }, { name: '이유림', group: '1조' }, { name: '권만재', group: '1조' }, { name: '임진호', group: '1조' }, { name: '장나겸', group: '1조' }, { name: '노병진', group: '서포터즈' }, { name: '이정원', group: '서포터즈' }, { name: '한재성', group: '2조' }, { name: '이나래', group: '2조' }, { name: '구수현', group: '2조' }, { name: '신무섭', group: '2조' }, { name: '송영만', group: '2조' }, { name: '조문경', group: '2조' }, { name: '이재원', group: '2조' }, { name: '이용선', group: '서포터즈' }, { name: '송호진', group: '서포터즈' }, { name: '성창현', group: '3조' }, { name: '김규범', group: '3조' }, { name: '장윤정', group: '3조' }, { name: '이준구', group: '3조' }, { name: '김시후', group: '3조' }, { name: '김나리', group: '3조' }, { name: '왕수정', group: '3조' }, { name: '이진희', group: '서포터즈' }, { name: '김왕휘', group: '서포터즈' }, { name: '고준영', group: '4조' }, { name: '김준형', group: '4조' }, { name: '강민지', group: '4조' }, { name: '이희철', group: '4조' }, { name: '김재민', group: '4조' }, { name: '박미래', group: '4조' }, { name: '주영란', group: '4조' }, { name: '이동원', group: '서포터즈' }, { name: '김경란', group: '서포터즈' }, { name: '최서용', group: '5조' }, { name: '백경담', group: '5조' }, { name: '조수지', group: '5조' }, { name: '김가람', group: '5조' }, { name: '최재용', group: '5조' }, { name: '이동협', group: '5조' }, { name: '윤수련', group: '5조' }, { name: '하민호', group: '서포터즈' }, { name: '이현영', group: '서포터즈' }, { name: '배승일', group: '6조' }, { name: '강건우', group: '6조' }, { name: '김경원', group: '6조' }, { name: '유희웅', group: '6조' }, { name: '김기남', group: '6조' }, { name: '이요셉', group: '6조' }, { name: '이동윤', group: '6조' }, { name: '홍수찬', group: '서포터즈' }, { name: '이수진', group: '서포터즈' }, { name: '이시헌', group: '7조' }, { name: '임지원', group: '7조' }, { name: '유선웅', group: '7조' }, { name: '권처원', group: '7조' }, { name: '김범준', group: '7조' }, { name: '박현곤', group: '7조' }, { name: '이다은', group: '7조' }, { name: '이정음', group: '서포터즈' }, { name: '정한별', group: '서포터즈' }, { name: '김성우', group: '8조' }, { name: '김우성', group: '8조' }, { name: '이연지', group: '8조' }, { name: '전주희', group: '8조' }, { name: '최은총', group: '8조' }, { name: '김유경', group: '8조' }, { name: '이준영', group: '8조' }, { name: '김정준', group: '서포터즈' }, { name: '서대원', group: '서포터즈' }, { name: '오원빈', group: '9조' }, { name: '이준호', group: '9조' }, { name: '김은희', group: '9조' }, { name: '노유희', group: '9조' }, { name: '김경수', group: '9조' }, { name: '배송빈', group: '9조' }, { name: '이우재', group: '9조' }, { name: '서피터', group: '서포터즈' }, { name: '오창영', group: '서포터즈' }, { name: '류승국', group: '10조' }, { name: '김석현', group: '10조' }, { name: '심다예', group: '10조' }, { name: '류채영', group: '10조' }, { name: '정해리', group: '10조' }, { name: '이용휘', group: '10조' }, { name: '윤정우', group: '10조' }, { name: '김신명', group: '1조' }, { name: '임정명', group: '7조' }, { name: '김용원', group: '지역대표(대양주)' }];
 
 // OKTA Global Connection Challenge — 빙고 게임 (14:20–15:00)
 // 25칸을 10 / 10 / 5 세 줄로 깐다. 번호 1~25가 가로로 순서대로 읽혀서
@@ -1047,18 +1088,77 @@ const SLIDES = [
   `},
 
   // ============ DAY 1 (8/13 목) ============
-  { tag: 'divider', stub: 'DAY 1 · 8.13', body: dayDivider(1, '2026년 8월 13일 (목)', [
-    ['13:00', '참가자 접수'], ['15:00', 'OKTA 아이덴티티'], ['15:30', '임원 / 싱가포르 스텝 소개'],
-    ['16:00', '조장 임명 · 조별 자기소개 · 조이름 만들기'], ['17:30', '만찬장 이동'],
-    ['18:00', '입교식'], ['19:00', '만찬 (통합무역스쿨, 경제인대회)'], ['21:00', '숙소 이동'],
-    ['22:00', '조별 프로그램 설명 · 장소 추첨'],
-  ])},
-
   { stub: 'DAY 1', cls: 'centered-text', body: `
-    <div class="eyebrow">Identity · 15:00–16:00</div>
-    <h2>OKTA 아이덴티티</h2>
-    <p class="lede">OKTA(세계한인무역협회)는 전 세계 한인 경제인들을 연결하는 글로벌 네트워크로, 차세대 한인 기업가 양성을 위한 다양한 프로그램을 운영하고 있습니다.</p>
-    <video class="video-box" src="assets/월드옥타45주년_한국어_0520 최종_h264.mp4" controls preload="none"></video>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:15px;">
+      <div class="eyebrow">Identity · 15:00–16:00</div>
+      <h2 style="font-size:var(--fs-h2-lg);">OKTA 아이덴티티</h2>
+      <p class="lede">OKTA(세계한인무역협회)는 전 세계 한인 경제인들을 연결하는 글로벌 네트워크로, 차세대 한인 기업가 양성을 위한 다양한 프로그램을 운영하고 있습니다.</p>
+    </div>
+  `},
+
+  // 월드옥타 소개 및 협회 주요 프로그램 소개 PDF — 16페이지 전체화면 슬라이드
+  { tag: 'hero', title: '월드옥타 소개 p.1', body: `
+    <img src="assets/Opening/wokta-intro-01.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 1페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.2', body: `
+    <img src="assets/Opening/wokta-intro-02.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 2페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.3', body: `
+    <img src="assets/Opening/wokta-intro-03.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 3페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.4', body: `
+    <img src="assets/Opening/wokta-intro-04.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 4페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.5', body: `
+    <img src="assets/Opening/wokta-intro-05.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 5페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.6', body: `
+    <img src="assets/Opening/wokta-intro-06.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 6페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.7', body: `
+    <img src="assets/Opening/wokta-intro-07.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 7페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.8', body: `
+    <img src="assets/Opening/wokta-intro-08.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 8페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.9', body: `
+    <img src="assets/Opening/wokta-intro-09.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 9페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.10', body: `
+    <img src="assets/Opening/wokta-intro-10.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 10페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.11', body: `
+    <img src="assets/Opening/wokta-intro-11.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 11페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.12', body: `
+    <img src="assets/Opening/wokta-intro-12.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 12페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.13', body: `
+    <img src="assets/Opening/wokta-intro-13.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 13페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.14', body: `
+    <img src="assets/Opening/wokta-intro-14.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 14페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.15', body: `
+    <img src="assets/Opening/wokta-intro-15.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 15페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
+  `},
+
+  { tag: 'hero', title: '월드옥타 소개 p.16', body: `
+    <img src="assets/Opening/wokta-intro-16.png" alt="월드옥타 소개 및 협회 주요 프로그램 소개 — 16페이지" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
   `},
 
   { stub: 'DAY 1', title: '스텝 소개', body: `
@@ -1073,7 +1173,7 @@ const SLIDES = [
     <div class="roster-grid">${TEAMS.map(n => `
       <div class="roster-card">
         <div class="rteam">${n}조</div>
-        <ul class="rmembers">${(TEAM_ROSTER[n] || []).map(m => `<li><span class="rname">${m.name}</span><span class="rorg">${m.org}</span></li>`).join('')}</ul>
+        <ul class="rmembers">${(TEAM_ROSTER[n] || []).map(m => `<li><span class="rname">${m.name}</span><span class="rorg">${m.org}</span></li>`).join('')}${(TEAM_SUPPORTERS[n] || []).map(name => `<li><span class="rname">${name}</span><span class="rorg">서포터즈</span></li>`).join('')}</ul>
       </div>
     `).join('')}</div>
   `},
@@ -1218,9 +1318,9 @@ const SLIDES = [
   // 7) 투자 집계 (PDF §8 · §9) — 시상 박스는 제거, 뒤의 '전체 시상금' 슬라이드에서 다룬다
   { stub: 'Program', title: '프로그램 심사표', body: `
     <div style="display:flex;width:100%;height:100%;">
-      <div style="flex:0 0 38%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 1.5rem;">
+      <div style="flex:0 0 38%;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 1.5rem;">
         <div class="eyebrow">심사표 · 22:00–23:00</div>
-        <h2>프로그램 심사표</h2>
+        <h2>프로그램<br>심사표</h2>
         <div class="field-card" style="padding:2rem 2.4rem;margin-top:0.5rem;">
           <ul class="plain-list" style="font-size:1.4rem;line-height:1.8;white-space:nowrap;">
             <li>가장 많은 투자금을 유치한 팀</li>
@@ -1228,8 +1328,21 @@ const SLIDES = [
           </ul>
         </div>
       </div>
-      <div style="flex:0 0 62%;display:flex;align-items:center;justify-content:center;padding:15px 1.5rem;">
-        <img src="assets/샤크탱크 심사표.png" alt="프로그램 심사표" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:8px;box-shadow:var(--shadow);">
+      <div style="flex:0 0 62%;display:flex;align-items:center;justify-content:center;padding:15px 1.5rem 15px calc(1.5rem + 10px);min-width:0;">
+        <div class="zoom-callout" data-zoom-callout>
+          <div class="zoom-callout-original">
+            <img src="assets/샤크탱크 심사표.png" alt="프로그램 심사표">
+            ${/* 왼쪽 '평가 항목' 열 전체를 감싸는 박스 — 원본 이미지 픽셀 기준 좌표(140,447)~(357,1285) / 1654x2339 를 %로 환산 */ ''}
+            <div class="zoom-callout-highlight" data-zoom-highlight style="left:8.46%;top:19.11%;width:13.12%;height:35.83%;"></div>
+          </div>
+          <svg class="zoom-callout-lines" data-zoom-lines>
+            <line data-zoom-line-top></line>
+            <line data-zoom-line-bottom></line>
+          </svg>
+          <div class="zoom-callout-enlarged">
+            <img src="assets/샤크탱크 심사표 zoomed.png" alt="프로그램 심사표 — 평가 항목 열 확대">
+          </div>
+        </div>
       </div>
     </div>
   `},
@@ -1252,6 +1365,17 @@ const SLIDES = [
       ${/* 전체 공개가 끝나면 장소별로 묶은 결과 요약이 여기에 뜬다 */ ''}
       <div class="ladder-summary" data-ladder-summary></div>
     </div>
+  `},
+
+  { tag: 'seating', body: `
+    <canvas class="seating-fx-canvas" data-seating-fx data-no-flight></canvas>
+    <canvas class="seating-plane-canvas" data-seating-plane></canvas>
+    <div class="seating-content">
+      <div class="floorplan-frame">
+        <img class="floorplan-img" src="assets/Stage/첫번째 슬라이드 지도 배치.png" alt="조별 좌석 배치도 — 무대와 입구, 1~12번 테이블 위치">
+      </div>
+    </div>
+    <div class="seating-rail"><span class="seating-rail-title">조별 좌석 배치도</span></div>
   `},
 
   // ============ DAY 2 (8/14 금) ============
@@ -1292,7 +1416,7 @@ const SLIDES = [
   { stub: 'DAY 2', cls: 'dense', body: `
     <div class="eyebrow">네트워킹 밍글링 · 09:00–10:00</div>
     <h2>통상끼리 모여주세요</h2>
-    <p class="lede">본인 통상 색깔의 테이블로 모여 주세요.</p>
+    <p class="lede">본인 통상 색깔의 구역으로 모여 주세요.</p>
     <div class="mixer-map">
       <div class="mm-side">${MIXER_GROUPS.filter(g => g.side === 'left').map(mixerLegend).join('')}</div>
       <div class="mm-plan"><img src="assets/Stage/GlobalMixer_지도 배치 안내.png" alt="통상별 색깔 좌석 배치도 — 무대와 1~12번 테이블"></div>
@@ -1420,6 +1544,10 @@ const SLIDES = [
     </div>
   `},
 
+  { stub: 'DAY 3', title: '샤크탱크 프로그램 발표', body: `
+    <div class="big-statement"><div class="huge">샤크탱크 프로그램 발표</div></div>
+  `},
+
   // 심사위원 소개 — 팀별 발표 직전. 제목만 띄우고 MC 가 구두로 소개한다.
   { stub: 'Program', title: '심사위원 소개', body: `
     <div class="eyebrow">싱가포르 샤크탱크 챌린지 · 10:00–12:00</div>
@@ -1531,46 +1659,66 @@ const SLIDES = [
     <div class="big-statement"><div class="huge">축사</div></div>
   `},
 
-  { stub: 'DAY 3', title: '수료증 발급', body: `
-    <div class="big-statement"><div class="huge">수료증 발급</div></div>
+  { stub: 'DAY 3', title: '수료증 및 배지 수여식', body: `
+    <div class="big-statement"><div class="huge">수료증 및 배지 수여식</div></div>
+  `},
+
+  // 개별 순위 발표 3장 — 3등 → 2등 → 1등 순서로 한 장씩, 서스펜스용. 다음 '시상식' 슬라이드는 셋 다 이미 공개된 최종 요약.
+  { stub: 'DAY 3', cls: 'centered-text', title: '3등', body: `
+    <div class="eyebrow">행사 전체 순위 발표</div>
+    ${rankRevealSlide(3, '🥉', '3등', 'bronze')}
+  `},
+
+  { stub: 'DAY 3', cls: 'centered-text', title: '2등', body: `
+    <div class="eyebrow">행사 전체 순위 발표</div>
+    ${rankRevealSlide(2, '🥈', '2등', 'silver')}
+  `},
+
+  { stub: 'DAY 3', cls: 'centered-text', title: '1등', body: `
+    <div class="eyebrow">행사 전체 순위 발표</div>
+    ${rankRevealSlide(1, '🥇', '1등', 'gold')}
   `},
 
   { stub: 'DAY 3', cls: 'dense', title: '시상식', body: `
     <div class="eyebrow">행사 전체 순위 발표</div>
     <h2>시상식</h2>
-    ${/* 시상대 3칸은 처음부터 다 보인다. Enter 를 누르면 3등 → 2등 → 1등 순으로 조 이름만 채워진다. */ ''}
-    <div class="rank-podium" data-rank-reveal>
+    <div class="rank-podium">
       <div class="podium-card silver">
         <span class="medal">🥈</span><span class="rank-label">2등</span>
-        ${podiumTeam(2, 2)}
+        ${podiumTeam(2)}
       </div>
       <div class="podium-card gold">
         <span class="medal">🥇</span><span class="rank-label">1등</span>
-        ${podiumTeam(1, 3)}
+        ${podiumTeam(1)}
       </div>
       <div class="podium-card bronze">
         <span class="medal">🥉</span><span class="rank-label">3등</span>
-        ${podiumTeam(3, 1)}
+        ${podiumTeam(3)}
       </div>
     </div>
   `},
 
   // 점수표 — 10개 조 전체 점수 총합 통계 (시상식 직후, 실제 점수는 현장에서 채움)
+  // TEAM_SCORES 가 채워지면 점수 내림차순으로 정렬된다 — 값이 같거나 비어있으면(TBD) 원래 조 순서를 유지한다(안정 정렬).
   { stub: 'DAY 3', cls: 'dense', title: '점수표', body: `
     <div class="eyebrow">점수 총합 통계</div>
     <h2>점수표</h2>
-    <div class="score-rows">${[TEAMS.slice(0, 3), TEAMS.slice(3, 6), TEAMS.slice(6, 10)].map(row => `
-      <div class="score-row" style="--cols:${row.length};">${row.map(n => `
-        <div class="score-card">
-          <div class="sc-head"><span class="sc-name">${n}조</span><span class="sc-total">TBD점</span></div>
-          <ul class="sc-items">${SCORE_SHEET.map(cat => `<li><span>${cat.name}</span><b>TBD</b></li>`).join('')}</ul>
-        </div>
-      `).join('')}</div>
-    `).join('')}</div>
+    ${(() => {
+      const ranked = [...TEAMS].sort((a, b) => (TEAM_SCORES[b] ?? -Infinity) - (TEAM_SCORES[a] ?? -Infinity));
+      const rows = [ranked.slice(0, 3), ranked.slice(3, 6), ranked.slice(6, 10)];
+      return `<div class="score-rows">${rows.map(row => `
+        <div class="score-row" style="--cols:${row.length};">${row.map(n => `
+          <div class="score-card">
+            <div class="sc-head"><span class="sc-name">${n}조</span><span class="sc-total">${TEAM_SCORES[n] ?? 'TBD'}점</span></div>
+            <ul class="sc-items">${SCORE_SHEET.map(cat => `<li><span>${cat.name}</span><b>TBD</b></li>`).join('')}</ul>
+          </div>
+        `).join('')}</div>
+      `).join('')}</div>`;
+    })()}
   `},
 
-  { stub: 'DAY 3', title: '폐식 선언', body: `
-    <div class="big-statement"><div class="huge">폐식 선언</div></div>
+  { stub: 'DAY 3', title: '폐회식', body: `
+    <div class="big-statement"><div class="huge">폐회식</div></div>
   `},
 
   { stub: 'DAY 3', title: '단체 기념촬영 안내', body: `
@@ -1708,18 +1856,18 @@ counter.innerHTML = Array.from(slides).map((section, i) => {
 }).join('');
 counter.addEventListener('change', () => go(parseInt(counter.value, 10)));
 
-let idx = 0;
+const LAST_SLIDE_KEY = 'okta2026-last-slide';
+let idx = Math.max(0, Math.min(slides.length - 1, parseInt(localStorage.getItem(LAST_SLIDE_KEY), 10) || 0));
 function go(i) {
-  const prev = idx;
   idx = Math.max(0, Math.min(slides.length - 1, i));
-  // 순위 발표에서 벗어나면 공개 상태를 되돌린다 (다시 들어오면 3등부터)
-  if (prev !== idx) resetRankReveal(slides[prev]);
   track.style.transform = `translateX(-${idx * 100}%)`;
   counter.value = String(idx);
   dots.forEach((d, i2) => d.classList.toggle('active', i2 === idx));
   prevBtn.disabled = idx === 0;
   nextBtn.disabled = idx === slides.length - 1;
+  localStorage.setItem(LAST_SLIDE_KEY, String(idx));
 }
+go(idx);
 prevBtn.addEventListener('click', () => go(idx - 1));
 nextBtn.addEventListener('click', () => go(idx + 1));
 
@@ -1729,35 +1877,11 @@ let triggerSeatingFlight = () => {};
 
 let currentSfxAudio = null;
 
-/* ---------------- 순위 발표 — Enter 로 3등 → 2등 → 1등 순차 공개 ----------------
-   data-rank-step 이 작은 순서(3등=1)부터 열린다. 남은 등수가 없으면 false 를
-   돌려줘서 Enter 가 평소대로 흘러가게 둔다. */
-function revealNextRank(section) {
-  if (!section) return false;
-  const table = section.querySelector('[data-rank-reveal]');
-  if (!table) return false;
-  const next = Array.from(table.querySelectorAll('[data-rank-step]'))
-    .filter((row) => !row.classList.contains('revealed'))
-    .sort((a, b) => Number(a.dataset.rankStep) - Number(b.dataset.rankStep))[0];
-  if (!next) return false;
-  next.classList.add('revealed');
-  return true;
-}
-
-// 슬라이드를 벗어났다가 돌아오면 처음부터 다시 공개할 수 있게 되돌린다
-function resetRankReveal(section) {
-  const table = section && section.querySelector('[data-rank-reveal]');
-  if (!table) return;
-  table.querySelectorAll('[data-rank-step]').forEach((row) => row.classList.remove('revealed'));
-}
-
 let currentSfxKey = null;
 
 document.addEventListener('keydown', (e) => {
   const tag = (e.target && e.target.tagName) || '';
   if (tag === 'SELECT' || tag === 'INPUT' || tag === 'TEXTAREA') return;
-  // 순위 발표 슬라이드가 열려 있고 아직 공개할 등수가 남았으면 Enter 를 여기서 소비한다
-  if (e.key === 'Enter' && revealNextRank(slides[idx])) { e.preventDefault(); return; }
   if (e.key === 'ArrowRight') go(idx + 1);
   if (e.key === 'ArrowLeft') go(idx - 1);
   if (e.key === ' ') { e.preventDefault(); go(idx + 1); }
@@ -1784,7 +1908,6 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
-go(0);
 
 function currentFullscreenElement() {
   return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
@@ -2186,6 +2309,42 @@ function renderLadder(container, keepBoard) {
 function resetActiveLadder() {
   if (activeLadder) renderLadder(activeLadder.container, true);
 }
+
+// 확대 콜아웃 — 원본 이미지의 강조 박스와 확대 사본을 커넥터 라인으로 잇는다 (반응형이라 렌더된 픽셀 좌표를 매 리사이즈마다 다시 잰다)
+function updateZoomCallouts() {
+  document.querySelectorAll('[data-zoom-callout]').forEach((container) => {
+    const highlight = container.querySelector('[data-zoom-highlight]');
+    const enlarged = container.querySelector('.zoom-callout-enlarged');
+    const lineTop = container.querySelector('[data-zoom-line-top]');
+    const lineBottom = container.querySelector('[data-zoom-line-bottom]');
+    if (!highlight || !enlarged || !lineTop || !lineBottom) return;
+    const cRect = container.getBoundingClientRect();
+    const hRect = highlight.getBoundingClientRect();
+    const eRect = enlarged.getBoundingClientRect();
+    lineTop.setAttribute('x1', hRect.right - cRect.left);
+    lineTop.setAttribute('y1', hRect.top - cRect.top);
+    lineTop.setAttribute('x2', eRect.left - cRect.left);
+    lineTop.setAttribute('y2', eRect.top - cRect.top);
+    lineBottom.setAttribute('x1', hRect.right - cRect.left);
+    lineBottom.setAttribute('y1', hRect.bottom - cRect.top);
+    lineBottom.setAttribute('x2', eRect.left - cRect.left);
+    lineBottom.setAttribute('y2', eRect.bottom - cRect.top);
+  });
+}
+document.querySelectorAll('[data-zoom-callout] img').forEach((img) => {
+  img.addEventListener('load', updateZoomCallouts);
+});
+window.addEventListener('resize', updateZoomCallouts);
+window.addEventListener('load', updateZoomCallouts);
+// 폰트 로딩 등으로 레이아웃이 늦게 확정되는 경우까지 대비해, 콜아웃 요소 크기 변화를 계속 지켜본다
+if (window.ResizeObserver) {
+  const zoomResizeObserver = new ResizeObserver(() => updateZoomCallouts());
+  document.querySelectorAll('[data-zoom-callout]').forEach((container) => zoomResizeObserver.observe(container));
+}
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(updateZoomCallouts).catch(() => {});
+}
+updateZoomCallouts();
 
 document.querySelectorAll('[data-ladder]').forEach((el) => renderLadder(el));
 // 드래그 중 Esc → 원위치 복귀

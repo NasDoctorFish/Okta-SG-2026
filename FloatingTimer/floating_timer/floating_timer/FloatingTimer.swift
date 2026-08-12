@@ -13,14 +13,19 @@ struct FloatingTimerApp: App {
     }
 }
 
+final class KeyableBorderlessWindow: NSWindow {
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { true }
+}
+
 final class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
 
-        window = NSWindow(
-            contentRect: NSRect(x: 200, y: 200, width: 240, height: 140),
+        window = KeyableBorderlessWindow(
+            contentRect: NSRect(x: 200, y: 200, width: 340, height: 140),
             styleMask: [.borderless],
             backing: .buffered,
             defer: false
@@ -33,6 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         window.contentView = NSHostingView(rootView: TimerView())
         window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
 }
 
@@ -51,15 +57,19 @@ struct TimerView: View {
     @State private var usedDurations: Set<Int> = []
     @State private var isHovering = false
     @State private var timer: Timer?
+    @State private var customMinutesText: String = ""
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
             VStack(spacing: 14) {
                 if activeDuration != nil {
                     Text(timeString(remaining))
-                        .font(.system(size: 69, weight: .bold, design: .rounded))
+                        .font(.system(size: 56, weight: .bold, design: .rounded))
                         .foregroundColor(isFinished ? .red : .white)
                         .shadow(color: .black.opacity(0.6), radius: 4, x: 0, y: 2)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .frame(maxWidth: .infinity)
                         .scaleEffect(isFinished && pulse ? 1.12 : 1.0)
                         .animation(
                             isFinished ? .easeInOut(duration: 0.6).repeatForever(autoreverses: true) : .default,
@@ -73,6 +83,22 @@ struct TimerView: View {
                                     .buttonStyle(TimerButtonStyle())
                             }
                         }
+                    }
+                    HStack(spacing: 8) {
+                        TextField("분", text: $customMinutesText)
+                            .textFieldStyle(.plain)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(1)
+                            .frame(width: 80)
+                            .padding(.vertical, 8)
+                            .background(Color.black.opacity(0.4))
+                            .clipShape(Capsule())
+                            .onSubmit { startCustom() }
+                        Button("시작") { startCustom() }
+                            .buttonStyle(TimerButtonStyle())
+                            .disabled(Int(customMinutesText) == nil || Int(customMinutesText)! <= 0)
                     }
                 }
             }
@@ -96,7 +122,7 @@ struct TimerView: View {
                 Button(action: quit) {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 20))
-                        .foregroundColor(.white.opacity(0.85))
+                        .foregroundColor(.red.opacity(0.85))
                 }
                 .buttonStyle(.plain)
                 .padding(8)
@@ -120,6 +146,12 @@ struct TimerView: View {
                 timer?.invalidate()
             }
         }
+    }
+
+    private func startCustom() {
+        guard let minutes = Int(customMinutesText), minutes > 0 else { return }
+        customMinutesText = ""
+        start(minutes * 60)
     }
 
     private func quit() {
