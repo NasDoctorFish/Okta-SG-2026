@@ -111,7 +111,7 @@
   .qr-slide .lede { font-size: clamp(1.3rem, min(2.6vw, 3.2vh), 2.3rem); }
   .qr-row { width: 100%; min-height: 0; display: flex; gap: clamp(1.2rem, 4vw, 3rem); align-items: flex-start; justify-content: center; margin-top: 0.4rem; }
   .qr-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; min-width: 0; }
-  .qr-frame { width: clamp(160px, min(24vw, 34vh), 420px); aspect-ratio: 1 / 1; padding: 1rem; background: #fff; border-radius: 20px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; }
+  .qr-frame { width: clamp(200px, min(32vw, 44vh), 560px); aspect-ratio: 1 / 1; padding: 1rem; background: #fff; border-radius: 20px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; }
   .qr-item img { width: 100%; height: 100%; object-fit: contain; }
   .qr-item .qr-caption { font-size: clamp(1.4rem, min(2.6vw, 3.6vh), 2.6rem); font-weight: 600; color: var(--ink); }
 
@@ -140,6 +140,9 @@
   .big-sub { margin-top: 0.6rem; font-size: clamp(1.8rem, 3.4vw, 2.6rem); color: var(--ink-muted); font-weight: 400; }
   .rank-reveal-plain { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
   .rank-reveal-plain .big-sub { margin-top: 0; white-space: nowrap; }
+  .rank-reveal-plain .huge { white-space: nowrap; }
+  .rank-team-huge { font-family: var(--font-display); font-weight: 800; line-height: var(--lh-tight); color: #000; white-space: nowrap; font-size: clamp(2.2rem, min(7vw, 9.5vh), 7.5rem); }
+  .rank-team-huge.placeholder { color: #000; }
   .huge .role-line { display: block; font-size: calc(1em / 1.8); font-weight: 400; }
   .huge { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-huge); line-height: var(--lh-tight); color: var(--ink); text-wrap: balance; }
 
@@ -835,15 +838,14 @@ function podiumTeam(rank) {
   return `<span class="podium-team revealed"><span class="tname${name && teamName ? '' : ' placeholder'}">${name || RANK_PLACEHOLDER}|${teamName || RANK_TEAM_NAME_PLACEHOLDER}</span></span>`;
 }
 
-// 순위 개별 발표 슬라이드 (3등 → 2등 → 1등 순으로 한 장씩) — 박스/메달 없이 큰 등수 + 작은 '조 | 팀명'만
-function rankRevealSlide(rank, medal, label, cls) {
+// 순위 개별 발표 — 등수 슬라이드와 조/팀명 슬라이드를 분리해 서스펜스 2단으로 낸다.
+function rankLabelSlide(label) {
+  return `<div class="rank-reveal-plain"><div class="huge">${label}</div></div>`;
+}
+function rankTeamSlide(rank) {
   const team = RANK_RESULTS[rank];
   const teamName = RANK_TEAM_NAMES[rank];
-  return `
-    <div class="rank-reveal-plain">
-      <div class="huge">${label}</div>
-      <div class="big-sub${team && teamName ? '' : ' placeholder'}">${team || RANK_PLACEHOLDER} | ${teamName || RANK_TEAM_NAME_PLACEHOLDER}</div>
-    </div>`;
+  return `<div class="rank-reveal-plain"><div class="rank-team-huge${team && teamName ? '' : ' placeholder'}">${team || RANK_PLACEHOLDER} | ${teamName || RANK_TEAM_NAME_PLACEHOLDER}</div></div>`;
 }
 
 // 연회장 테이블 12개 — 1~10번은 참가 10개 조, 11번 싱가포르 스텝, 12번 예비(본부·대표).
@@ -1696,17 +1698,29 @@ const SLIDES = [
     <div class="big-statement"><div class="huge">행사 전체 순위 발표</div></div>
   `},
 
-  // 개별 순위 발표 3장 — 3등 → 2등 → 1등 순서로 한 장씩, 서스펜스용. 다음 '시상식' 슬라이드는 셋 다 이미 공개된 최종 요약.
+  // 개별 순위 발표 — 등수 → 조/팀명 순으로 한 장씩, 3등 → 2등 → 1등, 서스펜스용. 다음 '시상식' 슬라이드는 셋 다 이미 공개된 최종 요약.
   { stub: 'DAY 3', cls: 'centered-text', title: '3등', body: `
-    ${rankRevealSlide(3, '🥉', '3등', 'bronze')}
+    ${rankLabelSlide('3등')}
+  `},
+
+  { stub: 'DAY 3', cls: 'centered-text', title: '3등 조', body: `
+    ${rankTeamSlide(3)}
   `},
 
   { stub: 'DAY 3', cls: 'centered-text', title: '2등', body: `
-    ${rankRevealSlide(2, '🥈', '2등', 'silver')}
+    ${rankLabelSlide('2등')}
+  `},
+
+  { stub: 'DAY 3', cls: 'centered-text', title: '2등 조', body: `
+    ${rankTeamSlide(2)}
   `},
 
   { stub: 'DAY 3', cls: 'centered-text', title: '1등', body: `
-    ${rankRevealSlide(1, '🥇', '1등', 'gold')}
+    ${rankLabelSlide('1등')}
+  `},
+
+  { stub: 'DAY 3', cls: 'centered-text', title: '1등 조', body: `
+    ${rankTeamSlide(1)}
   `},
 
   { stub: 'DAY 3', cls: 'dense', title: '시상식', body: `
