@@ -96,6 +96,24 @@
   .slide.dense .cabin .eyebrow { margin-bottom: 0.05rem; }
   .slide.centered-text .cabin { text-align: center; }
   .slide.dense .lede { margin: 0.2rem 0 0; }
+  .gcc-seating .cabin { padding-top: 0.5rem; padding-bottom: 0.4rem; gap: 0.15rem; }
+  .gcc-split { width: 100%; flex: 1 1 auto; min-height: 0; display: flex; align-items: stretch; gap: clamp(1.2rem, 3vw, 2.4rem); }
+  .gcc-left { flex: 0 0 30%; max-width: 30%; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 0.5rem; }
+  .gcc-left .eyebrow, .gcc-left h2 { text-align: left; }
+  .gcc-left h2::after { margin-left: 0; }
+  .gcc-list { list-style: none; margin: 0.4rem 0 0; padding: 0; display: flex; flex-direction: column; gap: clamp(0.4rem, 1.3vh, 0.9rem); }
+  .gcc-list li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: clamp(0.9rem, 1.25vw, 1.2rem); font-weight: 700; line-height: 1.3; color: var(--ink); }
+  .gcc-dot { flex: none; width: 0.85em; height: 0.85em; margin-top: 0.3em; border-radius: 4px; border: 1.5px solid rgba(29, 35, 59, 0.22); }
+  .gcc-list li .gcc-loc { display: block; font-weight: 400; color: var(--ink-muted); font-size: 0.82em; margin-top: 0.1rem; }
+  .gcc-image { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; }
+  .gcc-image img { height: 100%; width: auto; max-width: 100%; object-fit: contain; display: block; }
+  .qr-slide { width: 100%; height: 100%; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(0.6rem, 1.6vh, 1rem); text-align: center; }
+  .qr-slide .lede { font-size: clamp(1.3rem, min(2.6vw, 3.2vh), 2.3rem); }
+  .qr-row { width: 100%; min-height: 0; display: flex; gap: clamp(1.2rem, 4vw, 3rem); align-items: flex-start; justify-content: center; margin-top: 0.4rem; }
+  .qr-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; min-width: 0; }
+  .qr-frame { width: clamp(160px, min(24vw, 34vh), 420px); aspect-ratio: 1 / 1; padding: 1rem; background: #fff; border-radius: 20px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; }
+  .qr-item img { width: 100%; height: 100%; object-fit: contain; }
+  .qr-item .qr-caption { font-size: clamp(1.4rem, min(2.6vw, 3.6vh), 2.6rem); font-weight: 600; color: var(--ink); }
 
   .centered-header { text-align: center; }
   .centered-header h2::after { margin-left: auto; margin-right: auto; }
@@ -119,6 +137,10 @@
 
   /* ---------- Big statement (title-only slides, MC narrates the rest) ---------- */
   .big-statement { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60%; text-align: center; }
+  .big-sub { margin-top: 0.6rem; font-size: clamp(1.8rem, 3.4vw, 2.6rem); color: var(--ink-muted); font-weight: 400; }
+  .rank-reveal-plain { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+  .rank-reveal-plain .big-sub { margin-top: 0; white-space: nowrap; }
+  .huge .role-line { display: block; font-size: calc(1em / 1.8); font-weight: 400; }
   .huge { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-huge); line-height: var(--lh-tight); color: var(--ink); text-wrap: balance; }
 
   /* ---------- Seating (slide 1) ---------- */
@@ -315,10 +337,10 @@
   .podium-card .rank-label { font-family: var(--font-mono); font-weight: 700; font-size: 1.9rem; }
   .podium-card.gold .rank-label { font-size: 2.35rem; }
   /* 조 이름 자리 — 비어 있어도 점선으로 자리를 지킨다 (공개 시 레이아웃이 흔들리지 않게) */
-  .podium-team { width: 100%; min-height: 3.2rem; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed var(--line); transition: border-color 0.45s ease; }
+  .podium-team { width: 100%; min-height: 3.8rem; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed var(--line); transition: border-color 0.45s ease; padding: 0.2rem 0.3rem; }
   .podium-team.revealed { border-bottom-color: var(--accent-gold); }
-  .podium-team .tname { font-family: var(--font-display); font-weight: 800; font-size: 2rem; color: var(--accent-gold); opacity: 0; transform: translateY(12px); transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1); }
-  .podium-card.gold .podium-team .tname { font-size: 2.5rem; }
+  .podium-team .tname { font-family: var(--font-display); font-weight: 800; font-size: clamp(0.85rem, 1.5vw, 1.8rem); line-height: 1.15; text-align: center; white-space: nowrap; color: var(--accent-gold); opacity: 0; transform: translateY(12px); transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1); }
+  .podium-card.gold .podium-team .tname { font-size: clamp(1rem, 1.8vw, 2.2rem); }
   /* 조 이름이 아직 안 정해졌을 때 뜨는 자리표시 텍스트 — 실제 조 이름과 구분되게 회색 */
   .podium-team .tname.placeholder { color: var(--ink-muted); }
   .podium-team.revealed .tname { opacity: 1; transform: none; }
@@ -799,6 +821,9 @@ const SCORE_SHEET = [
 // 비워두면 Enter 를 눌렀을 때 실제 조 이름 대신 회색 자리표시 텍스트(○○조)가 뜬다.
 const RANK_RESULTS = { 1: null, 2: null, 3: null };
 const RANK_PLACEHOLDER = '○○조';
+// 조별 팀명 — 현장에서 '조장 임명·팀명 짓기' 활동으로 정해지므로 사전 데이터 없음. 채워질 때까지 자리표시.
+const RANK_TEAM_NAMES = { 1: null, 2: null, 3: null };
+const RANK_TEAM_NAME_PLACEHOLDER = '○○○○○○○';
 
 // 조별 점수 총합 — 채점이 끝나야 정해지므로 행사 당일 '점수표' 슬라이드 띄우기 전에 여기만 채운다.
 // 값을 채우면 '점수표' 슬라이드가 자동으로 점수 내림차순 정렬된다. 비워두면(null) TBD로 표시되고 원래 조 순서를 유지한다.
@@ -806,20 +831,18 @@ const TEAM_SCORES = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: n
 // 시상대 조 이름 한 칸 — 값이 없으면 placeholder 클래스를 붙여 회색으로 뜨게 한다. 이미 공개된 상태로 바로 보인다.
 function podiumTeam(rank) {
   const name = RANK_RESULTS[rank];
-  return `<span class="podium-team revealed"><span class="tname${name ? '' : ' placeholder'}">${name || RANK_PLACEHOLDER}</span></span>`;
+  const teamName = RANK_TEAM_NAMES[rank];
+  return `<span class="podium-team revealed"><span class="tname${name && teamName ? '' : ' placeholder'}">${name || RANK_PLACEHOLDER}|${teamName || RANK_TEAM_NAME_PLACEHOLDER}</span></span>`;
 }
 
-// 순위 개별 발표 슬라이드 (3등 → 2등 → 1등 순으로 한 장씩) — 메달·순위·조 이름만 크게
+// 순위 개별 발표 슬라이드 (3등 → 2등 → 1등 순으로 한 장씩) — 박스/메달 없이 큰 등수 + 작은 '조 | 팀명'만
 function rankRevealSlide(rank, medal, label, cls) {
+  const team = RANK_RESULTS[rank];
+  const teamName = RANK_TEAM_NAMES[rank];
   return `
-    <div class="podium-card ${cls}" style="max-width:800px;margin:0 auto;padding:3.2rem 3.6rem;flex-direction:row;justify-content:center;gap:2.8rem;">
-      <span style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;flex:none;">
-        <span class="medal" style="font-size:7rem;">${medal}</span>
-        <span class="rank-label" style="font-size:3rem;">${label}</span>
-      </span>
-      <span class="podium-team revealed" style="min-height:0;border-bottom:none;width:auto;">
-        <span class="tname${RANK_RESULTS[rank] ? '' : ' placeholder'}" style="font-size:4.6rem;">${RANK_RESULTS[rank] || RANK_PLACEHOLDER}</span>
-      </span>
+    <div class="rank-reveal-plain">
+      <div class="huge">${label}</div>
+      <div class="big-sub${team && teamName ? '' : ' placeholder'}">${team || RANK_PLACEHOLDER} | ${teamName || RANK_TEAM_NAME_PLACEHOLDER}</div>
     </div>`;
 }
 
@@ -888,6 +911,7 @@ const SFX_FILES = [
   { key: '4', label: '4 · Winning Moment', src: 'soundeffects/Brand X Music - WINNING MOMENT [Bu_KNdPWNhI].mp3' },
   { key: '5', label: '5 · Spirit Of Adventure', src: 'soundeffects/Spirit Of Adventure [tFZ8XJSnG1Y].mp3' },
   { key: '6', label: '6 · Flying Merry Go Round (유키 구라모토)', src: 'soundeffects/sfx-6-flying-merry-go-round.mp3' },
+  { key: '7', label: '7 · Oscars Theme', src: 'soundeffects/Oscars Theme - MUSIC BY GREG HULME.mp3' },
   { key: 'j', label: 'J · 재즈 (오프닝) — Bossa Antigua', src: 'soundeffects/bgm-jazz-bossa-antigua.mp3' },
   { key: 'k', label: 'K · 클래식·캐논 (조장임명·팀명짓기) — Canon in D Major', src: 'soundeffects/bgm-classical-canon-in-d.mp3' },
   { key: 'l', label: 'L · 사다리게임 브금 — Marty Gots a Plan', src: 'soundeffects/bgm-ladder-marty-gots-a-plan.mp3' },
@@ -1588,13 +1612,20 @@ const SLIDES = [
     <img src="assets/Bingo/bingo_sheet_sample.png" alt="OKTA 빙고 — Global Connection Challenge 빙고판 예시 (5×5, 25개 조건)" style="width:100%;height:100%;object-fit:contain;display:block;background:#fff;" />
   `},
 
-  { stub: 'GCC', cls: 'dense', body: `
-    <div class="eyebrow">원하는 분야 네트워킹 · 13:10–13:40</div>
-    <h2>OKTA Global Connection Challenge</h2>
-    <div class="mixer-map">
-      <div class="mm-side">${NETWORKING_FIELDS.slice(0, 4).map((f, i) => gccFieldCard(f, GCC_GROUPS[i])).join('')}</div>
-      <div class="mm-plan"><img src="assets/Stage/3일차 Global Challenge 좌석배치도.png" alt="분야별 색깔 좌석 배치도 — 무대와 1~12번 테이블, 외부 1조"></div>
-      <div class="mm-side">${NETWORKING_FIELDS.slice(4).map((f, i) => gccFieldCard(f, GCC_GROUPS[i + 4])).join('')}</div>
+  { stub: 'GCC', cls: 'dense gcc-seating', body: `
+    <div class="gcc-split">
+      <div class="gcc-left">
+        <div class="eyebrow">원하는 분야 네트워킹 · 13:10–13:40</div>
+        <h2>OKTA Global Connection Challenge</h2>
+        <ul class="gcc-list">
+          <li><span>① 창업 - 외부 3조</span></li>
+          <li><span class="gcc-dot" style="background:${GCC_GROUPS[1].color}"></span><span>② 무역·수출입 <span class="gcc-loc">11번</span></span></li>
+          <li><span class="gcc-dot" style="background:${GCC_GROUPS[2].color}"></span><span>③ 마케팅·브랜딩 <span class="gcc-loc">3·6번</span></span></li>
+          <li><span>④ AI·IT·Tech - 외부 1조</span></li>
+          <li><span>⑤ 투자·사업확장 - 외부 2조</span></li>
+        </ul>
+      </div>
+      <div class="gcc-image"><img src="assets/Stage/3일차 Global Challenge 좌석배치도.png" alt="분야별 색깔 좌석 배치도 — 무대와 1~12번 테이블, 외부 1조"></div>
     </div>
   `},
 
@@ -1633,49 +1664,48 @@ const SLIDES = [
     <div class="big-statement"><div class="huge">개회선언</div></div>
   `},
 
+  { stub: 'DAY 3', title: '국민의례 및 애국가', body: `
+    <div class="big-statement"><div class="huge">국민의례 및 애국가</div></div>
+  `},
+
   { stub: 'DAY 3', title: '주요 내외빈 소개', body: `
     <div class="big-statement"><div class="huge">주요 내외빈 소개</div></div>
   `},
 
   { stub: 'DAY 3', title: '폐회사', body: `
-    <div class="big-statement"><div class="huge">폐회사</div></div>
-  `},
-
-  { stub: 'DAY 3', title: '총평', body: `
-    <div class="big-statement"><div class="huge">총평</div></div>
-  `},
-
-  { stub: 'DAY 3', title: '수료식 영상', body: `
-    <div style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;">
-      <video class="video-box" style="max-width:90%;max-height:82vh;" src="assets/수료식_영상_1.2_고화질.mp4" controls preload="none"></video>
-    </div>
-  `},
-
-  { stub: 'DAY 3', title: '격려사', body: `
-    <div class="big-statement"><div class="huge">격려사</div></div>
+    <div class="big-statement"><div class="huge">황인수<span class="role-line">월드옥타 싱가포르지회 지회장</span></div></div>
   `},
 
   { stub: 'DAY 3', title: '축사', body: `
-    <div class="big-statement"><div class="huge">축사</div></div>
+    <div class="big-statement"><div class="huge">지민정<span class="role-line">주 싱가포르 대한민국 대사관 상무관</span></div></div>
+  `},
+
+  { stub: 'DAY 3', title: '축사', body: `
+    <div class="big-statement"><div class="huge">노현상<span class="role-line">월드옥타 차세대 담당 부회장</span></div></div>
+  `},
+
+  { stub: 'DAY 3', title: '환송사', body: `
+    <div class="big-statement"><div class="huge">최원준<span class="role-line">월드옥타 차세대 위원회 위원장</span></div></div>
   `},
 
   { stub: 'DAY 3', title: '수료증 및 배지 수여식', body: `
     <div class="big-statement"><div class="huge">수료증 및 배지 수여식</div></div>
   `},
 
+  { stub: 'DAY 3', title: '행사 전체 순위 발표', body: `
+    <div class="big-statement"><div class="huge">행사 전체 순위 발표</div></div>
+  `},
+
   // 개별 순위 발표 3장 — 3등 → 2등 → 1등 순서로 한 장씩, 서스펜스용. 다음 '시상식' 슬라이드는 셋 다 이미 공개된 최종 요약.
   { stub: 'DAY 3', cls: 'centered-text', title: '3등', body: `
-    <div class="eyebrow">행사 전체 순위 발표</div>
     ${rankRevealSlide(3, '🥉', '3등', 'bronze')}
   `},
 
   { stub: 'DAY 3', cls: 'centered-text', title: '2등', body: `
-    <div class="eyebrow">행사 전체 순위 발표</div>
     ${rankRevealSlide(2, '🥈', '2등', 'silver')}
   `},
 
   { stub: 'DAY 3', cls: 'centered-text', title: '1등', body: `
-    <div class="eyebrow">행사 전체 순위 발표</div>
     ${rankRevealSlide(1, '🥇', '1등', 'gold')}
   `},
 
@@ -1717,8 +1747,14 @@ const SLIDES = [
     })()}
   `},
 
-  { stub: 'DAY 3', title: '폐회식', body: `
-    <div class="big-statement"><div class="huge">폐회식</div></div>
+  { stub: 'DAY 3', title: '폐식 선언', body: `
+    <div class="big-statement"><div class="huge">폐식 선언</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '수료식 영상', body: `
+    <div style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;">
+      <video class="video-box" style="max-width:90%;max-height:82vh;" src="assets/수료식_영상_1.2_고화질.mp4" controls preload="none"></video>
+    </div>
   `},
 
   { stub: 'DAY 3', title: '단체 기념촬영 안내', body: `
@@ -1733,7 +1769,17 @@ const SLIDES = [
 
   { stub: 'DAY 3', body: `
     <div class="eyebrow">18:30–21:00</div>
-    <h2 style="font-size: var(--fs-h2-lg);">차세대 만찬</h2>
+    <div class="big-statement"><div class="huge">차세대 만찬</div></div>
+  `},
+
+  { stub: 'DAY 3', body: `
+    <div class="qr-slide">
+      <p class="lede" style="text-align:center;">설문에 참여해주세요</p>
+      <div class="qr-row">
+        <div class="qr-item"><div class="qr-frame"><img src="assets/qrcode/참가자 소감문 QR.png" alt="참가자 소감문 QR코드"></div><div class="qr-caption">참가자 소감문</div></div>
+        <div class="qr-item"><div class="qr-frame"><img src="assets/qrcode/프로그램 평가서 QR.png" alt="프로그램 평가서 QR코드"></div><div class="qr-caption">프로그램 평가서</div></div>
+      </div>
+    </div>
   `},
 
   // ============ DAY 4 (8/16 일) ============
