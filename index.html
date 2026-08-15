@@ -1580,6 +1580,16 @@ const SLIDES = [
     <div class="big-statement"><div class="huge">샤크탱크 프로그램 발표</div></div>
   `},
 
+  { stub: 'DAY 3', body: `
+    <div class="qr-slide">
+      <p class="lede" style="text-align:center;">설문에 참여해주세요</p>
+      <div class="qr-row">
+        <div class="qr-item"><div class="qr-frame"><img src="assets/qrcode/참가자 소감문 QR.png" alt="참가자 소감문 QR코드"></div><div class="qr-caption">참가자 소감문</div></div>
+        <div class="qr-item"><div class="qr-frame"><img src="assets/qrcode/프로그램 평가서 QR.png" alt="프로그램 평가서 QR코드"></div><div class="qr-caption">프로그램 평가서</div></div>
+      </div>
+    </div>
+  `},
+
   { tag: 'break', stub: 'BREAK', body: breakSlide('중식', '12:00–13:00', 'OKTA Global Connection Challenge', '', '번호별로 순차 이동하여 중식 진행') },
 
   { stub: 'GCC', body: `
@@ -1662,10 +1672,6 @@ const SLIDES = [
     <div class="big-statement"><div class="huge">수료식</div></div>
   `},
 
-  { stub: 'DAY 3', title: '개회선언', body: `
-    <div class="big-statement"><div class="huge">개회선언</div></div>
-  `},
-
   { stub: 'DAY 3', title: '국민의례 및 애국가', body: `
     <div class="big-statement"><div class="huge">국민의례 및 애국가</div></div>
   `},
@@ -1694,8 +1700,8 @@ const SLIDES = [
     <div class="big-statement"><div class="huge">수료증 및 배지 수여식</div></div>
   `},
 
-  { stub: 'DAY 3', title: '행사 전체 순위 발표', body: `
-    <div class="big-statement"><div class="huge">행사 전체 순위 발표</div></div>
+  { stub: 'DAY 3', title: '시상식', body: `
+    <div class="big-statement"><div class="huge">시상식</div></div>
   `},
 
   // 개별 순위 발표 — 등수 → 조/팀명 순으로 한 장씩, 3등 → 2등 → 1등, 서스펜스용. 다음 '시상식' 슬라이드는 셋 다 이미 공개된 최종 요약.
@@ -1761,8 +1767,8 @@ const SLIDES = [
     })()}
   `},
 
-  { stub: 'DAY 3', title: '폐식 선언', body: `
-    <div class="big-statement"><div class="huge">폐식 선언</div></div>
+  { stub: 'DAY 3', title: '폐회 선언', body: `
+    <div class="big-statement"><div class="huge">폐회 선언</div></div>
   `},
 
   { stub: 'DAY 3', title: '수료식 영상', body: `
@@ -1771,12 +1777,12 @@ const SLIDES = [
     </div>
   `},
 
-  { stub: 'DAY 3', title: '단체 기념촬영 안내', body: `
-    <div class="big-statement"><div class="huge">단체 기념촬영 안내</div></div>
-  `},
-
   { stub: 'DAY 3', title: '각 지회별 사진 촬영', body: `
     <div class="big-statement"><div class="huge">각 지회별 사진 촬영</div></div>
+  `},
+
+  { stub: 'DAY 3', title: '단체 기념촬영 안내', body: `
+    <div class="big-statement"><div class="huge">단체 기념촬영 안내</div></div>
   `},
 
   { tag: 'break', stub: 'BREAK', body: breakSlide('개인정비', '17:00–18:00', '차세대 만찬', '', '18:00까지 만찬장 이동 · 18:30 시작') },
@@ -1786,27 +1792,15 @@ const SLIDES = [
     <div class="big-statement"><div class="huge">차세대 만찬</div></div>
   `},
 
-  { stub: 'DAY 3', body: `
-    <div class="qr-slide">
-      <p class="lede" style="text-align:center;">설문에 참여해주세요</p>
-      <div class="qr-row">
-        <div class="qr-item"><div class="qr-frame"><img src="assets/qrcode/참가자 소감문 QR.png" alt="참가자 소감문 QR코드"></div><div class="qr-caption">참가자 소감문</div></div>
-        <div class="qr-item"><div class="qr-frame"><img src="assets/qrcode/프로그램 평가서 QR.png" alt="프로그램 평가서 QR코드"></div><div class="qr-caption">프로그램 평가서</div></div>
-      </div>
-    </div>
-  `},
-
   // ============ DAY 4 (8/16 일) ============
   { tag: 'divider', stub: 'DAY 4 · 8.16', body: dayDivider(4, '2026년 8월 16일 (일)', [
-    ['08:00', '조식'], ['09:00', '조식 후 개별귀국'],
+    ['08:00', '조식'], ['09:00', '체크아웃 (옵션투어)'],
   ])},
 
   // info / notion link ------------------------------------------------------
   // appendix (photo/video recap + closing) -----------------------------------
   { tag: 'appendix', body: `
-    <div class="eyebrow">행사 사진 · 영상 모음</div>
-    <h2>함께한 순간들</h2>
-    <div class="huge" style="margin-top:1.3rem;">감사합니다</div>
+    <div class="huge">감사합니다</div>
     <p class="lede">다음에 또 봐요!</p>
   `},
 ];
